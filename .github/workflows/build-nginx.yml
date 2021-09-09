@@ -2,7 +2,8 @@ name: Build Containers
 
 on:
   push:
-    branches: ["**"]
+    branches-ignore:
+      - main
 
 jobs:
   cas-nginx-sidecar-build:
