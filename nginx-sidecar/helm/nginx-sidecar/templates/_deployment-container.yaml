@@ -3,7 +3,6 @@ These template are meant to be injected inside a deployment object, as an additi
 */}}
 
 
-
 {{- /*
 This template is meant to be injected inside a deployment object.
 It needs to be passed an object that matches the structure of the values of this chart
