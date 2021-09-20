@@ -1,0 +1,4 @@
+nodejs <%= nodejs %>
+yarn <%= yarn %>
+postgres <%= postgres %>
+python <%= python %>
