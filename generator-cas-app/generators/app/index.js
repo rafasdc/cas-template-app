@@ -9,7 +9,9 @@ module.exports = class extends Generator {
       yosay(
         `Welcome to the ${chalk.red("generator-cas-app")} generator!
         This generator will set up:
-          1) Your asdf package manager https://asdf-vm.com/ .tool-versions file`
+          1) Your asdf package manager https://asdf-vm.com/ .tool-versions file
+          2) Your requirements.txt file
+          3) Your Makefile`
       )
     );
 

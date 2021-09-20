@@ -25,12 +25,4 @@ yo cas-app
 
 ## License
 
-Apache-2.0 © [Naomi Aro]()
-
-
-[npm-image]: https://badge.fury.io/js/generator-cas-app.svg
-[npm-url]: https://npmjs.org/package/generator-cas-app
-[travis-image]: https://travis-ci.com/bcgov/generator-cas-app.svg?branch=master
-[travis-url]: https://travis-ci.com/bcgov/generator-cas-app
-[daviddm-image]: https://david-dm.org/bcgov/generator-cas-app.svg?theme=shields.io
-[daviddm-url]: https://david-dm.org/bcgov/generator-cas-app
+Apache-2.0 ©
