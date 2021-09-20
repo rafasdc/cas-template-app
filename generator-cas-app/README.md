@@ -5,7 +5,7 @@
 
 ```bash
 npm install -g yo
-npm install -g generator-cas-app
+npm link
 ```
 
 Then generate your new project:
