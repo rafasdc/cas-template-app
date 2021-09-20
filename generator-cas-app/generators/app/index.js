@@ -62,8 +62,4 @@ module.exports = class extends Generator {
       this.destinationPath("Makefile")
     );
   }
-
-  // install() {
-  //   this.installDependencies();
-  // }
 };
