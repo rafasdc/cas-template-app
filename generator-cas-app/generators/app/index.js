@@ -8,7 +8,7 @@ module.exports = class extends Generator {
     // Have Yeoman greet the user.
     this.log(
       yosay(
-        `Welcome to the breathtaking ${chalk.red('generator-cas-app')} generator!`
+        `Welcome to the ${chalk.red('generator-cas-app')} generator! This generator will set up your asdf package manager https://asdf-vm.com/`
       )
     );
 
@@ -28,13 +28,19 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    this.fs.copy(
-      this.templatePath('dummyfile.txt'),
-      this.destinationPath('dummyfile.txt')
+    this.fs.copyTpl(
+      this.templatePath('.tool-versions'),
+      this.destinationPath('.tool-versions'),
+      {
+        nodejs: '14.17.6',
+        yarn: '1.22.5',
+        postgres: '12.6',
+        python: '3.9.2'
+      }
     );
   }
 
-  install() {
-    this.installDependencies();
-  }
+  // install() {
+  //   this.installDependencies();
+  // }
 };
