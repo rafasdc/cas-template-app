@@ -4,11 +4,11 @@
 ## Installation
 
 ```bash
-npm install -g yo
-npm link
+yarn global add yo
+yarn link
 ```
 
-Then generate your new project:
+Then generate your new project in the desired folder by running:
 
 ```bash
 yo cas-app

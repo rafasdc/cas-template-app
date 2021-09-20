@@ -26,7 +26,7 @@ module.exports = class extends Generator {
         type: "input",
         name: "yarn",
         message: "yarn version",
-        default: "1.22.5"
+        default: "1.22.10"
       },
       {
         type: "input",
