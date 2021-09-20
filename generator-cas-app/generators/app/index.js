@@ -1,52 +1,63 @@
-'use strict';
-const Generator = require('yeoman-generator');
-const chalk = require('chalk');
-const yosay = require('yosay');
+"use strict";
+const Generator = require("yeoman-generator");
+const chalk = require("chalk");
+const yosay = require("yosay");
 
 module.exports = class extends Generator {
-  prompting() {
-    // Have Yeoman greet the user.
+  async prompting() {
     this.log(
       yosay(
-        `Welcome to the ${chalk.red('generator-cas-app')} generator! This generator will set up your asdf package manager https://asdf-vm.com/`
+        `Welcome to the ${chalk.red("generator-cas-app")} generator!
+        This generator will set up:
+          1) Your asdf package manager https://asdf-vm.com/ .tool-versions file`
       )
     );
 
-    const prompts = [
+    this.answers = await this.prompt([
       {
-        type: 'confirm',
-        name: 'someAnswer',
-        message: 'Would you like to enable this option?',
-        default: true
+        type: "input",
+        name: "nodejs",
+        message: "node.js version",
+        default: "14.17.6"
+      },
+      {
+        type: "input",
+        name: "yarn",
+        message: "yarn version",
+        default: "1.22.5"
+      },
+      {
+        type: "input",
+        name: "postgres",
+        message: "postgres version",
+        default: "12.6"
+      },
+      {
+        type: "input",
+        name: "python",
+        message: "python version",
+        default: "3.9.2"
       }
-    ];
-
-    return this.prompt(prompts).then(props => {
-      // To access props later use this.props.someAnswer;
-      this.props = props;
-    });
+    ]);
   }
 
   writing() {
     this.fs.copyTpl(
-      this.templatePath('.tool-versions'),
-      this.destinationPath('.tool-versions'),
+      this.templatePath(".tool-versions"),
+      this.destinationPath(".tool-versions"),
       {
-        nodejs: '14.17.6',
-        yarn: '1.22.5',
-        postgres: '12.6',
-        python: '3.9.2'
+        ...this.answers
       }
     );
 
     this.fs.copy(
-      this.templatePath('requirements.txt'),
-      this.destinationPath('requirements.txt')
+      this.templatePath("requirements.txt"),
+      this.destinationPath("requirements.txt")
     );
 
     this.fs.copy(
-      this.templatePath('Makefile'),
-      this.destinationPath('Makefile')
+      this.templatePath("Makefile"),
+      this.destinationPath("Makefile")
     );
   }
 
