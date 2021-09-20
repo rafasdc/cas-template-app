@@ -1,9 +1,7 @@
-# generator-cas-app [![NPM version][npm-image]][npm-url] [![Build Status][travis-image]][travis-url] [![Dependency Status][daviddm-image]][daviddm-url]
+# generator-cas-app
 > Generates various scaffolds for a new CAS application.
 
 ## Installation
-
-First, install [Yeoman](http://yeoman.io) and generator-cas-app using [npm](https://www.npmjs.com/) (we assume you have pre-installed [node.js](https://nodejs.org/)).
 
 ```bash
 npm install -g yo
