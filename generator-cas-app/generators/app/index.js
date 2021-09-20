@@ -38,6 +38,16 @@ module.exports = class extends Generator {
         python: '3.9.2'
       }
     );
+
+    this.fs.copy(
+      this.templatePath('requirements.txt'),
+      this.destinationPath('requirements.txt')
+    );
+
+    this.fs.copy(
+      this.templatePath('Makefile'),
+      this.destinationPath('Makefile')
+    );
   }
 
   // install() {
