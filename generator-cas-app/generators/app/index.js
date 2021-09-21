@@ -62,4 +62,8 @@ module.exports = class extends Generator {
       this.destinationPath("Makefile")
     );
   }
+
+  install() {
+    this.spawnCommand("make", ["install_dev_tools"]);
+  }
 };
