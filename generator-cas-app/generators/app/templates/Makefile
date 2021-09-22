@@ -1,5 +1,8 @@
 SHELL := /usr/bin/env bash
 
+help:     ## Show this help.
+	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
+
 .PHONY: install_asdf_tools
 install_asdf_tools:
 	@cat .tool-versions | cut -f 1 -d ' ' | xargs -n 1 asdf plugin-add || true
@@ -12,5 +15,5 @@ install_asdf_tools:
 	@asdf reshim
 
 .PHONY: install_dev_tools
-install_dev_tools: $(call make_help,install_dev_tools,install development tools via asdf)
+install_dev_tools: ## install development tools via asdf
 install_dev_tools: install_asdf_tools
