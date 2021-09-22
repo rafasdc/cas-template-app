@@ -2,6 +2,12 @@
 
 A skeleton app that uses the Climate Action Secretariat tech stack
 
+```bash
+cd generator-cas-app && yarn && cd ..
+yarn global add yo
+yo generator-cas-app
+```
+
 ## Utilities
 
 This repository contains various utilities that can be reused:
