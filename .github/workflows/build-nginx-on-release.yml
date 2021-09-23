@@ -6,7 +6,7 @@ on:
 
 jobs:
   cas-nginx-sidecar-build:
-    if: startsWith(github.ref, 'refs/tags/nginx-sidecar-')')
+    if: startsWith(github.ref, 'refs/tags/nginx-sidecar-')
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
