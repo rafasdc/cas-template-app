@@ -1,8 +1,9 @@
-name: Build Containers On Chart Release
+name: Build Nginx Image
 
 on:
   push:
-    branches: ["**"]
+    branches-ignore:
+      - main
 
 jobs:
   cas-nginx-sidecar-build:

@@ -1,4 +1,4 @@
-name: Build Containers On Chart Release
+name: Build and Tag Containers On Chart Release
 
 on:
   release:
