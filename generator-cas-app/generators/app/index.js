@@ -45,7 +45,7 @@ module.exports = class extends Generator {
       },
       {
         type: "input",
-        name: "databaseName",
+        name: "dbName",
         message: "Database name",
         default: answers => answers.projectName
       },
