@@ -87,15 +87,9 @@ module.exports = class extends Generator {
       ...this.answers
     });
 
-    // This.fs.copy(
-    //   this.templatePath("requirements.txt"),
-    //   this.destinationPath("requirements.txt")
-    // );
-
-    // this.fs.copy(
-    //   this.templatePath("Makefile"),
-    //   this.destinationPath("Makefile")
-    // );
+    this.fs.copyTpl(this.templatePath(".*"), this.destinationPath("."), {
+      ...this.answers
+    });
   }
 
   install() {
