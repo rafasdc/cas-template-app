@@ -19,18 +19,20 @@ module.exports = class extends Generator {
       {
         type: "input",
         name: "projectName",
-        message: "Project name:",
-        default: this.appname
+        message: "Project name (use snake_case)",
+        default: this.appname.replace(" ", "_")
       },
       {
         type: "input",
         name: "committerEmail",
-        message: "Email address associated to your GitHub account"
+        message: "Email address associated to your GitHub account",
+        store: true
       },
       {
         type: "input",
         name: "committerName",
-        message: "Name associated to your GitHub account?"
+        message: "Name associated to your GitHub account",
+        store: true
       },
       {
         type: "input",
@@ -41,7 +43,8 @@ module.exports = class extends Generator {
       {
         type: "input",
         name: "repoName",
-        message: "Repository name"
+        message: "Repository name (use kebab-case)",
+        default: answers => answers.projectName.replace("_", "-")
       },
       {
         type: "input",
