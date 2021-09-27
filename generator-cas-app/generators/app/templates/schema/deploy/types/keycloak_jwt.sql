@@ -1,9 +1,9 @@
--- Deploy ggircs-portal:type_jwt_token to pg
--- requires: schema_ggircs_portal
+-- Deploy <%= projectName %>:types/keycloak_jwt to pg
+-- requires: schemas/main
 
 begin;
 
-create type ggircs_portal.jwt_token as (
+create type <%= schemaName %>.keycloak_jwt as (
   jti uuid,
   exp integer,
   nbf integer,
@@ -27,6 +27,6 @@ create type ggircs_portal.jwt_token as (
   user_groups text[]
 );
 
-comment on type ggircs_portal.jwt_token is E'@primaryKey sub\n@foreignKey (sub) references ciip_user (uuid)';
+comment on type <%= schemaName %>.keycloak_jwt is E'@primaryKey sub\n@foreignKey (sub) references <%= projectName %>_user (uuid)';
 
 commit;

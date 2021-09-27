@@ -76,7 +76,7 @@ stop_pg:
 
 .PHONY: create_db
 create_db: ## Ensure that the $(DB_NAME) database exists
-create_db: 
+create_db:
 	@$(PSQL) -tc "SELECT 1 FROM pg_database WHERE datname = '$(DB_NAME)'" | \
 		grep -q 1 || \
 		$(PSQL) -c "CREATE DATABASE $(DB_NAME)";
@@ -90,7 +90,7 @@ drop_db:
 
 .PHONY: create_test_db
 create_test_db: ## Ensure that the $(DB_NAME)_test database exists
-create_test_db: 
+create_test_db:
 	@$(PSQL) -tc "SELECT 1 FROM pg_database WHERE datname = '$(DB_NAME)_test'" | \
 		grep -q 1 || \
 		$(PSQL) -c "CREATE DATABASE $(DB_NAME)_test";
@@ -104,7 +104,7 @@ drop_test_db:
 
 .PHONY: deploy_db_migrations
 deploy_db_migrations: ## deploy the database migrations with sqitch
-deploy_db_migrations: start_pg
+deploy_db_migrations: start_pg create_db
 deploy_db_migrations:
 	@$(SQITCH) deploy
 

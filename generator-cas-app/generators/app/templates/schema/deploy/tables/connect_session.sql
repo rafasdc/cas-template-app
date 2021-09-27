@@ -1,10 +1,10 @@
 -- Deploy <%= projectName %>:tables/connect_session to pg
--- requires: schema_<%= schemaName %>_private
+-- requires: schemas/private
 
 begin;
 
 create table <%= schemaName %>_private.connect_session (
-  sid varchar(4093) not null collate "default" primary key (sid) not deferrable initially immediate,
+  sid varchar(4093) not null primary key,
   sess json not null,
   expire timestamp(6) not null
 )

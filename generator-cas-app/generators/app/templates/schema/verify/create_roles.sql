@@ -6,7 +6,7 @@ do
 $verify$
 begin
 
-<% roles.split(',').forEach(function(role, index) { %>
+<% roles.forEach(function(role, index) { %>
   <% if (index == 0) { %>if<% } else { %>elsif<% } %>(select not exists(select true from pg_roles where rolname='<%= role %>')) then
     raise exception 'role <%= role %> does not exist.';
 <% }); %>

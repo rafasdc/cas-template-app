@@ -1,4 +1,3 @@
-"use strict";
 const path = require("path");
 const assert = require("yeoman-assert");
 const helpers = require("yeoman-test");
@@ -9,7 +8,10 @@ describe("generator-cas-app:app", () => {
       nodejs: "14.17.6",
       yarn: "1.22.5",
       postgres: "12.6",
-      python: "3.9.2"
+      python: "3.9.2",
+      projectName: "abcd",
+      committerEmail: "foo@bar.com",
+      committerName: "Foo Bar"
     });
   });
 

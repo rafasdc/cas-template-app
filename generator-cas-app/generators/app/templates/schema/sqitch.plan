@@ -1,7 +1,7 @@
-<% const changeDateAuthor = `${new Date().toISOString().split('.')[0]}Z ${committerName} <${committerEmail}>` %>
 %syntax-version=1.0.0
 %project=<%= projectName %>
 %uri=https://github.com/<%= orgName %>/<%= repoName %>
+<% const changeDateAuthor = `${new Date().toISOString().split('.')[0]}Z ${committerName} <${committerEmail}>` %>
 
 create_roles <%- changeDateAuthor %> # Create the roles used by the application
 schemas/main <%- changeDateAuthor %> # Create the <%= schemaName %> schema
@@ -19,5 +19,5 @@ types/keycloak_jwt <%- changeDateAuthor %> # Create the <%= schemaName %>.keyclo
 functions/session <%- changeDateAuthor %> # Create the <%= schemaName %>.session function
 trigger_functions/update_timestamps <%- changeDateAuthor %> # Create the <%= schemaName %>_private.update_timestamps trigger function
 util_functions/upsert_timestamp_columns [schemas/private trigger_functions/update_timestamps] <%- changeDateAuthor %> # Create the upsert_timestamp_columns function
-table/<%= projectName %>_user <%- changeDateAuthor %> # Create the <%= schemaName %>.<%= projectName %>_user table
+tables/<%= projectName %>_user <%- changeDateAuthor %> # Create the <%= schemaName %>.<%= projectName %>_user table
 trigger_functions/set_user_id <%- changeDateAuthor %> # Create the <%= schemaName %>_private.set_user_id trigger function

@@ -8,7 +8,7 @@ create or replace function <%= schemaName %>_private.upsert_timestamp_columns(
   table_name text,
   add_create boolean default true,
   add_update boolean default true,
-  add_delete boolean default true, 
+  add_delete boolean default true,
   user_table_schema_name text default '<%= schemaName %>',
   user_table_name text default '<%= projectName %>_user'
 )
@@ -17,15 +17,16 @@ returns void as $$
 declare
   column_string text;
   index_string text;
+  comment_string text;
   trigger_string text;
 
 begin
 
     if add_create = true then
       column_string := concat(
-        'alter table ', 
-        table_schema_name, '.', table_name, 
-        ' add column if not exists created_by int references ', 
+        'alter table ',
+        table_schema_name, '.', table_name,
+        ' add column if not exists created_by int references ',
         user_table_schema_name, '.', user_table_name, '(id)',
         ', add column if not exists created_at timestamptz not null default now()'
       );
@@ -35,34 +36,49 @@ begin
         table_schema_name, '.', table_name, '(created_by)'
       );
       execute(index_string);
+      comment_string := concat(
+        'comment on column ', table_schema_name, '.', table_name, '.created_by is ''created by user id'';',
+        'comment on column ', table_schema_name, '.', table_name, '.created_at is ''created at timestamp'';'
+      );
+      execute(comment_string);
     end if;
     if add_update = true then
       column_string := concat(
         'alter table ', table_schema_name, '.', table_name,
-        ' add column if not exists updated_by int references',
+        ' add column if not exists updated_by int references ',
         user_table_schema_name, '.', user_table_name, '(id)',
         ', add column if not exists updated_at timestamptz not null default now()'
       );
       execute(column_string);
       index_string := concat(
-        'create index if not exists ', table_schema_name, '_', table_name, '_updated_by_foreign_key on ', 
+        'create index if not exists ', table_schema_name, '_', table_name, '_updated_by_foreign_key on ',
         table_schema_name, '.', table_name, '(updated_by)'
       );
       execute(index_string);
+      comment_string := concat(
+        'comment on column ', table_schema_name, '.', table_name, '.updated_by is ''updated by user id'';',
+        'comment on column ', table_schema_name, '.', table_name, '.updated_at is ''updated at timestamp'';'
+      );
+      execute(comment_string);
     end if;
     if add_delete = true then
       column_string := concat(
-        'alter table ', table_schema_name, '.', table_name, 
-        ' add column if not exists deleted_by int references',
+        'alter table ', table_schema_name, '.', table_name,
+        ' add column if not exists deleted_by int references ',
         user_table_schema_name, '.', user_table_name, '(id)',
         ', add column if not exists deleted_at timestamptz'
       );
       execute(column_string);
       index_string := concat(
-        'create index if not exists ', table_schema_name, '_', table_name, '_deleted_by_foreign_key on ', 
+        'create index if not exists ', table_schema_name, '_', table_name, '_deleted_by_foreign_key on ',
         table_schema_name, '.', table_name, '(deleted_by)'
       );
       execute(index_string);
+      comment_string := concat(
+        'comment on column ', table_schema_name, '.', table_name, '.deleted_by is ''deleted by user id'';',
+        'comment on column ', table_schema_name, '.', table_name, '.deleted_at is ''deleted at timestamp'';'
+      );
+      execute(comment_string);
     end if;
 
   if not exists (select *

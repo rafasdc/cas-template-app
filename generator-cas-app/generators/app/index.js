@@ -19,7 +19,7 @@ module.exports = class extends Generator {
       {
         type: "input",
         name: "projectName",
-        message: "Project name (use snake_case)",
+        message: "Project name (use snake_case, preferably a short acronym)",
         default: this.appname.replace(" ", "_")
       },
       {
@@ -60,14 +60,24 @@ module.exports = class extends Generator {
       },
       {
         type: "input",
-        name: "roles",
-        message: "Roles (comma separated)",
+        name: "adminRole",
+        message: "Administrator database role",
+        default: answers => `${answers.projectName}_admin`
+      },
+      {
+        type: "input",
+        name: "guestRole",
+        message: "Guest role",
+        default: answers => `${answers.projectName}_guest`
+      },
+      {
+        type: "input",
+        name: "nonAdminRoles",
+        message: "Other roles requiring authentication (comma separated)",
         default: answers =>
           [
-            `${answers.projectName}_admin`,
             `${answers.projectName}_internal`,
-            `${answers.projectName}_external`,
-            `${answers.projectName}_guest`
+            `${answers.projectName}_external`
           ].join(",")
       },
       {
@@ -98,16 +108,30 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    this.fs.copyTpl(this.templatePath("."), this.destinationPath("."), {
-      ...this.answers
-    });
+    console.log(this.answers);
+    const nonAdminRoles = this.answers.nonAdminRoles.split(",");
+    const { adminRole, guestRole } = this.answers;
+    const templateVars = {
+      ...this.answers,
+      authenticatedRoles: [...nonAdminRoles, adminRole],
+      roles: [...nonAdminRoles, adminRole, guestRole],
+      nonAdminRoles
+    };
 
-    this.fs.copyTpl(this.templatePath(".*"), this.destinationPath("."), {
-      ...this.answers
-    });
+    this.fs.copyTpl(
+      this.templatePath("."),
+      this.destinationPath("."),
+      templateVars
+    );
+    this.fs.copyTpl(
+      this.templatePath(".*"),
+      this.destinationPath("."),
+      templateVars
+    );
   }
 
   install() {
-    this.spawnCommand("make", ["install_dev_tools"]);
+    this.spawnCommandSync("make", ["install_dev_tools"]);
+    this.spawnCommandSync("make", ["deploy_db_migrations"]);
   }
 };

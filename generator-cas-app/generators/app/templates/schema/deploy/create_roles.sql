@@ -6,7 +6,7 @@ begin;
 do
 $do$
 begin
-  <% roles.split(',').forEach(function(role) { %>
+  <% roles.forEach(function(role) { %>
   if not exists (
     select true
     from   pg_catalog.pg_roles
