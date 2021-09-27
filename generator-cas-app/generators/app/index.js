@@ -60,6 +60,18 @@ module.exports = class extends Generator {
       },
       {
         type: "input",
+        name: "roles",
+        message: "Roles (comma separated)",
+        default: answers =>
+          [
+            `${answers.projectName}_admin`,
+            `${answers.projectName}_internal`,
+            `${answers.projectName}_external`,
+            `${answers.projectName}_guest`
+          ].join(",")
+      },
+      {
+        type: "input",
         name: "nodejs",
         message: "node.js version",
         default: "14.17.6"
