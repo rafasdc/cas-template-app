@@ -9,7 +9,7 @@ It needs to be passed an object that matches the structure of the values of this
 Example: include "nginx-sidecar.deployment-container.tpl" (index .Values "nginx-sidecar")
 */}}
 {{- define "nginx-sidecar.deployment-container.tpl" }}
-- name: "{{ .objectNamePrefix }}"-nginx
+- name: "{{ .objectNamePrefix }}-nginx"
   image: "{{ .image.repository }}:{{ .image.tag }}"
   imagePullPolicy: {{ .image.pullPolicy }}
   ports:
