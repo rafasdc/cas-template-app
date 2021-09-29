@@ -1,10 +1,6 @@
 begin;
 select plan(20);
 
--- Test setup
-select test_helper.clean_<%= schemaName %>_schema();
-select test_helper.modify_triggers('disable');
-
 create table <%= schemaName %>.test_table_all_columns
 (
   id integer primary key generated always as identity,
@@ -69,6 +65,7 @@ select has_index(
   'test_table_all_columns has an index on deleted_by fk'
 );
 
+set client_min_messages to warning;
 select lives_ok(
   $$
     select <%= schemaName %>_private.upsert_timestamp_columns(
@@ -81,6 +78,7 @@ select lives_ok(
   $$,
   'upsert_timestamp_columns does not throw an error when run a second time (idempotent)'
 );
+reset client_min_messages;
 
 select <%= schemaName %>_private.upsert_timestamp_columns(
   table_schema_name := '<%= schemaName %>',

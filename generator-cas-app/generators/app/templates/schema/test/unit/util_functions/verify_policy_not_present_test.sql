@@ -46,7 +46,7 @@ select throws_ok(
     select <%= schemaName %>_private.verify_policy_not_present('test_policy', 'test_table');
   $$,
   'P0001',
-  'Policy test_policy on table test_table exists already',
+  'Policy test_policy on table test_table already exists',
   'Function verify_policy_not_present throws an exception if there is already a policy with that name on that table'
 );
 
