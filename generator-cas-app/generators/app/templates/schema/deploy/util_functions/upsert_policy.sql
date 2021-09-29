@@ -64,7 +64,7 @@ create or replace function <%= schemaName %>_private.upsert_policy(
   role_name text,
   using_statement text,
   check_statement text,
-  table_schema_name text default '<%= schemaName %>'
+  table_schema_name text
 )
 returns void
 as

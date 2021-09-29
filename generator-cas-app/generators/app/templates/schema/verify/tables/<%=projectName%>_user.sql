@@ -1,4 +1,3 @@
-<% const userTable = projectName + '_user' %>
 -- Verify <%= projectName %>:tables/<%= userTable %> on pg
 
 begin;
@@ -6,7 +5,7 @@ begin;
 select pg_catalog.has_table_privilege('<%= schemaName %>.<%= userTable %>', 'select');
 
 <% authenticatedRoles.forEach(function(role) { %>
--- ciip_administrator Grants
+-- <%= adminRole %> Grants
 select <%= schemaName %>_private.verify_grant('select', '<%= userTable %>', '<%= role %>');
 select <%= schemaName %>_private.verify_grant('insert', '<%= userTable %>', '<%= role %>');
 select <%= schemaName %>_private.verify_grant('update', '<%= userTable %>', '<%= role %>',

@@ -108,14 +108,14 @@ module.exports = class extends Generator {
   }
 
   writing() {
-    console.log(this.answers);
     const nonAdminRoles = this.answers.nonAdminRoles.split(",");
-    const { adminRole, guestRole } = this.answers;
+    const { adminRole, guestRole, projectName } = this.answers;
     const templateVars = {
       ...this.answers,
       authenticatedRoles: [...nonAdminRoles, adminRole],
       roles: [...nonAdminRoles, adminRole, guestRole],
-      nonAdminRoles
+      nonAdminRoles,
+      userTable: `${projectName}_user`
     };
 
     this.fs.copyTpl(
@@ -128,10 +128,5 @@ module.exports = class extends Generator {
       this.destinationPath("."),
       templateVars
     );
-  }
-
-  install() {
-    this.spawnCommandSync("make", ["install_dev_tools"]);
-    this.spawnCommandSync("make", ["deploy_db_migrations"]);
   }
 };

@@ -19,5 +19,5 @@ types/keycloak_jwt <%- changeDateAuthor %> # Create the <%= schemaName %>.keyclo
 functions/session <%- changeDateAuthor %> # Create the <%= schemaName %>.session function
 trigger_functions/update_timestamps <%- changeDateAuthor %> # Create the <%= schemaName %>_private.update_timestamps trigger function
 util_functions/upsert_timestamp_columns [schemas/private trigger_functions/update_timestamps] <%- changeDateAuthor %> # Create the upsert_timestamp_columns function
-tables/<%= projectName %>_user <%- changeDateAuthor %> # Create the <%= schemaName %>.<%= projectName %>_user table
+tables/<%= userTable %> <%- changeDateAuthor %> # Create the <%= schemaName %>.<%= userTable %> table
 trigger_functions/set_user_id <%- changeDateAuthor %> # Create the <%= schemaName %>_private.set_user_id trigger function

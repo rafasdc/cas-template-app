@@ -9,6 +9,7 @@ SQITCH=sqitch --chdir schema
 SQITCH_VERSION=${word 3,${shell ${SQITCH} --version}}
 SQITCH_MIN_VERSION=1.0.0
 DB_NAME=<%= dbName %>
+PG_PROVE=pg_prove -h localhost
 
 help: ## Show this help.
 	@sed -ne '/@sed/!s/## //p' $(MAKEFILE_LIST)
@@ -77,28 +78,30 @@ stop_pg:
 .PHONY: create_db
 create_db: ## Ensure that the $(DB_NAME) database exists
 create_db:
-	@$(PSQL) -tc "SELECT 1 FROM pg_database WHERE datname = '$(DB_NAME)'" | \
+	@$(PSQL) -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)'" | \
 		grep -q 1 || \
-		$(PSQL) -c "CREATE DATABASE $(DB_NAME)";
+		$(PSQL) -c "CREATE DATABASE $(DB_NAME)" && \
+		$(PSQL) -d $(DB_NAME) -c "create extension if not exists pgtap";
 
 .PHONY: drop_db
 drop_db: ## Drop the $(DB_NAME) database if it exists
 drop_db:
-	@$(PSQL) -tc "SELECT 1 FROM pg_database WHERE datname = '$(DB_NAME)'" | \
+	@$(PSQL) -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)'" | \
 		grep -q 0 || \
 		$(PSQL) -c "DROP DATABASE $(DB_NAME)";
 
 .PHONY: create_test_db
 create_test_db: ## Ensure that the $(DB_NAME)_test database exists
 create_test_db:
-	@$(PSQL) -tc "SELECT 1 FROM pg_database WHERE datname = '$(DB_NAME)_test'" | \
+	@$(PSQL) -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)_test'" | \
 		grep -q 1 || \
-		$(PSQL) -c "CREATE DATABASE $(DB_NAME)_test";
+		$(PSQL) -c "CREATE DATABASE $(DB_NAME)_test" &&\
+		$(PSQL) -d $(DB_NAME)_test -c "create extension if not exists pgtap";
 
 .PHONY: drop_test_db
 drop_test_db: ## Drop the $(DB_NAME)_test database if it exists
 drop_test_db:
-	@$(PSQL) -tc "SELECT 1 FROM pg_database WHERE datname = '$(DB_NAME)_test'" | \
+	@$(PSQL) -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)_test'" | \
 		grep -q 0 || \
 		$(PSQL) -c "DROP DATABASE $(DB_NAME)_test";
 
@@ -119,3 +122,27 @@ verify_db_migrations: ## verify the database migrations with sqitch
 verify_db_migrations: start_pg
 verify_db_migrations:
 	@$(SQITCH) verify
+
+.PHONY: deploy_test_db_migrations
+deploy_test_db_migrations: ## deploy the test database migrations with sqitch
+deploy_test_db_migrations: start_pg create_test_db
+deploy_test_db_migrations:
+	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) deploy
+
+.PHONY: revert_test_db_migrations
+revert_test_db_migrations: ## revert the test database migrations with sqitch
+revert_test_db_migrations: start_pg
+revert_test_db_migrations:
+	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) revert
+
+.PHONY: verify_test_db_migrations
+verify_test_db_migrations: ## verify the test database migrations with sqitch
+verify_test_db_migrations: start_pg
+verify_test_db_migrations:
+	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) verify
+
+.PHONY: db_unit_tests
+db_unit_tests: ## run the database unit tests
+db_unit_tests: | start_pg drop_test_db create_test_db deploy_test_db_migrations
+db_unit_tests:
+	@$(PG_PROVE) --failures -d $(DB_NAME)_test schema/test/unit/**/*_test.sql

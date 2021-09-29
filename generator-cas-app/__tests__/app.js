@@ -1,6 +1,7 @@
 const path = require("path");
 const assert = require("yeoman-assert");
 const helpers = require("yeoman-test");
+const { spawnSync } = require("child_process");
 
 describe("generator-cas-app:app", () => {
   beforeAll(() => {
@@ -19,5 +20,13 @@ describe("generator-cas-app:app", () => {
     assert.file([".tool-versions"]);
     assert.file(["requirements.txt"]);
     assert.file(["Makefile"]);
+  });
+
+  it("passes database unit tests", () => {
+    const { status } = spawnSync("make", ["db_unit_tests"], {
+      stdio: "inherit"
+    });
+
+    assert.equal(status, 0);
   });
 });

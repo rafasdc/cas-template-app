@@ -1,4 +1,3 @@
-<% const userTable = projectName + '_user' %>
 -- Deploy <%= projectName %>:tables/<%= userTable %> to pg
 
 begin;

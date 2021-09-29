@@ -1,7 +1,7 @@
--- Revert <%= projectName %>:tables/<%= projectName %>_user on pg
+-- Revert <%= projectName %>:tables/<%= userTable %> on pg
 
 begin;
 
-drop table <%= schemaName %>.<%= projectName %>_user;
+drop table <%= schemaName %>.<%= userTable %>;
 
 commit;

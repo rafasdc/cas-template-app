@@ -27,6 +27,6 @@ create type <%= schemaName %>.keycloak_jwt as (
   user_groups text[]
 );
 
-comment on type <%= schemaName %>.keycloak_jwt is E'@primaryKey sub\n@foreignKey (sub) references <%= projectName %>_user (uuid)';
+comment on type <%= schemaName %>.keycloak_jwt is E'@primaryKey sub\n@foreignKey (sub) references <%= userTable %> (uuid)';
 
 commit;

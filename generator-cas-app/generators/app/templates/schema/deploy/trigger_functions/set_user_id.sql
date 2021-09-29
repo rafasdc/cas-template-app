@@ -1,6 +1,6 @@
 -- Deploy <%= projectName %>:trigger_functions/set_user_id to pg
 -- requires: functions/session
--- requires: table/<%= projectName %>_user
+-- requires: table/<%= userTable %>
 
 begin;
 create or replace function <%= schemaName %>_private.set_user_id()
@@ -10,7 +10,7 @@ declare
   user_sub uuid;
 begin
   user_sub := (select sub from <%= schemaName %>.session());
-  new.user_id := (select id from <%= schemaName %>.<%= projectName %>_user as u where u.uuid = user_sub);
+  new.user_id := (select id from <%= schemaName %>.<%= userTable %> as u where u.uuid = user_sub);
   return new;
 end;
 $$ language plpgsql volatile;
@@ -23,7 +23,7 @@ comment on function <%= schemaName %>_private.set_user_id()
   example usage:
 
   create table some_schema.some_table (
-    user_id int references <%= schemaName %>.<%= projectName %>_user(id)
+    user_id int references <%= schemaName %>.<%= userTable %>(id)
     ...
   );
   create trigger _set_user_id

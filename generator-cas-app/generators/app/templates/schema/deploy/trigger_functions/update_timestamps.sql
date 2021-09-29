@@ -12,7 +12,7 @@ declare
 
 begin
   user_sub := (select sub from <%= schemaName %>.session());
-  user_id := (select id from <%= schemaName %>.<%= projectName %>_user where <%= projectName %>_user.uuid = user_sub);
+  user_id := (select id from <%= schemaName %>.<%= userTable %> where <%= userTable %>.uuid = user_sub);
   if tg_op = 'INSERT' then
     if to_jsonb(new) ? 'created_at' then
       new.created_at = now();
@@ -38,7 +38,7 @@ begin
 end;
 $$ language plpgsql;
 
-grant execute on function <%= schemaName %>_private.update_timestamps to ciip_administrator, ciip_analyst, ciip_industry_user;
+grant execute on function <%= schemaName %>_private.update_timestamps to <%= authenticatedRoles.join(', ') %>;
 
 comment on function <%= schemaName %>_private.update_timestamps()
   is $$

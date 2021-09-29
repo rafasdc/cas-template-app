@@ -10,7 +10,7 @@ create or replace function <%= schemaName %>_private.upsert_timestamp_columns(
   add_update boolean default true,
   add_delete boolean default true,
   user_table_schema_name text default '<%= schemaName %>',
-  user_table_name text default '<%= projectName %>_user'
+  user_table_name text default '<%= userTable %>'
 )
 returns void as $$
 
