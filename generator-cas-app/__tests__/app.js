@@ -4,16 +4,18 @@ const helpers = require("yeoman-test");
 const { spawnSync } = require("child_process");
 
 describe("generator-cas-app:app", () => {
-  beforeAll(() =>
-    helpers.run(path.join(__dirname, "../generators/app")).withPrompts({
-      nodejs: "14.17.6",
-      yarn: "1.22.5",
-      postgres: "12.6",
-      python: "3.9.2",
-      projectName: "abcd",
-      committerEmail: "foo@bar.com",
-      committerName: "Foo Bar",
-    })
+  beforeAll(
+    () =>
+      helpers.run(path.join(__dirname, "../generators/app")).withPrompts({
+        nodejs: "14.17.6",
+        yarn: "1.22.5",
+        postgres: "12.6",
+        python: "3.9.2",
+        projectName: "abcd",
+        committerEmail: "foo@bar.com",
+        committerName: "Foo Bar",
+      }),
+    3600000
   );
 
   it("creates files", () => {

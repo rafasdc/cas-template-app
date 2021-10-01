@@ -15,6 +15,8 @@ jobs:
       - uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: "5.34"
+      - name: install pg perl library
+        run: sudo apt-get install -y libpq-dev libdbd-pg-perl
       - run: yarn install
         working-directory: ./generator-cas-app
       - run: yarn test

@@ -1,10 +1,14 @@
 SHELL := /usr/bin/env bash
+__FILENAME := $(lastword $(MAKEFILE_LIST))
+__DIRNAME := $(abspath $(realpath $(lastword $(MAKEFILE_LIST)))/../)
 PERL=perl
 PERL_VERSION=${shell ${PERL} -e 'print substr($$^V, 1)'}
 PERL_MIN_VERSION=5.10
 PSQL=psql -h localhost
 CPAN=cpan
-CPANM=cpanm --notest
+# CPANM home has to be in the current directory, so that it can find the
+# pg_config executable, installed via asdf
+CPANM=PERL_CPANM_HOME=$(__DIRNAME)/.cpanm cpanm --notest
 SQITCH=sqitch --chdir schema
 SQITCH_VERSION=${word 3,${shell ${SQITCH} --version}}
 SQITCH_MIN_VERSION=1.0.0
@@ -49,7 +53,8 @@ endif
 .PHONY: install_cpandeps
 install_cpandeps: ## install Perl dependencies from cpanfile
 install_cpandeps:
-	$(CPANM) --installdeps .
+	@$(CPANM) --installdeps .
+	@rm -rf $(__DIRNAME)/.cpanm
 
 .PHONY: postinstall_check
 postinstall_check: ## check that the installation was successful and that the correct sqitch version is available in the PATH
