@@ -6,11 +6,11 @@ module.exports = class extends Generator {
   async prompting() {
     this.log(
       yosay(
-        `Welcome to the ${chalk.red("generator-cas-app")} generator!
+        `Welcome to the ${chalk.red("cas-app")} generator!
         This generator will set up:
           1) Your asdf package manager https://asdf-vm.com/ .tool-versions file
-          2) Your requirements.txt file
-          3) Your Makefile`
+          2) A Makefile with useful commands
+          3) A set of database migrations for your app`
       )
     );
 
@@ -19,90 +19,90 @@ module.exports = class extends Generator {
         type: "input",
         name: "projectName",
         message: "Project name (use snake_case, preferably a short acronym)",
-        default: this.appname.replace(" ", "_"),
+        default: this.appname.replace(" ", "_")
       },
       {
         type: "input",
         name: "committerEmail",
         message: "Email address associated to your GitHub account",
-        store: true,
+        store: true
       },
       {
         type: "input",
         name: "committerName",
         message: "Name associated to your GitHub account",
-        store: true,
+        store: true
       },
       {
         type: "input",
         name: "orgName",
         message: "GitHub organisation",
-        default: "bcgov",
+        default: "bcgov"
       },
       {
         type: "input",
         name: "repoName",
         message: "Repository name (use kebab-case)",
-        default: (answers) => answers.projectName.replace("_", "-"),
+        default: answers => answers.projectName.replace("_", "-")
       },
       {
         type: "input",
         name: "dbName",
         message: "Database name",
-        default: (answers) => answers.projectName,
+        default: answers => answers.projectName
       },
       {
         type: "input",
         name: "schemaName",
         message: "Database schema name",
-        default: (answers) => answers.projectName,
+        default: answers => answers.projectName
       },
       {
         type: "input",
         name: "adminRole",
         message: "Administrator database role",
-        default: (answers) => `${answers.projectName}_admin`,
+        default: answers => `${answers.projectName}_admin`
       },
       {
         type: "input",
         name: "guestRole",
         message: "Guest role",
-        default: (answers) => `${answers.projectName}_guest`,
+        default: answers => `${answers.projectName}_guest`
       },
       {
         type: "input",
         name: "nonAdminRoles",
         message: "Other roles requiring authentication (comma separated)",
-        default: (answers) =>
+        default: answers =>
           [
             `${answers.projectName}_internal`,
-            `${answers.projectName}_external`,
-          ].join(","),
+            `${answers.projectName}_external`
+          ].join(",")
       },
       {
         type: "input",
         name: "nodejs",
         message: "node.js version",
-        default: "14.17.6",
+        default: "14.17.6"
       },
       {
         type: "input",
         name: "yarn",
         message: "yarn version",
-        default: "1.22.10",
+        default: "1.22.10"
       },
       {
         type: "input",
         name: "postgres",
         message: "postgres version",
-        default: "12.6",
+        default: "12.6"
       },
       {
         type: "input",
         name: "python",
         message: "python version",
-        default: "3.9.2",
-      },
+        default: "3.9.2"
+      }
     ]);
   }
 
@@ -114,7 +114,7 @@ module.exports = class extends Generator {
       authenticatedRoles: [...nonAdminRoles, adminRole],
       roles: [...nonAdminRoles, adminRole, guestRole],
       nonAdminRoles,
-      userTable: `${projectName}_user`,
+      userTable: `${projectName}_user`
     };
 
     this.fs.copyTpl(
@@ -126,6 +126,16 @@ module.exports = class extends Generator {
       this.templatePath(".*"),
       this.destinationPath("."),
       templateVars
+    );
+  }
+
+  end() {
+    this.log(
+      yosay(
+        `Your app is ready!
+        Check out the available commands with:
+          $ make help`
+      )
     );
   }
 };
