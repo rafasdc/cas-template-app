@@ -83,32 +83,32 @@ stop_pg:
 .PHONY: create_db
 create_db: ## Ensure that the $(DB_NAME) database exists
 create_db:
-	@$(PSQL) -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)'" | \
+	@$(PSQL) -d postgres -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)'" | \
 		grep -q 1 || \
-		$(PSQL) -c "CREATE DATABASE $(DB_NAME)" && \
+		$(PSQL) -d postgres -c "CREATE DATABASE $(DB_NAME)" && \
 		$(PSQL) -d $(DB_NAME) -c "create extension if not exists pgtap";
 
 .PHONY: drop_db
 drop_db: ## Drop the $(DB_NAME) database if it exists
 drop_db:
-	@$(PSQL) -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)'" | \
+	@$(PSQL) -d postgres -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)'" | \
 		grep -q 0 || \
-		$(PSQL) -c "DROP DATABASE $(DB_NAME)";
+		$(PSQL) -d postgres -c "DROP DATABASE $(DB_NAME)";
 
 .PHONY: create_test_db
 create_test_db: ## Ensure that the $(DB_NAME)_test database exists
 create_test_db:
-	@$(PSQL) -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)_test'" | \
+	@$(PSQL) -d postgres -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)_test'" | \
 		grep -q 1 || \
-		$(PSQL) -c "CREATE DATABASE $(DB_NAME)_test" &&\
+		$(PSQL) -d postgres -c "CREATE DATABASE $(DB_NAME)_test" &&\
 		$(PSQL) -d $(DB_NAME)_test -c "create extension if not exists pgtap";
 
 .PHONY: drop_test_db
 drop_test_db: ## Drop the $(DB_NAME)_test database if it exists
 drop_test_db:
-	@$(PSQL) -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)_test'" | \
+	@$(PSQL) -d postgres -tc "SELECT count(*) FROM pg_database WHERE datname = '$(DB_NAME)_test'" | \
 		grep -q 0 || \
-		$(PSQL) -c "DROP DATABASE $(DB_NAME)_test";
+		$(PSQL) -d postgres -c "DROP DATABASE $(DB_NAME)_test";
 
 .PHONY: deploy_db_migrations
 deploy_db_migrations: ## deploy the database migrations with sqitch
