@@ -1,16 +1,16 @@
--- Deploy <%= projectName %>:util/upsert_timestamp_columns to pg
+-- Deploy <%- projectName %>:util/upsert_timestamp_columns to pg
 -- requires: trigger_function/update_timestamps
 
 begin;
 
-create or replace function <%= schemaName %>_private.upsert_timestamp_columns(
+create or replace function <%- schemaName %>_private.upsert_timestamp_columns(
   table_schema_name text,
   table_name text,
   add_create boolean default true,
   add_update boolean default true,
   add_delete boolean default true,
-  user_table_schema_name text default '<%= schemaName %>',
-  user_table_name text default '<%= userTable %>'
+  user_table_schema_name text default '<%- schemaName %>',
+  user_table_name text default '<%- userTable %>'
 )
 returns void as $$
 
@@ -88,7 +88,7 @@ begin
   ) then
     trigger_string := concat(
       'create trigger _100_timestamps before insert or update on ', table_schema_name, '.', table_name,
-      ' for each row execute procedure <%= schemaName %>_private.update_timestamps()'
+      ' for each row execute procedure <%- schemaName %>_private.update_timestamps()'
     );
     execute(trigger_string);
   end if;
@@ -96,7 +96,7 @@ begin
 end;
 $$ language plpgsql;
 
-comment on function <%= schemaName %>_private.upsert_timestamp_columns(text, text, boolean, boolean, boolean, text, text)
+comment on function <%- schemaName %>_private.upsert_timestamp_columns(text, text, boolean, boolean, boolean, text, text)
   is $$
   an internal function that adds the created/updated/deleted at/by columns, indices on fkeys and applies the _100_timestamps trigger
   example usage:
@@ -104,7 +104,7 @@ comment on function <%= schemaName %>_private.upsert_timestamp_columns(text, tex
   create table some_schema.some_table (
     ...
   );
-  select <%= schemaName %>_private.upsert_timestamp_columns(
+  select <%- schemaName %>_private.upsert_timestamp_columns(
   table_schema_name := 'some_schema',
   table_name := 'some_table',
   add_create := true,

@@ -1,7 +1,7 @@
--- Revert <%= projectName %>:schema/<%= schemaName %> from pg
+-- Revert <%- projectName %>:schema/<%- schemaName %> from pg
 
 begin;
 
-drop schema <%= schemaName %>;
+drop schema <%- schemaName %>;
 
 commit;

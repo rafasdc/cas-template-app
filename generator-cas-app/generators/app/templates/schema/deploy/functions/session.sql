@@ -4,8 +4,8 @@
 
 begin;
 
-create or replace function <%= schemaName %>.session()
-    returns <%= schemaName %>.keycloak_jwt as
+create or replace function <%- schemaName %>.session()
+    returns <%- schemaName %>.keycloak_jwt as
 $function$
 declare
   _sub text := current_setting('jwt.claims.sub', true);
@@ -36,11 +36,11 @@ begin
       current_setting('jwt.claims.broker_session_id', true),
       current_setting('jwt.claims.priority_group', true),
       (select string_to_array(current_setting('jwt.claims.user_groups', true), ','))
-    )::<%= schemaName %>.keycloak_jwt
+    )::<%- schemaName %>.keycloak_jwt
   );
 end
 $function$ language 'plpgsql' stable;
 
-grant execute on function <%= schemaName %>.session to <%= roles.join(", ") %>;
+grant execute on function <%- schemaName %>.session to <%- roles.join(", ") %>;
 
 commit;

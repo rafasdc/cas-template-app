@@ -9,10 +9,10 @@ CPAN=cpan
 # CPANM home has to be in the current directory, so that it can find the
 # pg_config executable, installed via asdf
 CPANM=PERL_CPANM_HOME=$(__DIRNAME)/.cpanm cpanm --notest
-SQITCH=sqitch --chdir schema
+SQITCH=sqitch
 SQITCH_VERSION=${word 3,${shell ${SQITCH} --version}}
 SQITCH_MIN_VERSION=1.0.0
-DB_NAME=<%= dbName %>
+DB_NAME=<%- dbName %>
 PG_PROVE=pg_prove -h localhost
 
 help: ## Show this help.
@@ -114,40 +114,49 @@ drop_test_db:
 deploy_db_migrations: ## deploy the database migrations with sqitch
 deploy_db_migrations: start_pg create_db
 deploy_db_migrations:
-	@$(SQITCH) deploy
+	@$(SQITCH) --chdir schema deploy
+	@$(SQITCH) --chdir mocks_schema deploy
 
 .PHONY: revert_db_migrations
 revert_db_migrations: ## revert the database migrations with sqitch
 revert_db_migrations: start_pg
 revert_db_migrations:
-	@$(SQITCH) revert
+	@$(SQITCH) --chdir schema revert
+	@$(SQITCH) --chdir mocks_schema revert
+
 
 .PHONY: verify_db_migrations
 verify_db_migrations: ## verify the database migrations with sqitch
 verify_db_migrations: start_pg
 verify_db_migrations:
-	@$(SQITCH) verify
+	@$(SQITCH) --chdir schema verify
+	@$(SQITCH) --chdir mocks_schema verify
 
 .PHONY: deploy_test_db_migrations
 deploy_test_db_migrations: ## deploy the test database migrations with sqitch
 deploy_test_db_migrations: start_pg create_test_db
 deploy_test_db_migrations:
-	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) deploy
+	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) --chdir schema deploy
+	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) --chdir mocks_schema deploy
 
 .PHONY: revert_test_db_migrations
 revert_test_db_migrations: ## revert the test database migrations with sqitch
 revert_test_db_migrations: start_pg
 revert_test_db_migrations:
-	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) revert
+	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) --chdir schema revert
+	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) --chdir mocks_schema revert
 
 .PHONY: verify_test_db_migrations
 verify_test_db_migrations: ## verify the test database migrations with sqitch
 verify_test_db_migrations: start_pg
 verify_test_db_migrations:
-	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) verify
+	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) --chdir schema verify
+	@SQITCH_TARGET="db:pg:" PGHOST=localhost PGDATABASE=$(DB_NAME)_test $(SQITCH) --chdir mocks_schema verify
 
 .PHONY: db_unit_tests
 db_unit_tests: ## run the database unit tests
 db_unit_tests: | start_pg drop_test_db create_test_db deploy_test_db_migrations
 db_unit_tests:
 	@$(PG_PROVE) --failures -d $(DB_NAME)_test schema/test/unit/**/*_test.sql
+	@$(PG_PROVE) --failures -d $(DB_NAME)_test mocks_schema/test/**/*_test.sql
+

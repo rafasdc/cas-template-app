@@ -2,19 +2,19 @@ begin;
 select plan(13);
 
 -- Test setup
-create table <%= schemaName %>.test_table
+create table <%- schemaName %>.test_table
 (
   id integer primary key generated always as identity
 );
 
 select has_function(
-  '<%= schemaName %>_private', 'upsert_policy',
+  '<%- schemaName %>_private', 'upsert_policy',
   'Function upsert_policy should exist'
 );
 
 select throws_ok(
   $$
-    select <%= schemaName %>_private.upsert_policy('admin_select_all', 'test_table', 'badoperation', '<%= adminRole %>', 'true');
+    select <%- schemaName %>_private.upsert_policy('admin_select_all', 'test_table', 'badoperation', '<%- adminRole %>', 'true');
   $$,
   'P0001',
   'Invalid operation variable. Must be one of [select, insert, update, delete]',
@@ -23,7 +23,7 @@ select throws_ok(
 
 select throws_ok(
   $$
-    select <%= schemaName %>_private.upsert_policy('admin_select_all', 'test_table', 'select', '<%= adminRole %>', 'using(true)', 'with check(true)', '<%= schemaName %>');
+    select <%- schemaName %>_private.upsert_policy('admin_select_all', 'test_table', 'select', '<%- adminRole %>', 'using(true)', 'with check(true)', '<%- schemaName %>');
   $$,
   'P0001',
   'invalid operation variable',
@@ -32,37 +32,37 @@ select throws_ok(
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.upsert_policy('admin_select', 'test_table', 'select', '<%= adminRole %>', 'true');
+    select <%- schemaName %>_private.upsert_policy('admin_select', 'test_table', 'select', '<%- adminRole %>', 'true');
   $$,
   'Function upsert_policy creates a select policy with proper variables'
 );
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.upsert_policy('admin_delete', 'test_table', 'delete', '<%= adminRole %>', 'true');
+    select <%- schemaName %>_private.upsert_policy('admin_delete', 'test_table', 'delete', '<%- adminRole %>', 'true');
   $$,
   'Function upsert_policy creates a delete policy with proper variables'
 );
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.upsert_policy('admin_insert', 'test_table', 'insert', '<%= adminRole %>', 'true');
+    select <%- schemaName %>_private.upsert_policy('admin_insert', 'test_table', 'insert', '<%- adminRole %>', 'true');
   $$,
   'Function upsert_policy creates an insert policy with proper variables'
 );
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.upsert_policy('admin_update', 'test_table', 'update', '<%= adminRole %>', 'true');
+    select <%- schemaName %>_private.upsert_policy('admin_update', 'test_table', 'update', '<%- adminRole %>', 'true');
   $$,
   'Function upsert_policy creates an update policy with proper variables'
 );
 
 select policies_are(
-    '<%= schemaName %>',
+    '<%- schemaName %>',
     'test_table',
     ARRAY[ 'admin_select', 'admin_delete', 'admin_insert', 'admin_update'],
-    'The correct policies ahve been created for <%= schemaName %>.test_table'
+    'The correct policies ahve been created for <%- schemaName %>.test_table'
 );
 
 select results_eq(
@@ -75,7 +75,7 @@ select results_eq(
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.upsert_policy('admin_delete', 'test_table', 'delete', '<%= adminRole %>', 'false');
+    select <%- schemaName %>_private.upsert_policy('admin_delete', 'test_table', 'delete', '<%- adminRole %>', 'false');
   $$,
   'Function upsert_policy alters a policy if exists with proper variables'
 );
@@ -90,8 +90,8 @@ select results_eq(
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.upsert_policy(
-      'different_statement_update', 'test_table', 'update', '<%= adminRole %>', 'using(true)', 'with check(false)', '<%= schemaName %>'
+    select <%- schemaName %>_private.upsert_policy(
+      'different_statement_update', 'test_table', 'update', '<%- adminRole %>', 'using(true)', 'with check(false)', '<%- schemaName %>'
     );
   $$,
   'Function upsert_policy (7 params: different using/with check statments) creates a policy with proper variables'

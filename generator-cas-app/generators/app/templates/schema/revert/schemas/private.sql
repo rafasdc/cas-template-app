@@ -1,7 +1,7 @@
--- Revert <%= projectName %>:schema/<%= schemaName %>_private from pg
+-- Revert <%- projectName %>:schema/<%- schemaName %>_private from pg
 
 begin;
 
-drop schema <%= schemaName %>_private;
+drop schema <%- schemaName %>_private;
 
 commit;

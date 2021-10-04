@@ -2,12 +2,12 @@ begin;
 select plan(11);
 
 -- Test setup
-create table <%= schemaName %>.test_table
+create table <%- schemaName %>.test_table
 (
   id integer primary key generated always as identity
 );
 
-create table <%= schemaName %>.test_table_specific_column_grants
+create table <%- schemaName %>.test_table_specific_column_grants
 (
   id integer primary key generated always as identity,
   allowed text,
@@ -15,13 +15,13 @@ create table <%= schemaName %>.test_table_specific_column_grants
 );
 
 select has_function(
-  '<%= schemaName %>_private', 'grant_permissions',
+  '<%- schemaName %>_private', 'grant_permissions',
   'Function grant_permissions should exist'
 );
 
 select throws_ok(
   $$
-    select <%= schemaName %>_private.grant_permissions('badoperation', 'test_table', '<%= adminRole %>');
+    select <%- schemaName %>_private.grant_permissions('badoperation', 'test_table', '<%- adminRole %>');
   $$,
   'P0001',
   'invalid operation variable. Must be one of [select, insert, update, delete]',
@@ -29,71 +29,71 @@ select throws_ok(
 );
 
 select table_privs_are (
-  '<%= schemaName %>',
+  '<%- schemaName %>',
   'test_table',
-  '<%= adminRole %>',
+  '<%- adminRole %>',
   ARRAY[]::text[],
-  'role <%= adminRole %> has not yet been granted any privileges on <%= schemaName %>.test_table'
+  'role <%- adminRole %> has not yet been granted any privileges on <%- schemaName %>.test_table'
 );
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.grant_permissions('select', 'test_table', '<%= adminRole %>');
+    select <%- schemaName %>_private.grant_permissions('select', 'test_table', '<%- adminRole %>');
   $$,
   'Function grants select'
 );
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.grant_permissions('insert', 'test_table', '<%= adminRole %>');
+    select <%- schemaName %>_private.grant_permissions('insert', 'test_table', '<%- adminRole %>');
   $$,
   'Function grants insert'
 );
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.grant_permissions('update', 'test_table', '<%= adminRole %>');
+    select <%- schemaName %>_private.grant_permissions('update', 'test_table', '<%- adminRole %>');
   $$,
   'Function grants update'
 );
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.grant_permissions('delete', 'test_table', '<%= adminRole %>');
+    select <%- schemaName %>_private.grant_permissions('delete', 'test_table', '<%- adminRole %>');
   $$,
   'Function grants delete'
 );
 
 select table_privs_are (
-  '<%= schemaName %>',
+  '<%- schemaName %>',
   'test_table',
-  '<%= adminRole %>',
+  '<%- adminRole %>',
   ARRAY['SELECT', 'INSERT', 'UPDATE', 'DELETE'],
-  'role <%= adminRole %> has been granted select, insert, update, delete on <%= schemaName %>.test_table'
+  'role <%- adminRole %> has been granted select, insert, update, delete on <%- schemaName %>.test_table'
 );
 
 select any_column_privs_are (
-  '<%= schemaName %>',
+  '<%- schemaName %>',
   'test_table_specific_column_grants',
-  '<%= adminRole %>',
+  '<%- adminRole %>',
   ARRAY[]::text[],
-  'role <%= adminRole %> has not yet been granted any privileges on columns in <%= schemaName %>.test_table_specific_column_grants'
+  'role <%- adminRole %> has not yet been granted any privileges on columns in <%- schemaName %>.test_table_specific_column_grants'
 );
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.grant_permissions('select', 'test_table_specific_column_grants', '<%= adminRole %>', ARRAY['allowed']);
+    select <%- schemaName %>_private.grant_permissions('select', 'test_table_specific_column_grants', '<%- adminRole %>', ARRAY['allowed']);
   $$,
   'Function grants select when specific columns are specified'
 );
 
 select column_privs_are (
-  '<%= schemaName %>',
+  '<%- schemaName %>',
   'test_table_specific_column_grants',
   'allowed',
-  '<%= adminRole %>',
+  '<%- adminRole %>',
   ARRAY['SELECT'],
-  '<%= adminRole %> has privilege SELECT only on column `allowed` in test_table_specific_column_grants'
+  '<%- adminRole %> has privilege SELECT only on column `allowed` in test_table_specific_column_grants'
 );
 
 select finish();

@@ -1,4 +1,4 @@
--- Verify <%= projectName %>:create_roles on pg
+-- Verify <%- projectName %>:create_roles on pg
 
 begin;
 
@@ -7,8 +7,8 @@ $verify$
 begin
 
 <% roles.forEach(function(role, index) { %>
-  <% if (index == 0) { %>if<% } else { %>elsif<% } %>(select not exists(select true from pg_roles where rolname='<%= role %>')) then
-    raise exception 'role <%= role %> does not exist.';
+  <% if (index == 0) { %>if<% } else { %>elsif<% } %>(select not exists(select true from pg_roles where rolname='<%- role %>')) then
+    raise exception 'role <%- role %> does not exist.';
 <% }); %>
   end if;
 

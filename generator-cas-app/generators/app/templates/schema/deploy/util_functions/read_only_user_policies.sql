@@ -1,10 +1,10 @@
--- Deploy <%= projectName %>:util_functions/read_only_user_policies to pg
+-- Deploy <%- projectName %>:util_functions/read_only_user_policies to pg
 
 begin;
 
-create or replace function <%= schemaName %>_private.read_only_user_policies(
+create or replace function <%- schemaName %>_private.read_only_user_policies(
   read_only_user text,
-  table_schema_name text default '<%= schemaName %>'
+  table_schema_name text default '<%- schemaName %>'
 )
 returns void as $function$
   declare

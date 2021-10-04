@@ -1,13 +1,13 @@
--- Deploy <%= projectName %>:util_functions/grant_permissions to pg
+-- Deploy <%- projectName %>:util_functions/grant_permissions to pg
 
 begin;
 
 -- Grants permission for all columns in a table
-create or replace function <%= schemaName %>_private.grant_permissions(
+create or replace function <%- schemaName %>_private.grant_permissions(
   operation text,
   table_name text,
   role_name text,
-  table_schema text default '<%= schemaName %>'
+  table_schema text default '<%- schemaName %>'
 )
 returns void
 as
@@ -28,16 +28,16 @@ $function$
 $function$
 language 'plpgsql' volatile;
 
-comment on function <%= schemaName %>_private.grant_permissions(text, text, text, text) is
+comment on function <%- schemaName %>_private.grant_permissions(text, text, text, text) is
   'A generic function for granting access-control permissions on all columns of a table';
 
 -- Grants permissions on specific columns in a table
-create or replace function <%= schemaName %>_private.grant_permissions(
+create or replace function <%- schemaName %>_private.grant_permissions(
   operation text,
   table_name text,
   role_name text,
   column_names text[],
-  table_schema text default '<%= schemaName %>'
+  table_schema text default '<%- schemaName %>'
 )
 returns void
 as
@@ -61,7 +61,7 @@ $function$
 $function$
 language 'plpgsql' volatile;
 
-comment on function <%= schemaName %>_private.grant_permissions(text, text, text, text[], text) is
+comment on function <%- schemaName %>_private.grant_permissions(text, text, text, text[], text) is
   'A generic function for granting access-control permissions on specific columns of a table';
 
 commit;

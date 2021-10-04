@@ -3,7 +3,7 @@ begin;
 select plan(8);
 
 -- Init test
-insert into <%= schemaName %>.<%= userTable %>
+insert into <%- schemaName %>.<%- userTable %>
   (first_name, last_name, email_address, uuid) values
   ('foo1', 'bar', 'foo1@bar.com', '11111111-1111-1111-1111-111111111112'),
   ('foo2', 'bar', 'foo2@bar.com', '11111111-1111-1111-1111-111111111113'),
@@ -20,11 +20,11 @@ create table test_table_all (
   id integer primary key generated always as identity,
   test_name varchar(1000),
   created_at timestamp with time zone not null default now(),
-  created_by int references <%= schemaName %>.<%= userTable %>,
+  created_by int references <%- schemaName %>.<%- userTable %>,
   updated_at timestamp with time zone not null default now(),
-  updated_by int references <%= schemaName %>.<%= userTable %>,
+  updated_by int references <%- schemaName %>.<%- userTable %>,
   deleted_at timestamp with time zone,
-  deleted_by int references <%= schemaName %>.<%= userTable %>
+  deleted_by int references <%- schemaName %>.<%- userTable %>
 );
 
 create table test_table_no_trigger_columns (
@@ -35,15 +35,15 @@ create table test_table_no_trigger_columns (
 create trigger _100_timestamps
   before insert or update on test_table_all
   for each row
-  execute procedure <%= schemaName %>_private.update_timestamps();
+  execute procedure <%- schemaName %>_private.update_timestamps();
 
 create trigger _100_timestamps
   before insert or update on test_table_no_trigger_columns
   for each row
-  execute procedure <%= schemaName %>_private.update_timestamps();
+  execute procedure <%- schemaName %>_private.update_timestamps();
 
 select has_function(
-  '<%= schemaName %>_private', 'update_timestamps',
+  '<%- schemaName %>_private', 'update_timestamps',
   'Function update_timestamps should exist'
 );
 
@@ -51,7 +51,7 @@ select has_function(
 insert into test_table_all (test_name) values ('create');
 select is (
   (select created_by from test_table_all where id=1),
-  (select id from <%= schemaName %>.<%= userTable %> where uuid='11111111-1111-1111-1111-111111111112'),
+  (select id from <%- schemaName %>.<%- userTable %> where uuid='11111111-1111-1111-1111-111111111112'),
   'trigger sets created_by on insert'
 );
 select isnt (
@@ -65,7 +65,7 @@ insert into timestamp_compare(old_timestamp) values ((select created_at from tes
 update test_table_all set test_name = 'update';
 select is (
   (select updated_by from test_table_all where id=1),
-  (select id from <%= schemaName %>.<%= userTable %> where uuid='11111111-1111-1111-1111-111111111112'),
+  (select id from <%- schemaName %>.<%- userTable %> where uuid='11111111-1111-1111-1111-111111111112'),
   'trigger sets updated_by on update'
 );
 select isnt (
@@ -78,7 +78,7 @@ select isnt (
 update test_table_all set deleted_at=now();
 select is (
   (select deleted_by from test_table_all where id=1),
-  (select id from <%= schemaName %>.<%= userTable %> where uuid='11111111-1111-1111-1111-111111111112'),
+  (select id from <%- schemaName %>.<%- userTable %> where uuid='11111111-1111-1111-1111-111111111112'),
   'trigger sets deleted_by on update of deleted_at column'
 );
 

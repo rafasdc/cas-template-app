@@ -1,8 +1,8 @@
--- Deploy <%= projectName %>:util_functions/verify_function_not_present to pg
+-- Deploy <%- projectName %>:util_functions/verify_function_not_present to pg
 
 begin;
 
-create or replace function <%= schemaName %>_private.verify_function_not_present(function_name text)
+create or replace function <%- schemaName %>_private.verify_function_not_present(function_name text)
 returns boolean
 as
 $function$
@@ -15,6 +15,6 @@ begin
 end;
 $function$
 language 'plpgsql' stable;
-comment on function <%= schemaName %>_private.verify_function_not_present(text) is 'Utility function to use in a change verification or test to ensure that a function was deleted';
+comment on function <%- schemaName %>_private.verify_function_not_present(text) is 'Utility function to use in a change verification or test to ensure that a function was deleted';
 
 commit;

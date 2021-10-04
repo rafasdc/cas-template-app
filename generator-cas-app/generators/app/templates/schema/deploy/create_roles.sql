@@ -1,4 +1,4 @@
--- Deploy <%= projectName %>:create_roles to pg
+-- Deploy <%- projectName %>:create_roles to pg
 
 begin;
 
@@ -10,9 +10,9 @@ begin
   if not exists (
     select true
     from   pg_catalog.pg_roles
-    where  rolname = '<%= role %>') then
+    where  rolname = '<%- role %>') then
 
-    create role <%= role %>;
+    create role <%- role %>;
   end if;
   <% }); %>
 

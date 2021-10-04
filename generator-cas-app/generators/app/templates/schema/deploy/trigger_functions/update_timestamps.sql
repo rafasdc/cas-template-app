@@ -1,9 +1,9 @@
--- Deploy <%= projectName %>:trigger_functions/update_timestamps to pg
+-- Deploy <%- projectName %>:trigger_functions/update_timestamps to pg
 -- requires: schemas/private
 
 begin;
 
-create or replace function <%= schemaName %>_private.update_timestamps()
+create or replace function <%- schemaName %>_private.update_timestamps()
   returns trigger as $$
 
 declare
@@ -11,8 +11,8 @@ declare
   user_id int;
 
 begin
-  user_sub := (select sub from <%= schemaName %>.session());
-  user_id := (select id from <%= schemaName %>.<%= userTable %> where <%= userTable %>.uuid = user_sub);
+  user_sub := (select sub from <%- schemaName %>.session());
+  user_id := (select id from <%- schemaName %>.<%- userTable %> where <%- userTable %>.uuid = user_sub);
   if tg_op = 'INSERT' then
     if to_jsonb(new) ? 'created_at' then
       new.created_at = now();
@@ -38,9 +38,9 @@ begin
 end;
 $$ language plpgsql;
 
-grant execute on function <%= schemaName %>_private.update_timestamps to <%= authenticatedRoles.join(', ') %>;
+grant execute on function <%- schemaName %>_private.update_timestamps to <%- authenticatedRoles.join(', ') %>;
 
-comment on function <%= schemaName %>_private.update_timestamps()
+comment on function <%- schemaName %>_private.update_timestamps()
   is $$
   a trigger to set created_at and updated_at columns.
   example usage:
@@ -53,7 +53,7 @@ comment on function <%= schemaName %>_private.update_timestamps()
   create trigger _100_timestamps
     before insert or update on some_schema.some_table
     for each row
-    execute procedure <%= schemaName %>_private.update_timestamps();
+    execute procedure <%- schemaName %>_private.update_timestamps();
   $$;
 
 commit;

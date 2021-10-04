@@ -1,15 +1,15 @@
--- Deploy <%= projectName %>:database_functions/verify_policy to pg
--- requires: schema_<%= schemaName %>
+-- Deploy <%- projectName %>:database_functions/verify_policy to pg
+-- requires: schema_<%- schemaName %>
 
 begin;
 
 -- Verifies if a policy exists
-create or replace function <%= schemaName %>_private.verify_policy(
+create or replace function <%- schemaName %>_private.verify_policy(
   operation text,
   policy_name text,
   table_name_input text,
   role_name text,
-  table_schema_name text default '<%= schemaName %>'
+  table_schema_name text default '<%- schemaName %>'
 )
 returns boolean
 as
@@ -68,7 +68,7 @@ $function$
 $function$
 language 'plpgsql' stable;
 
-comment on function <%= schemaName %>_private.verify_policy(text, text, text, text, text) is
+comment on function <%- schemaName %>_private.verify_policy(text, text, text, text, text) is
   'A generic function for testing the existence of policies on a table';
 
 commit;

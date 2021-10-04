@@ -1,10 +1,10 @@
--- Deploy <%= projectName %>:database_functions/verify_policy_not_present to pg
+-- Deploy <%- projectName %>:database_functions/verify_policy_not_present to pg
 
 begin;
 
 
 -- Verifies if a policy exists
-create or replace function <%= schemaName %>_private.verify_policy_not_present(policy_name text, table_name text)
+create or replace function <%- schemaName %>_private.verify_policy_not_present(policy_name text, table_name text)
 returns boolean
 as
 $function$
@@ -37,7 +37,7 @@ $function$
 $function$
 language 'plpgsql' stable;
 
-comment on function <%= schemaName %>_private.verify_policy_not_present(text, text) is
+comment on function <%- schemaName %>_private.verify_policy_not_present(text, text) is
   'A generic function for testing the absence of policies on a table';
 
 commit;

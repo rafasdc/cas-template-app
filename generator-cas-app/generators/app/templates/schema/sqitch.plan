@@ -1,23 +1,23 @@
 %syntax-version=1.0.0
-%project=<%= projectName %>
-%uri=https://github.com/<%= orgName %>/<%= repoName %>
+%project=<%- projectName %>
+%uri=https://github.com/<%- orgName %>/<%- repoName %>
 <% const changeDateAuthor = `${new Date().toISOString().split('.')[0]}Z ${committerName} <${committerEmail}>` %>
 
 create_roles <%- changeDateAuthor %> # Create the roles used by the application
-schemas/main <%- changeDateAuthor %> # Create the <%= schemaName %> schema
-schemas/private <%- changeDateAuthor %> # Create the <%= schemaName %>_private schema
-util_functions/verify_function_not_present <%- changeDateAuthor %> # Create the <%= schemaName %>_private.verify_function_not_present function
-util_functions/verify_grant <%- changeDateAuthor %> # Create the <%= schemaName %>_private.verify_grant function
-util_functions/verify_policy <%- changeDateAuthor %> # Create the <%= schemaName %>_private.verify_policy function
-util_functions/verify_policy_not_present <%- changeDateAuthor %> # Create the <%= schemaName %>_private.verify_policy_not_present function
-util_functions/verity_type_not_present <%- changeDateAuthor %> # Create the <%= schemaName %>_private.verity_type_not_present function
-util_functions/grant_permissions <%- changeDateAuthor %> # Create the <%= schemaName %>_private.grant_permissions function
-util_functions/read_only_user_policies <%- changeDateAuthor %> # Create the <%= schemaName %>_private.read_only_user_policies function
-util_functions/upsert_policy <%- changeDateAuthor %> # Create the <%= schemaName %>_private.upsert_policy function
-tables/connect_session <%- changeDateAuthor %> # Create the <%= schemaName %>_private.connect_session table
-types/keycloak_jwt <%- changeDateAuthor %> # Create the <%= schemaName %>.keycloak_jwt type
-functions/session <%- changeDateAuthor %> # Create the <%= schemaName %>.session function
-trigger_functions/update_timestamps <%- changeDateAuthor %> # Create the <%= schemaName %>_private.update_timestamps trigger function
+schemas/main <%- changeDateAuthor %> # Create the <%- schemaName %> schema
+schemas/private <%- changeDateAuthor %> # Create the <%- schemaName %>_private schema
+util_functions/verify_function_not_present <%- changeDateAuthor %> # Create the <%- schemaName %>_private.verify_function_not_present function
+util_functions/verify_grant <%- changeDateAuthor %> # Create the <%- schemaName %>_private.verify_grant function
+util_functions/verify_policy <%- changeDateAuthor %> # Create the <%- schemaName %>_private.verify_policy function
+util_functions/verify_policy_not_present <%- changeDateAuthor %> # Create the <%- schemaName %>_private.verify_policy_not_present function
+util_functions/verity_type_not_present <%- changeDateAuthor %> # Create the <%- schemaName %>_private.verity_type_not_present function
+util_functions/grant_permissions <%- changeDateAuthor %> # Create the <%- schemaName %>_private.grant_permissions function
+util_functions/read_only_user_policies <%- changeDateAuthor %> # Create the <%- schemaName %>_private.read_only_user_policies function
+util_functions/upsert_policy <%- changeDateAuthor %> # Create the <%- schemaName %>_private.upsert_policy function
+tables/connect_session <%- changeDateAuthor %> # Create the <%- schemaName %>_private.connect_session table
+types/keycloak_jwt <%- changeDateAuthor %> # Create the <%- schemaName %>.keycloak_jwt type
+functions/session <%- changeDateAuthor %> # Create the <%- schemaName %>.session function
+trigger_functions/update_timestamps <%- changeDateAuthor %> # Create the <%- schemaName %>_private.update_timestamps trigger function
 util_functions/upsert_timestamp_columns [schemas/private trigger_functions/update_timestamps] <%- changeDateAuthor %> # Create the upsert_timestamp_columns function
-tables/<%= userTable %> <%- changeDateAuthor %> # Create the <%= schemaName %>.<%= userTable %> table
-trigger_functions/set_user_id <%- changeDateAuthor %> # Create the <%= schemaName %>_private.set_user_id trigger function
+tables/<%- userTable %> <%- changeDateAuthor %> # Create the <%- schemaName %>.<%- userTable %> table
+trigger_functions/set_user_id <%- changeDateAuthor %> # Create the <%- schemaName %>_private.set_user_id trigger function

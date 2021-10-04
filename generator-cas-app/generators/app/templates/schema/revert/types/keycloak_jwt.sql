@@ -1,7 +1,7 @@
--- Revert <%= projectName %>:types/keycloak_jwt from pg
+-- Revert <%- projectName %>:types/keycloak_jwt from pg
 
 begin;
 
-drop type <%= schemaName %>.keycloak_jwt;
+drop type <%- schemaName %>.keycloak_jwt;
 
 commit;

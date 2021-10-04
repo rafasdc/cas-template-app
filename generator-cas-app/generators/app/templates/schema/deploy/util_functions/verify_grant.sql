@@ -1,14 +1,14 @@
--- Deploy <%= projectName %>:database_functions/verify_grants to pg
--- requires: schema_<%= schemaName %>
+-- Deploy <%- projectName %>:database_functions/verify_grants to pg
+-- requires: schema_<%- schemaName %>
 
 begin;
 
 -- Verifies permission grants for all columns in a table
-create or replace function <%= schemaName %>_private.verify_grant(
+create or replace function <%- schemaName %>_private.verify_grant(
   operation text,
   table_name_input text,
   role_name text,
-  table_schema_name text default '<%= schemaName %>'
+  table_schema_name text default '<%- schemaName %>'
 )
 returns boolean
 as
@@ -54,16 +54,16 @@ $function$
 $function$
 language 'plpgsql' stable;
 
-comment on function <%= schemaName %>_private.verify_grant(text, text, text, text) is
+comment on function <%- schemaName %>_private.verify_grant(text, text, text, text) is
   'A generic function for testing the existence of grants on a table';
 
 -- Verifies permission grants on specific columns in a table
-create or replace function <%= schemaName %>_private.verify_grant(
+create or replace function <%- schemaName %>_private.verify_grant(
   operation text,
   table_name_input text,
   role_name text,
   column_names text[],
-  table_schema_name text default '<%= schemaName %>'
+  table_schema_name text default '<%- schemaName %>'
 )
 returns boolean
 as
@@ -120,7 +120,7 @@ $function$
 $function$
 language 'plpgsql' stable;
 
-comment on function <%= schemaName %>_private.verify_grant(text, text, text, text[], text) is
+comment on function <%- schemaName %>_private.verify_grant(text, text, text, text[], text) is
   'A generic function for testing existence of grants on specific columns of a table';
 
 commit;

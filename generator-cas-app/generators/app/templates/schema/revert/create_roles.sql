@@ -1,4 +1,4 @@
--- Revert <%= projectName %>:create_roles from pg
+-- Revert <%- projectName %>:create_roles from pg
 
 begin;
 

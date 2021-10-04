@@ -1,4 +1,4 @@
--- Verify <%= projectName %>:type_jwt_token on pg
+-- Verify <%- projectName %>:type_jwt_token on pg
 
 begin;
 

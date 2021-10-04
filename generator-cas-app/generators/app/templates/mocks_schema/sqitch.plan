@@ -1,0 +1,7 @@
+%syntax-version=1.0.0
+%project=mocks
+<% const changeDateAuthor = `${new Date().toISOString().split('.')[0]}Z ${committerName} <${committerEmail}>` %>
+
+schemas/main <%- changeDateAuthor %> # Creating schema for mocked functions
+functions/now [schemas/main] <%- changeDateAuthor %> # Mock function to override the default now() behaviour
+functions/set_mocked_time_in_transaction [functions/now] <%- changeDateAuthor %> # Function to set the proper configuration to use the mocked now() function. Only impacts the current transaction.

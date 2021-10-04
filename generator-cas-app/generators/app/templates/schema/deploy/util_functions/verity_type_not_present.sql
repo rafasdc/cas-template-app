@@ -1,8 +1,8 @@
--- Deploy <%= projectName %>:util_functions/verify_type_not_present to pg
+-- Deploy <%- projectName %>:util_functions/verify_type_not_present to pg
 
 begin;
 
-create or replace function <%= schemaName %>_private.verify_type_not_present(name_of_type text)
+create or replace function <%- schemaName %>_private.verify_type_not_present(name_of_type text)
 returns boolean
 as
 $function$

@@ -14,7 +14,7 @@ create table test_table_2
 create role test_role;
 
 select has_function(
-  '<%= schemaName %>_private', 'verify_policy_not_present',
+  '<%- schemaName %>_private', 'verify_policy_not_present',
   'Function verify_policy_not_present should exist'
 );
 
@@ -27,14 +27,14 @@ create policy test_policy on test_table
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.verify_policy_not_present('test_policy', 'test_table_2');
+    select <%- schemaName %>_private.verify_policy_not_present('test_policy', 'test_table_2');
   $$,
   'verify_policy_not_present passes when test_policy policy doesnt exist on a table'
 );
 
 select lives_ok(
   $$
-    select <%= schemaName %>_private.verify_policy_not_present('nonexistant_policy', 'test_table');
+    select <%- schemaName %>_private.verify_policy_not_present('nonexistant_policy', 'test_table');
   $$,
   'verify_policy_not_present passes when nonexistant_policy policy doesnt exist on a table'
 );
@@ -43,7 +43,7 @@ select lives_ok(
 
 select throws_ok(
   $$
-    select <%= schemaName %>_private.verify_policy_not_present('test_policy', 'test_table');
+    select <%- schemaName %>_private.verify_policy_not_present('test_policy', 'test_table');
   $$,
   'P0001',
   'Policy test_policy on table test_table already exists',

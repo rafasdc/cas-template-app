@@ -1,7 +1,7 @@
--- Verify <%= projectName %>:functions/session on pg
+-- Verify <%- projectName %>:functions/session on pg
 
 begin;
 
-select pg_get_functiondef('<%= schemaName %>.session()'::regprocedure);
+select pg_get_functiondef('<%- schemaName %>.session()'::regprocedure);
 
 rollback;

@@ -1,8 +1,8 @@
--- Revert <%= projectName %>:functions/session from pg
+-- Revert <%- projectName %>:functions/session from pg
 
 
 begin;
 
-drop function <%= schemaName %>.session();
+drop function <%- schemaName %>.session();
 
 commit;

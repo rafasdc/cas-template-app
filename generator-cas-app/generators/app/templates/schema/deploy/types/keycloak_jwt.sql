@@ -1,9 +1,9 @@
--- Deploy <%= projectName %>:types/keycloak_jwt to pg
+-- Deploy <%- projectName %>:types/keycloak_jwt to pg
 -- requires: schemas/main
 
 begin;
 
-create type <%= schemaName %>.keycloak_jwt as (
+create type <%- schemaName %>.keycloak_jwt as (
   jti uuid,
   exp integer,
   nbf integer,
@@ -27,6 +27,6 @@ create type <%= schemaName %>.keycloak_jwt as (
   user_groups text[]
 );
 
-comment on type <%= schemaName %>.keycloak_jwt is E'@primaryKey sub\n@foreignKey (sub) references <%= userTable %> (uuid)';
+comment on type <%- schemaName %>.keycloak_jwt is E'@primaryKey sub\n@foreignKey (sub) references <%- userTable %> (uuid)';
 
 commit;
