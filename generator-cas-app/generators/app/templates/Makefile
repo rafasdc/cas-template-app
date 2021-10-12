@@ -11,7 +11,7 @@ CPAN=cpan
 CPANM=PERL_CPANM_HOME=$(__DIRNAME)/.cpanm cpanm --notest
 SQITCH=sqitch
 SQITCH_VERSION=${word 3,${shell ${SQITCH} --version}}
-SQITCH_MIN_VERSION=1.0.0
+SQITCH_MIN_VERSION=1.1.0
 DB_NAME=<%- dbName %>
 PG_PROVE=pg_prove -h localhost
 
