@@ -1,4 +1,4 @@
--- Deploy <%+ projectName %>:function_session to pg
+-- Deploy <%- projectName %>:function_session to pg
 -- requires: schemas/main
 -- requires: types/keycloak_jwt
 
