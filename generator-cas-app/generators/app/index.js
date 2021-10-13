@@ -19,7 +19,7 @@ module.exports = class extends Generator {
         type: "input",
         name: "projectName",
         message: "Project name (use snake_case, preferably a short acronym)",
-        default: this.appname.replace(" ", "_"),
+        default: this.appname.replace(/\s+/g, "_"),
       },
       {
         type: "input",
@@ -43,7 +43,7 @@ module.exports = class extends Generator {
         type: "input",
         name: "repoName",
         message: "Repository name (use kebab-case)",
-        default: (answers) => answers.projectName.replace("_", "-"),
+        default: (answers) => answers.projectName.replace(/_+/g, "-"),
       },
       {
         type: "input",
