@@ -4,7 +4,6 @@ const {getSessionRemainingTime} = require('./helpers');
 
 // Options:
 const defaultOptions = {
-  // options here
   applicationHost: "localhost",
   sessionStore: null,
   keycloakConfig:{
