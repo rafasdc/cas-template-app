@@ -1,0 +1,17 @@
+{
+  "name": "sso-express",
+  "version": "1.0.0",
+  "description": "A developer-friendly express middleware to connect to sso/keycloak providers",
+  "main": "ssoUtils.js",
+  "repository": "git@github.com:bcgov/sso-express.git",
+  "author": "ggircs@gov.bc.ca",
+  "license": "Apache-2.0",
+  "private": false,
+  "keywords": [
+    "sso",
+    "keycloak"
+  ],
+  "dependencies": {
+    "keycloak-connect": "^15.0.2"
+  }
+}
