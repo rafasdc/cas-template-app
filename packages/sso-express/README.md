@@ -11,7 +11,7 @@ This package exposes:
 
 ### Example usage
 
-```
+```javascript
 const ssoUtils = require('@bcgov-cas/sso-express');
 
 const {ssoMiddleware, keycloak} = new ssoUtils({
@@ -39,35 +39,36 @@ More details on the available configuration can be found here: https://github.co
 
 Example:
 
-```
+```javascript
 const configOptions = {
-  keycloakConfig:{
-    realm: 'keycloakrealm',
-    'auth-server-url': `https://example.gov.bc.ca/auth`,
-    'ssl-required': 'external',
-    resource: 'myappresource',
-    'public-client': true,
-    'confidential-port': 0
-  }
-}
+  keycloakConfig: {
+    realm: "keycloakrealm",
+    "auth-server-url": `https://example.gov.bc.ca/auth`,
+    "ssl-required": "external",
+    resource: "myappresource",
+    "public-client": true,
+    "confidential-port": 0,
+  },
+};
 ```
 
 #### Optional configuration
 
 In addition, all these configuration keys are accepted:
 
-| Key                    | Description                                                                             | Default value          |
-| :--------------------- | :-------------------------------------------------------------------------------------- | :--------------------- |
-| `applicationHost`      | Base URL of the protected application, used to build the redirect to the login page     | http://localhost       |
-| `sessionStore`         | Extra session store to persist the session. If null, the memory store will be used      | null                   |
-| `getLandingRoute`      | Function `(req) => string` used to redirect the user after login.                       | `() => '/'`            |
-| `bypassAuthentication` | Set to `true`, `false` or `{ login: t/f , sessionIdleRemainingTime: t/f }` to configure | `false`                |
-| `accessDenied`         | Function `(req, res) => void` to override keycloak's `accessDenied` callback            | `res.redirect('/403')` |
-| `routes`               | Overrides the default routes below. Set to `false` or `''` to disable                   | see below              |
+| Key                    | Description                                                                                              | Default value          |
+| :--------------------- | :------------------------------------------------------------------------------------------------------- | :--------------------- |
+| `applicationHost`      | Base URL of the protected application, used to build the redirect to the login page                      | http://localhost       |
+| `applicationDomain`    | Restricts clearing the session cookie to this domain                                                     | gov.bc.ca              |
+| `sessionStore`         | Extra session store to persist the session. If null, the memory store will be used                       | null                   |
+| `getLandingRoute`      | Function `(req) => string` used to redirect the user after login.                                        | `() => '/'`            |
+| `bypassAuthentication` | Set to `true`, `false` or `{ login: t/f , sessionIdleRemainingTime: t/f }` to configure                  | `false`                |
+| `accessDenied`         | Function `(req, res) => void` to override keycloak's `accessDenied` callback                             | `res.redirect('/403')` |
+| `routes`               | Overrides the default routes below. Set to `false` or `''` to disable (unavailable for login and logout) | see below              |
 
 Default routes object:
 
-```
+```javascript
   routes: {
     login: '/login',
     logout: '/logout',

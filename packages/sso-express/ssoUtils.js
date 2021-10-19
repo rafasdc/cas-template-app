@@ -5,6 +5,7 @@ const {getSessionRemainingTime} = require('./helpers');
 // Options:
 const defaultOptions = {
   applicationHost: "localhost",
+  applicationDomain: "gov.bc.ca",
   sessionStore: null,
   keycloakConfig:{
     realm: 'pisrwwhx',
@@ -14,7 +15,7 @@ const defaultOptions = {
     'public-client': true,
     'confidential-port': 0
   },
-  getLandingRoute: (req) => {}, // .... ,
+  getLandingRoute: null,
   bypassAuthentication: {
     login: false,
     sessionIdleRemainingTime: false
@@ -43,14 +44,16 @@ function ssoUtils(opts) {
   Keycloak.prototype.accessDenied = ({req, res}) => options.accessDenied(req, res);
 
   const keycloak = new Keycloak({store: options.sessionStore}, options.keycloakConfig);
-
+  
+  const loginRoute = options.routes.login || '/login';
+  const logoutRoute = options.routes.logout || '/logout';
 
   const kcRegistrationUrl = `${options.keycloakConfig['auth-server-url']}/realms/${
     options.keycloakConfig.realm
   }/protocol/openid-connect/registrations?client_id=${
     options.keycloakConfig.resource
   }&response_type=code&scope=openid&redirect_uri=${encodeURIComponent(
-    `${options.applicationHost}/${options.routes.login}?auth_callback=1`
+    `${options.applicationHost}/${loginRoute}?auth_callback=1`
   )}`;
 
   // Creating a router middleware on which we'll add all the specific routes and additional middlewares.
@@ -59,8 +62,8 @@ function ssoUtils(opts) {
   // Clear the siteminder session token on logout if we can
   // This will be ignored by the user agent unless we're
   // currently deployed to a subdomain of gov.bc.ca
-  middleware.post(options.routes.logout, (_req, res, next) => {
-    res.clearCookie('SMSESSION', {domain: '.gov.bc.ca', secure: true});
+  middleware.post(logoutRoute, (_req, res, next) => {
+    res.clearCookie('SMSESSION', {domain: options.applicationDomain, secure: true});
     next();
   });
 
@@ -99,21 +102,23 @@ function ssoUtils(opts) {
   });
 
   // This ensures grant freshness with the previous directive - we just return a success response code.
-  middleware.get('/extend-session', async (req, res) => {
-    return res.json(await getSessionRemainingTime(keycloak, req, res));
-  });
+  if(options.routes.extendSession)
+    middleware.get(options.routes.extendSession, async (req, res) => {
+      return res.json(await getSessionRemainingTime(keycloak, req, res));
+    });
 
   if (shouldBypassAuthentication(options.bypassAuthentication, 'login'))
-    middleware.post('/login', (req, res) => res.redirect(302, getRedirectURL(req)));
+    middleware.post(loginRoute, (req, res) => res.redirect(302, getRedirectURL(req)));
   else
-    middleware.post('/login', keycloak.protect(), (req, res) =>
+    middleware.post(loginRoute, keycloak.protect(), (req, res) =>
       // This request handler gets called on a POST to /login if the user is already authenticated
       res.redirect(302, getRedirectURL(req))
     );
 
-  middleware.get('/login', (req, res) => res.redirect(302, getRedirectURL(req)));
+  middleware.get(loginRoute, (req, res) => res.redirect(302, getRedirectURL(req)));
 
-  middleware.get('/register', ({res}) => res.redirect(302, kcRegistrationUrl));
+  if(options.routes.register)
+    middleware.get('/register', ({res}) => res.redirect(302, kcRegistrationUrl));
 
 
   this.keycloak = keycloak;
