@@ -19,7 +19,6 @@
     "keycloak-connect": "^15.0.2"
   },
   "devDependencies": {
-    "jest": "^27.3.1",
-    "supertest": "^6.1.6"
+    "jest": "^27.3.1"
   }
 }
