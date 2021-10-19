@@ -20,7 +20,7 @@ jobs:
       - name: Install package dependencies
         run: yarn --cwd packages/sso-express
       - name: Run tests
-        run: yarn test --cwd packages/sso-express
+        run: yarn --cwd packages/sso-express test
       - name: Publish to NPM
         run: yarn publish --cwd packages/sso-express --access public
         env:
