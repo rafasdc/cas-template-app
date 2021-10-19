@@ -12,12 +12,13 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/setup-node@v2
         with:
-          node-version: "12"
+          node-version: "14"
           registry-url: "https://registry.npmjs.org"
           cache: "yarn"
           cache-dependency-path: packages/sso-express/yarn.lock
-      - run: cd packages/sso-express
-      - run: yarn install
-      - run: yarn publish
+      - name: Install package dependencies
+        run: yarn install --cwd packages/sso-express
+      - name: Publish to NPM
+        run: yarn publish --cwd packages/sso-express
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
