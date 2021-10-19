@@ -7,11 +7,19 @@
   "author": "ggircs@gov.bc.ca",
   "license": "Apache-2.0",
   "private": false,
+  "scripts": {
+    "test": "jest"
+  },
   "keywords": [
     "sso",
     "keycloak"
   ],
   "dependencies": {
+    "express": "^4.17.1",
     "keycloak-connect": "^15.0.2"
+  },
+  "devDependencies": {
+    "jest": "^27.3.1",
+    "supertest": "^6.1.6"
   }
 }
