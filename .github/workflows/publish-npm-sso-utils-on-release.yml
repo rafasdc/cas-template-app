@@ -19,6 +19,6 @@ jobs:
       - name: Install package dependencies
         run: yarn install --cwd packages/sso-express
       - name: Publish to NPM
-        run: yarn publish --cwd packages/sso-express
+        run: yarn publish --cwd packages/sso-express --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
