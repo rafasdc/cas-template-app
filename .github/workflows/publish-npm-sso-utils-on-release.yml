@@ -15,6 +15,7 @@ jobs:
           node-version: "12"
           registry-url: "https://registry.npmjs.org"
           cache: "yarn"
+          cache-dependency-path: packages/sso-express/yarn.lock
       - run: cd packages/sso-express
       - run: yarn install
       - run: yarn publish
