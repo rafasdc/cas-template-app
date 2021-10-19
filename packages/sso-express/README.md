@@ -56,8 +56,23 @@ const configOptions = {
 
 In addition, all these configuration keys are accepted:
 
-| Key               | Description                                                                         | Default value    |
-| :---------------- | :---------------------------------------------------------------------------------- | :--------------- |
-| `applicationHost` | Base URL of the protected application, used to build the redirect to the login page | http://localhost |
-| `sessionStore`    | Extra session store to persist the session. If null, the memory store will be used  | null             |
-| `getLandingRoute` | Function `(req) => string` used to redirect the user after login.                   | `() => '/'`      |
+| Key                    | Description                                                                             | Default value          |
+| :--------------------- | :-------------------------------------------------------------------------------------- | :--------------------- |
+| `applicationHost`      | Base URL of the protected application, used to build the redirect to the login page     | http://localhost       |
+| `sessionStore`         | Extra session store to persist the session. If null, the memory store will be used      | null                   |
+| `getLandingRoute`      | Function `(req) => string` used to redirect the user after login.                       | `() => '/'`            |
+| `bypassAuthentication` | Set to `true`, `false` or `{ login: t/f , sessionIdleRemainingTime: t/f }` to configure | `false`                |
+| `accessDenied`         | Function `(req, res) => void` to override keycloak's `accessDenied` callback            | `res.redirect('/403')` |
+| `routes`               | Overrides the default routes below. Set to `false` or `''` to disable                   | see below              |
+
+Default routes object:
+
+```
+  routes: {
+    login: '/login',
+    logout: '/logout',
+    register: '/register',
+    sessionIdleRemainingTime: '/session-idle-remaining-time',
+    extendSession: '/extend-session'
+  }
+```

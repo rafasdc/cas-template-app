@@ -24,8 +24,8 @@ const defaultOptions = {
     login: '/login',
     logout: '/logout',
     register: '/register', // allow true/false to disable the register route. Disabled by default, set to true or a string to enable,
-    sessionIdleRemainingTime: '/session-idle-remaining-time',//
-    extendSession: '/extend-session'//
+    sessionIdleRemainingTime: '/session-idle-remaining-time',
+    extendSession: '/extend-session'
   }
 }
 
