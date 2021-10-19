@@ -7,14 +7,6 @@ const defaultOptions = {
   applicationHost: "localhost",
   applicationDomain: "gov.bc.ca",
   sessionStore: null,
-  keycloakConfig:{
-    realm: 'pisrwwhx',
-    'auth-server-url': `https://${kcNamespace}oidc.gov.bc.ca/auth`,
-    'ssl-required': 'external',
-    resource: 'cas-ciip-portal',
-    'public-client': true,
-    'confidential-port': 0
-  },
   getLandingRoute: null,
   bypassAuthentication: {
     login: false,
@@ -36,17 +28,21 @@ const shouldBypassAuthentication = (bypassConfig, routeKey) => {
 }
 
 function ssoUtils(opts) {
+  if(!opts.keycloakConfig)
+    throw new Error('sso-utils: keycloakConfig key not provided in options');
+
   const options = {
     defaultOptions,
     ...opts
   }
 
-  Keycloak.prototype.accessDenied = ({req, res}) => options.accessDenied(req, res);
-
-  const keycloak = new Keycloak({store: options.sessionStore}, options.keycloakConfig);
-  
   const loginRoute = options.routes.login || '/login';
   const logoutRoute = options.routes.logout || '/logout';
+  const storeConfig = options.sessionStore ? {store: options.sessionStore} : {};
+
+  Keycloak.prototype.accessDenied = ({req, res}) => options.accessDenied(req, res);
+
+  const keycloak = new Keycloak(storeConfig, options.keycloakConfig);
 
   const kcRegistrationUrl = `${options.keycloakConfig['auth-server-url']}/realms/${
     options.keycloakConfig.realm
@@ -69,22 +65,25 @@ function ssoUtils(opts) {
 
   middleware.use(
     keycloak.middleware({
-      logout: options.routes.logout,
+      logout: logoutRoute,
       admin: '/'
     })
   );
 
-  middleware.get(options.routes.sessionIdleRemainingTime, async (req, res) => {
-    if (shouldBypassAuthentication(options.bypassAuthentication, 'sessionIdleRemainingTime')) {
-      return res.json(3600);
-    }
+  // Session Idle Remaining Time
+  // Returns, in seconds, the amount of time left in the keycloak session
+  if(options.routes.sessionIdleRemainingTime)
+    middleware.get(options.routes.sessionIdleRemainingTime, async (req, res) => {
+      if (shouldBypassAuthentication(options.bypassAuthentication, 'sessionIdleRemainingTime')) {
+        return res.json(3600);
+      }
 
-    if (!req.kauth || !req.kauth.grant) {
-      return res.json(null);
-    }
+      if (!req.kauth || !req.kauth.grant) {
+        return res.json(null);
+      }
 
-    return res.json(await getSessionRemainingTime(keycloak, req, res));
-  });
+      return res.json(await getSessionRemainingTime(keycloak, req, res));
+    });
 
   // For any request (other than getting the remaining idle time), refresh the grant
   // if needed. If the access token is expired (defaults to 5min in keycloak),
@@ -107,6 +106,8 @@ function ssoUtils(opts) {
       return res.json(await getSessionRemainingTime(keycloak, req, res));
     });
 
+
+  // Login route (POST and GET)
   if (shouldBypassAuthentication(options.bypassAuthentication, 'login'))
     middleware.post(loginRoute, (req, res) => res.redirect(302, getRedirectURL(req)));
   else
@@ -117,6 +118,7 @@ function ssoUtils(opts) {
 
   middleware.get(loginRoute, (req, res) => res.redirect(302, getRedirectURL(req)));
 
+  // Register Route
   if(options.routes.register)
     middleware.get('/register', ({res}) => res.redirect(302, kcRegistrationUrl));
 
