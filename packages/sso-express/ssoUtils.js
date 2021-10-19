@@ -12,7 +12,7 @@ const defaultOptions = {
     login: false,
     sessionIdleRemainingTime: false
   }, // set to false if disabled, true if you want to bypass auth in dev environments, fine-tuning by passing an object with the same keys as the routes (supported so far are 'login' and 'sessionIdleRemainingTime')
-  accessDenied: (_req, res) => { res.redirect('/403'); }, //provide an optional implementation for behaviour on keycloak access denied
+  accessDenied: null, //provide an optional implementation for behaviour on keycloak access denied
   routes: {
     login: '/login',
     logout: '/logout',
@@ -40,7 +40,8 @@ function ssoUtils(opts) {
   const logoutRoute = options.routes.logout || '/logout';
   const storeConfig = options.sessionStore ? {store: options.sessionStore} : {};
 
-  Keycloak.prototype.accessDenied = ({req, res}) => options.accessDenied(req, res);
+  if(options.accessDenied)
+    Keycloak.prototype.accessDenied = (req, res) => options.accessDenied(req, res);
 
   const keycloak = new Keycloak(storeConfig, options.keycloakConfig);
 

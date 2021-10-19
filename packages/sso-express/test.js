@@ -83,6 +83,28 @@ describe("The test middleware", () => {
       {path: '/testloginroute', method: 'get'},
       {path: '/testregister', method: 'get'},
     ]);
-
   });
+
+  it("Sets the accessDenied on the prototype", () => {
+    const onAccessDenied = jest.fn();
+
+    jest.mock('keycloak-connect');
+    const kc = require('keycloak-connect');
+    kc.prototype.middleware = jest.fn().mockReturnValue(jest.fn());
+    kc.prototype.protect = jest.fn().mockReturnValue(jest.fn());
+
+  
+    const ssoUtils = require('./ssoUtils');
+
+    const moduleUnderTest = new ssoUtils({
+      keycloakConfig: {testkey: 'testvalue'},
+      sessionStore: {testStore: true},
+      accessDenied: onAccessDenied
+    });
+
+    moduleUnderTest.keycloak.accessDenied('request', 'response')
+    
+
+    expect(onAccessDenied).toHaveBeenCalledWith('request', 'response');
+  })
 });
