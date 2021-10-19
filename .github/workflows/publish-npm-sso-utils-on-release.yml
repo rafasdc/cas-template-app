@@ -16,8 +16,9 @@ jobs:
           registry-url: "https://registry.npmjs.org"
           cache: "yarn"
           cache-dependency-path: packages/sso-express/yarn.lock
+          scope: "bcgov-cas"
       - name: Install package dependencies
-        run: yarn install --cwd packages/sso-express
+        run: yarn --cwd packages/sso-express
       - name: Publish to NPM
         run: yarn publish --cwd packages/sso-express --access public
         env:
