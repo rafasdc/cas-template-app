@@ -9,23 +9,45 @@ This package exposes:
 - An express middleware
 - The underlying keycloak object, should the developer need access to the underlying grants and tokens, or add protection to additional routes.
 
+### Exposed endpoints
+
+The package configures a middleware with the following configurable endpoints:
+
+| Endpoint               | Default URL                   | can be disabled |
+| :--------------------- | :---------------------------- | :-------------- |
+| Login                  | `/login`                      | [ ]             |
+| Logout                 | `/logout`                     | [ ]             |
+| Register               | `/register`                   | [x]             |
+| Refresh Session        | `/extend-session`             | [x]             |
+| Session Remaining Time | `/session-idle-remainingtime` | [x]             |
+
 ### Example usage
 
 ```javascript
-const ssoUtils = require('@bcgov-cas/sso-express');
+const ssoUtils = require("@bcgov-cas/sso-express");
 
-const {ssoMiddleware, keycloak} = new ssoUtils({
-  applicationHost: 'example.gov.bc.ca',
+const { ssoMiddleware, keycloak } = new ssoUtils({
+  applicationHost: process.env.HOST,
+  applicationDomain: ".gov.bc.ca",
+  sessionStore: store,
+  getLandingRoute: (req) => {
+    // Depending on your sso configuration
+    return getLanding(req.kauth.grant.id_token.content.groups);
+  },
+  bypassAuthentication: {
+    login: process.env.BYPASS_AUTH_ON_LOCAL,
+    sessionIdleRemainingTime: process.env.BYPASS_AUTH_ON_LOCAL,
+  },
+  accessDenied: (_req, res) => res.redirect("/403"),
   keycloakConfig: {
-    realm: 'kcrealm',
+    realm: "keycloakrealm",
     ...
   },
-  ...
 });
 
 server.use(ssoMiddleware);
 
-server.get('/my-protected-route', keycloak.protect());
+server.get("/my-protected-route", keycloak.protect());
 ```
 
 ## Configuration
@@ -66,6 +88,7 @@ In addition, all these configuration keys are accepted:
 | `accessDenied`         | Function `(req, res) => void` to override keycloak's `accessDenied` callback                             | `res.redirect('/403')` |
 | `routes`               | Overrides the default routes below. Set to `false` or `''` to disable (unavailable for login and logout) | see below              |
 
+<br />
 Default routes object:
 
 ```javascript
