@@ -1,6 +1,6 @@
 {
   "name": "@bcgov-cas/sso-express",
-  "version": "1.0.0-alpha.1",
+  "version": "1.0.0-alpha.2",
   "description": "A developer-friendly express middleware to connect to sso/keycloak providers",
   "main": "ssoUtils.js",
   "repository": "git@github.com:bcgov/sso-express.git",

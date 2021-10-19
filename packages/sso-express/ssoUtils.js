@@ -120,7 +120,7 @@ function ssoUtils(opts) {
 
   // Register Route
   if(options.routes.register)
-    middleware.get('/register', ({res}) => res.redirect(302, kcRegistrationUrl));
+    middleware.get(options.routes.register, ({res}) => res.redirect(302, kcRegistrationUrl));
 
 
   this.keycloak = keycloak;
