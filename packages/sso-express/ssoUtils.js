@@ -5,14 +5,14 @@ const {getSessionRemainingTime} = require('./helpers');
 // Options:
 const defaultOptions = {
   applicationHost: "localhost",
-  applicationDomain: "gov.bc.ca",
+  applicationDomain: ".gov.bc.ca",
   sessionStore: null,
-  getLandingRoute: null,
+  getLandingRoute: (_req) => '/',
   bypassAuthentication: {
     login: false,
     sessionIdleRemainingTime: false
   }, // set to false if disabled, true if you want to bypass auth in dev environments, fine-tuning by passing an object with the same keys as the routes (supported so far are 'login' and 'sessionIdleRemainingTime')
-  accessDenied: (req, res) => { res.redirect('/403'); }, //provide an optional implementation for behaviour on keycloak access denied
+  accessDenied: (_req, res) => { res.redirect('/403'); }, //provide an optional implementation for behaviour on keycloak access denied
   routes: {
     login: '/login',
     logout: '/logout',
@@ -32,7 +32,7 @@ function ssoUtils(opts) {
     throw new Error('sso-utils: keycloakConfig key not provided in options');
 
   const options = {
-    defaultOptions,
+    ...defaultOptions,
     ...opts
   }
 
@@ -109,14 +109,14 @@ function ssoUtils(opts) {
 
   // Login route (POST and GET)
   if (shouldBypassAuthentication(options.bypassAuthentication, 'login'))
-    middleware.post(loginRoute, (req, res) => res.redirect(302, getRedirectURL(req)));
+    middleware.post(loginRoute, (req, res) => res.redirect(302, options.getLandingRoute(req)));
   else
     middleware.post(loginRoute, keycloak.protect(), (req, res) =>
       // This request handler gets called on a POST to /login if the user is already authenticated
-      res.redirect(302, getRedirectURL(req))
+      res.redirect(302, options.getLandingRoute(req))
     );
 
-  middleware.get(loginRoute, (req, res) => res.redirect(302, getRedirectURL(req)));
+  middleware.get(loginRoute, (req, res) => res.redirect(302, options.getLandingRoute(req)));
 
   // Register Route
   if(options.routes.register)
