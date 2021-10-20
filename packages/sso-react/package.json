@@ -5,13 +5,21 @@
   "license": "Apache-2.0",
   "private": false,
   "author": "ggircs@gov.bc.ca",
-  "dependencies": {
-    "react": "^16.14.0"
-  },
   "scripts": {
     "build": "tsc"
   },
+  "peerDependencies": {
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0"
+  },
   "devDependencies": {
-    "@types/react": "^17.0.30"
-  }
+    "@types/react": "^17.0.30",
+    "@types/react-dom": "^17.0.10",
+    "react": "^16.14.0",
+    "react-dom": "^16.14.0",
+    "typescript": "^4.4.4"
+  },
+  "files": [
+    "/lib"
+  ]
 }
