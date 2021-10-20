@@ -1,0 +1,11 @@
+{
+  "name": "sso-react",
+  "version": "1.0.0-alpha.0",
+  "main": "ssoReact.js",
+  "license": "Apache-2.0",
+  "private": false,
+  "author": "ggircs@gov.bc.ca",
+  "dependencies": {
+    "react": "^16.14.0"
+  }
+}
