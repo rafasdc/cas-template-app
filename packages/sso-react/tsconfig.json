@@ -1,0 +1,25 @@
+{
+  "compilerOptions": {
+    "target": "es5",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "skipLibCheck": true,
+    "strict": false,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "node",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "*": ["*"]
+    },
+    "allowJs": true,
+    "downlevelIteration": true,
+    "outDir": "lib/esm"
+  },
+  "exclude": ["node_modules", "static", "cypress"],
+  "include": ["./**/*", "./.eslintrc.js"]
+}
