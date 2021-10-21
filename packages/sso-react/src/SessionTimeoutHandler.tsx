@@ -42,7 +42,7 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
   };
 
   useEffect(() => {
-    let timeoutId: number;
+    let timeoutId: any;
 
     const checkSessionIdle = async () => {
       const response = await fetch(sessionRemainingTimePath);

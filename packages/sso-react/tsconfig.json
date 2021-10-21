@@ -15,8 +15,9 @@
     "noImplicitAny": true,
     "strictNullChecks": true,
     "suppressImplicitAnyIndexErrors": true,
-    "allowSyntheticDefaultImports": true
+    "allowSyntheticDefaultImports": true,
+    "types": ["jest", "jest-extended"]
   },
-  "exclude": ["node_modules", "lib"],
-  "include": ["src"]
+  "exclude": ["node_modules", "lib", "test"],
+  "include": ["src/*"]
 }

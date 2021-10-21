@@ -6,15 +6,27 @@
   "private": false,
   "author": "ggircs@gov.bc.ca",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "test": "jest"
   },
   "peerDependencies": {
     "react": "^16.14.0",
     "react-dom": "^16.14.0"
   },
   "devDependencies": {
+    "@types/enzyme": "^3.10.10",
+    "@types/enzyme-adapter-react-16": "^1.0.6",
+    "@types/jest": "^27.0.2",
+    "@types/react-dom": "^17.0.10",
+    "babel-plugin-module-resolver": "^4.1.0",
+    "enzyme": "^3.11.0",
+    "enzyme-adapter-react-16": "^1.15.6",
+    "enzyme-to-json": "^3.6.2",
+    "jest": "^27.3.1",
+    "jest-extended": "^1.1.0",
     "react": "^16.14.0",
     "react-dom": "^16.14.0",
+    "ts-jest": "^27.0.7",
     "typescript": "^4.4.4"
   },
   "files": [
@@ -22,5 +34,22 @@
   ],
   "dependencies": {
     "@button-inc/bcgov-theme": "^1.0.1"
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "testMatch": [
+      "**/?(*.)+(spec|test).[jt]s?(x)"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/lib/"
+    ],
+    "setupFilesAfterEnv": [
+      "jest-extended/all",
+      "<rootDir>test/setup-tests.ts"
+    ],
+    "transform": {
+      ".*(ts|tsx|js|jsx)$": "ts-jest"
+    }
   }
 }

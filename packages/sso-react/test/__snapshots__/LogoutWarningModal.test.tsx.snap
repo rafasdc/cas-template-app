@@ -1,0 +1,124 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Logout Warning Modal Should match the snapshot 1`] = `
+<BaseComponent
+  show={true}
+  size="lg"
+>
+  <Component
+    className="h4"
+  >
+    Inactivity Logout Warning
+  </Component>
+  <Component
+    style={
+      Object {
+        "padding": "2em",
+      }
+    }
+  >
+    <BaseComponent
+      cols={12}
+    >
+      <Component>
+        Your session is about to expire due to inactivity over
+         
+        2
+         minutes.
+      </Component>
+      <Component>
+        You will be logged out in 
+        11
+         seconds.
+      </Component>
+    </BaseComponent>
+  </Component>
+  <Component>
+    <form
+      action="/logout"
+      method="post"
+    >
+      <button
+        className="btn btn-secondary"
+        type="submit"
+      >
+        Logout
+      </button>
+    </form>
+    <Button
+      onClick={[Function]}
+    >
+      Remain active
+    </Button>
+  </Component>
+</BaseComponent>
+`;
+
+exports[`The Logout Warning Modal should countdown seconds 1`] = `
+<div
+  className="sc-iCfMLu sc-furwcr kQXSYc gDlUxH pg-modal-container"
+  id="jq2e4yt9jpc027mdh1u8w6u"
+  size="lg"
+>
+  <div
+    className="sc-pVTFL fdkSXM pg-modal-main"
+  >
+    <header
+      className="sc-jrQzAO eeqVZV pg-modal-header h4"
+    >
+      Inactivity Logout Warning
+    </header>
+    <div
+      className="sc-kDTinF cIwtan pg-modal-content"
+      style={
+        Object {
+          "padding": "2em",
+        }
+      }
+    >
+      <div
+        className="sc-fFeiMQ bgyiGU pg-grid-container"
+        cols={12}
+      >
+        <div
+          className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"
+        >
+          Your session is about to expire due to inactivity over
+           
+          2
+           minutes.
+        </div>
+        <div
+          className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"
+        >
+          You will be logged out in 
+          16
+           seconds.
+        </div>
+      </div>
+    </div>
+    <footer
+      className="sc-iqseJM cULDjt pg-modal-footer"
+    >
+      <form
+        action="/logout"
+        method="post"
+      >
+        <button
+          className="btn btn-secondary"
+          type="submit"
+        >
+          Logout
+        </button>
+      </form>
+      <button
+        className="sc-kfPuZi epUors pg-button"
+        id="skyks1swdmphyusitabun"
+        onClick={[Function]}
+      >
+        Remain active
+      </button>
+    </footer>
+  </div>
+</div>
+`;
