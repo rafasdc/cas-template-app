@@ -1,11 +1,4 @@
-import React from "react";
+import SessionTimeoutHandler from "./SessionTimeoutHandler";
+import LogoutWarningModal from "./LogoutWarningModal";
 
-interface Props {
-  test: string;
-}
-
-const TestModule: React.FunctionComponent<Props> = ({ test }) => (
-  <div>{test}</div>
-);
-
-export default TestModule;
+export { SessionTimeoutHandler, LogoutWarningModal };
