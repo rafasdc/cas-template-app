@@ -9,11 +9,11 @@ beforeEach(() => {
 
 describe("The test middleware", () => {
   it("Throws an error if there is no keycloak config provided", () => {
-    const ssoUtils = require('./ssoUtils');
+    const ssoUtils = require('./ssoExpress');
 
     expect(() => new ssoUtils({
       // no keycolakConfig key
-    })).toThrow('sso-utils: keycloakConfig key not provided in options');
+    })).toThrow('sso-express: keycloakConfig key not provided in options');
   });
 
   it("Instantiates keycloak with the right parameters", () => {
@@ -27,7 +27,7 @@ describe("The test middleware", () => {
       }
     );
 
-    const ssoUtils = require('./ssoUtils');
+    const ssoUtils = require('./ssoExpress');
 
     const moduleUnderTest = new ssoUtils({
       keycloakConfig: {testkey: 'testvalue'},
@@ -49,7 +49,7 @@ describe("The test middleware", () => {
       }
     );
 
-    const ssoUtils = require('./ssoUtils');
+    const ssoUtils = require('./ssoExpress');
 
     const moduleUnderTest = new ssoUtils({
       keycloakConfig: {testkey: 'testvalue'},
@@ -92,7 +92,7 @@ describe("The test middleware", () => {
     kc.prototype.protect = jest.fn().mockReturnValue(jest.fn());
 
   
-    const ssoUtils = require('./ssoUtils');
+    const ssoUtils = require('./ssoExpress');
 
     const moduleUnderTest = new ssoUtils({
       keycloakConfig: {testkey: 'testvalue'},

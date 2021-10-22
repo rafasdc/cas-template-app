@@ -27,9 +27,9 @@ const shouldBypassAuthentication = (bypassConfig, routeKey) => {
         (bypassConfig === true || (typeof bypassConfig === 'object' && bypassConfig[routeKey]));
 }
 
-function ssoUtils(opts) {
+function ssoExpress(opts) {
   if(!opts.keycloakConfig)
-    throw new Error('sso-utils: keycloakConfig key not provided in options');
+    throw new Error('sso-express: keycloakConfig key not provided in options');
 
   const options = {
     ...defaultOptions,
@@ -128,4 +128,4 @@ function ssoUtils(opts) {
   this.ssoMiddleware = middleware;
 }
 
-module.exports = ssoUtils;
+module.exports = ssoExpress;

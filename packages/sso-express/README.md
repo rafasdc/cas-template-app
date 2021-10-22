@@ -13,13 +13,13 @@ This package exposes:
 
 The package configures a middleware with the following configurable endpoints:
 
-| Endpoint               | Default URL                   | can be disabled |
-| :--------------------- | :---------------------------- | :-------------- |
-| Login                  | `/login`                      | [ ]             |
-| Logout                 | `/logout`                     | [ ]             |
-| Register               | `/register`                   | [x]             |
-| Refresh Session        | `/extend-session`             | [x]             |
-| Session Remaining Time | `/session-idle-remainingtime` | [x]             |
+| Endpoint               | Default URL                    | can be disabled |
+| :--------------------- | :----------------------------- | :-------------- |
+| Login                  | `/login`                       | [ ]             |
+| Logout                 | `/logout`                      | [ ]             |
+| Register               | `/register`                    | [x]             |
+| Refresh Session        | `/extend-session`              | [x]             |
+| Session Remaining Time | `/session-idle-remaining-time` | [x]             |
 
 ### Example usage
 
