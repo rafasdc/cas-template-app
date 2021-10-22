@@ -35,7 +35,9 @@ describe("The Logout Warning Modal", () => {
         logoutPath="/logout"
       />
     );
-    componentUnderTest.find("Button").simulate("click");
+    componentUnderTest
+      .find("Button#logout-warning-modal-remain-active-button")
+      .simulate("click");
     expect(expireSpy).toHaveBeenCalled();
   });
 

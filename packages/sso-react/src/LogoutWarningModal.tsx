@@ -46,13 +46,18 @@ const LogoutWarningModal: React.FunctionComponent<Props> = ({
       </Modal.Content>
       <Modal.Footer>
         <form action={logoutPath} method="post">
-          <button type="submit" className="btn btn-secondary">
+          <Button
+            type="submit"
+            variant="secondary"
+            id="logout-warning-modal-logout-button"
+          >
             Logout
-          </button>
+          </Button>
         </form>
         <Button
-          id="logout-warning-modal-remain-active"
+          id="logout-warning-modal-remain-active-button"
           onClick={onExtendSession}
+          variant="primary"
         >
           Remain active
         </Button>

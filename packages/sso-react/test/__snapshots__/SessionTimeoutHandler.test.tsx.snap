@@ -52,7 +52,8 @@ exports[`The Session Timeout Handler Shows the modal if there is less time left 
           method="post"
         >
           <button
-            className="btn btn-secondary"
+            className="sc-kfPuZi jgizTO pg-button"
+            id="logout-warning-modal-logout-button"
             type="submit"
           >
             Logout
@@ -60,7 +61,7 @@ exports[`The Session Timeout Handler Shows the modal if there is less time left 
         </form>
         <button
           className="sc-kfPuZi epUors pg-button"
-          id="logout-warning-modal-remain-active"
+          id="logout-warning-modal-remain-active-button"
           onClick={[Function]}
         >
           Remain active

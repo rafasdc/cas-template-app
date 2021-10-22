@@ -39,16 +39,18 @@ exports[`The Logout Warning Modal Should match the snapshot 1`] = `
       action="/logout"
       method="post"
     >
-      <button
-        className="btn btn-secondary"
+      <Button
+        id="logout-warning-modal-logout-button"
         type="submit"
+        variant="secondary"
       >
         Logout
-      </button>
+      </Button>
     </form>
     <Button
-      id="logout-warning-modal-remain-active"
+      id="logout-warning-modal-remain-active-button"
       onClick={[Function]}
+      variant="primary"
     >
       Remain active
     </Button>
@@ -107,7 +109,8 @@ exports[`The Logout Warning Modal should countdown seconds 1`] = `
         method="post"
       >
         <button
-          className="btn btn-secondary"
+          className="sc-kfPuZi jgizTO pg-button"
+          id="logout-warning-modal-logout-button"
           type="submit"
         >
           Logout
@@ -115,7 +118,7 @@ exports[`The Logout Warning Modal should countdown seconds 1`] = `
       </form>
       <button
         className="sc-kfPuZi epUors pg-button"
-        id="logout-warning-modal-remain-active"
+        id="logout-warning-modal-remain-active-button"
         onClick={[Function]}
       >
         Remain active

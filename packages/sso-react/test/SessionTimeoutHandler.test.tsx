@@ -24,7 +24,7 @@ const setupFetchMock = (timeoutValue, response_override = {}) => {
 };
 
 describe("The Session Timeout Handler", () => {
-  it.only("Shows the modal if there is less time left in the session than the delay", async () => {
+  it("Shows the modal if there is less time left in the session than the delay", async () => {
     const secondsLeftInSession = 15;
     const displayDelayBeforeLogout = 30;
 
@@ -49,8 +49,8 @@ describe("The Session Timeout Handler", () => {
 
     await componentUnderTest.update();
 
-    expect(componentUnderTest.find(".pg-modal-container").length).toBe(1);
     expect(componentUnderTest).toMatchSnapshot();
+    expect(componentUnderTest.find("div.pg-modal-container")).toHaveLength(1);
   });
 
   it("Hides the modal if there is more time left in the session than the delay", async () => {
@@ -78,15 +78,11 @@ describe("The Session Timeout Handler", () => {
 
     await componentUnderTest.update();
 
-    expect(componentUnderTest.find(".modal").length).toBe(0);
+    expect(componentUnderTest.find("div.pg-modal-container").length).toBe(0);
   });
 
-  it("Routes to login-redirect if the session is expired", async () => {
-    const mockRouter = { push: jest.fn(), asPath: "mock-redirect-to" };
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
-    useRouter.mockImplementation(() => {
-      return mockRouter;
-    });
+  it("Calls the onSessionExpired function if the session is expired", async () => {
+    const mockExpiredCallback = jest.fn();
 
     const secondsLeftInSession = 0;
     const displayDelayBeforeLogout = 30;
@@ -103,7 +99,7 @@ describe("The Session Timeout Handler", () => {
             extendSessionPath="extend"
             logoutPath="logout"
             sessionRemainingTimePath="remaining"
-            onSessionExpired={() => {}}
+            onSessionExpired={mockExpiredCallback}
             resetOnChange={[{}]}
           />
         </div>
@@ -112,26 +108,16 @@ describe("The Session Timeout Handler", () => {
 
     await componentUnderTest.update();
 
-    expect(mockRouter.push).toHaveBeenCalledWith({
-      pathname: "/login-redirect",
-      query: {
-        redirectTo: "mock-redirect-to",
-        sessionIdled: true,
-      },
-    });
+    expect(mockExpiredCallback).toHaveBeenCalledOnce();
   });
 
-  it("Routes to login-redirect if the server replies with not ok", async () => {
-    const mockRouter = { push: jest.fn(), asPath: "mock-redirect-to" };
-    const useRouter = jest.spyOn(require("next/router"), "useRouter");
-    useRouter.mockImplementation(() => {
-      return mockRouter;
-    });
+  it("Calls the onSessionExpired function if the server replies with not ok", async () => {
+    const mockExpiredCallback = jest.fn();
 
     const secondsLeftInSession = 0;
     const displayDelayBeforeLogout = 30;
 
-    setupFetchMock(secondsLeftInSession, { ok: false });
+    const fetchMock = setupFetchMock(secondsLeftInSession, { ok: false });
 
     let componentUnderTest;
     await act(async () => {
@@ -142,7 +128,7 @@ describe("The Session Timeout Handler", () => {
             extendSessionPath="extend"
             logoutPath="logout"
             sessionRemainingTimePath="remaining"
-            onSessionExpired={() => {}}
+            onSessionExpired={mockExpiredCallback}
             resetOnChange={[{}]}
           />
         </div>
@@ -151,16 +137,11 @@ describe("The Session Timeout Handler", () => {
 
     await componentUnderTest.update();
 
-    expect(mockRouter.push).toHaveBeenCalledWith({
-      pathname: "/login-redirect",
-      query: {
-        redirectTo: "mock-redirect-to",
-        sessionIdled: true,
-      },
-    });
+    expect(fetchMock).toHaveBeenCalledWith("remaining");
+    expect(mockExpiredCallback).toHaveBeenCalledOnce();
   });
 
-  it("Calls the /extend-session endpoint when the user clicks the extend button", async () => {
+  it("Calls the extendSessionPath endpoint when the user clicks the extend button", async () => {
     const secondsLeftInSession = 15;
     const displayDelayBeforeLogout = 30;
 
@@ -173,7 +154,7 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
-            extendSessionPath="extend"
+            extendSessionPath="my-test-extend-session-URL"
             logoutPath="logout"
             sessionRemainingTimePath="remaining"
             onSessionExpired={() => {}}
@@ -185,12 +166,12 @@ describe("The Session Timeout Handler", () => {
 
     await componentUnderTest.update();
 
-    expect(componentUnderTest.find(".modal").length).toBe(1);
+    expect(componentUnderTest.find("div.pg-modal-container").length).toBe(1);
 
     const fetchMock = setupFetchMock(999);
 
     const clickRefeshHandler = componentUnderTest
-      .find(".btn-primary")
+      .find("button#logout-warning-modal-remain-active-button")
       .prop("onClick");
 
     await act(async () => {
@@ -199,7 +180,7 @@ describe("The Session Timeout Handler", () => {
 
     await componentUnderTest.update();
 
-    expect(componentUnderTest.find(".modal").length).toBe(0);
-    expect(fetchMock).toHaveBeenCalledWith("/extend-session");
+    expect(componentUnderTest.find("div.pg-modal-container").length).toBe(0);
+    expect(fetchMock).toHaveBeenCalledWith("my-test-extend-session-URL");
   });
 });
