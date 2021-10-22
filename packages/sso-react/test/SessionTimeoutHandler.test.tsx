@@ -24,6 +24,28 @@ const setupFetchMock = (timeoutValue, response_override = {}) => {
 };
 
 describe("The Session Timeout Handler", () => {
+  it("renders the defaults", async () => {
+    // Will display the modal since the default is 120 seconds
+    const secondsLeftInSession = 119;
+
+    jest.useFakeTimers();
+    setupFetchMock(secondsLeftInSession);
+
+    let componentUnderTest;
+
+    await act(async () => {
+      componentUnderTest = mount(
+        <div>
+          <SessionTimeoutHandler />
+        </div>
+      );
+    });
+
+    await componentUnderTest.update();
+
+    expect(componentUnderTest).toMatchSnapshot();
+  });
+
   it("Shows the modal if there is less time left in the session than the delay", async () => {
     const secondsLeftInSession = 15;
     const displayDelayBeforeLogout = 30;

@@ -7,23 +7,102 @@ This package is intended (but not limited to) to be used in conjunction with [@b
 
 #### SessionTimeoutHandler
 
-A react component that displays a session expiry modal before the session expires.
+A react component that displays a session expiry modal before the session expires, and automatically re-syncs with the server when needed.
 
 Properties:
-| Name | Type | default | Description |
-| :-----| :-----| :--------| :------------|
-|`modalDisplaySecondsBeforeLogout` | `number` | 120 | a |
 
-extendSessionPath: string;
-sessionRemainingTimePath: string;
-logoutPath: string;
+| Name                              | Type                      | default                        | Description                                                                         |
+| :-------------------------------- | :------------------------ | :----------------------------- | :---------------------------------------------------------------------------------- |
+| `modalDisplaySecondsBeforeLogout` | `number`                  | 120                            | How many seconds before session expires should the modal be displayed.              |
+| `extendSessionPath`               | `string`                  | `/extend-session`              | The server endpoint to extend the session.                                          |
+| `sessionRemainingTimePath`        | `string`                  | `/session-idle-remaining-time` | The server endpoint to query for session remaining time.                            |
+| `logoutPath`                      | `string`                  | `/logout`                      | The server endpoint to logout.                                                      |
+| `onSessionExpired`                | `function: () => void`    | `() => {}`                     | The function to call once the session has expired (e.g. a redirect to a login page) |
+| `resetOnChange`                   | `any[]`                   | `[]` (on component mount)      | Optional array of items to watch, to trigger refetch of the session remaining time. |
+| `renderModal`                     | `function (props) => JSX` | A modal dialog box             | An override function for the default modal dialog box.                              |
 
-// Callback for when the session has expired
-onSessionExpired: () => void;
+Props object passed to the override dialog box (see [#LogoutWarningModal] for more details).
+The `remainingSeconds` property will be updated every second.
 
-// Session-expired effect will recheck the session
-// if any of these values change.
-// e.g. with Next.js, use [router] where router = useRouter()
-resetOnChange: any[];
+```typescript
+interface WarningModalProps {
+  inactivityDelaySeconds: number;
+  expiresOn: number;
+  onExtendSession: () => void;
+  logoutPath: string;
+  remainingSeconds: number;
+}
+```
 
-### Additional Examples
+#### LogoutWarningModal
+
+A session expired warning modal that displays a countdown until the session expires.
+Rendering can be overridden by setting the `renderModal` property.
+
+The `renderModal` function will be passed the following props - from the `LogoutWarningModal` component itself.:
+
+| Name                     | Type         | Description                                                                                   |
+| :----------------------- | :----------- | :-------------------------------------------------------------------------------------------- |
+| `inactivityDelaySeconds` | `number`     | The (fixed) number of seconds left in the session, under which the modal should be displayed. |
+| `expiresOn`              | `number`     | The UNIX epoch at which the session expires                                                   |
+| `onExtendSession`        | `() => void` | The function called when the "extend sesison" button is clicked                               |
+| `logoutPath`             | `string`     | The server endpoint to logout                                                                 |
+| `remainingSeconds`       | `number`     | The (counting down) number of seconds remaining in the session                                |
+
+### Example
+
+A example of usage, using a NextJS to redirect the user to the login page when the session has expired.
+
+```tsx
+import { useRouter } from "next/router";
+import { SessionTimeoutHandler } from "@bcgov/sso-react";
+
+function App() {
+  const router = useRouter();
+
+  return (
+    <div>
+      <SessionTimeoutHandler
+        modalDisplaySecondsBeforeLogout={120}
+        extendSessionPath="/extend-session"
+        sessionRemainingTimePath="/session-idle-remaining-time"
+        logoutPath="/logout"
+        onSessionExpired={() => {
+          router.push({
+            pathname: "/login",
+            sessionIdled: true,
+          });
+        }}
+        resetOnChange={[router]}
+      />
+      <p>... My page content ...</p>
+    </div>
+  );
+}
+```
+
+### Additional Examples (doesn't require React)
+
+To integrate with the [@bcgov-cas/sso-express](https://www.npmjs.com/package/@bcgov-cas/sso-express) package, the following implementations of login, logout and register buttons can be used:
+
+Login (assuming the default '/login' endpoint is used):
+
+```html
+<form action="/login" method="post">
+  <button type="submit">Log in</button>
+</form>
+```
+
+Logout:
+
+```html
+<form action="/logout" method="post">
+  <button type="submit" className="btn btn-secondary">Logout</button>
+</form>
+```
+
+Register:
+
+```html
+<a href="/register">Register</a>
+```

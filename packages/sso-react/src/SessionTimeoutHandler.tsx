@@ -2,29 +2,29 @@ import React, { useEffect, useState } from "react";
 import LogoutWarningModal from "./LogoutWarningModal";
 import { WarningModalProps } from "./LogoutWarningModal";
 interface Props {
-  modalDisplaySecondsBeforeLogout: number;
+  modalDisplaySecondsBeforeLogout?: number;
 
-  extendSessionPath: string;
-  sessionRemainingTimePath: string;
-  logoutPath: string;
+  extendSessionPath?: string;
+  sessionRemainingTimePath?: string;
+  logoutPath?: string;
 
   // Callback for when the session has expired
-  onSessionExpired: () => void;
+  onSessionExpired?: () => void;
 
   // Session-expired effect will recheck the session
   // if any of these values change.
   // e.g. with Next.js, use [router] where router = useRouter()
-  resetOnChange: any[];
+  resetOnChange?: any[];
   renderModal?: (props: WarningModalProps) => JSX.Element;
 }
 
 const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
   modalDisplaySecondsBeforeLogout = 120,
-  extendSessionPath,
-  sessionRemainingTimePath,
-  logoutPath,
-  onSessionExpired,
-  resetOnChange,
+  extendSessionPath = "/extend-session",
+  sessionRemainingTimePath = "/session-idle-remaining-time",
+  logoutPath = "/logout",
+  onSessionExpired = () => {},
+  resetOnChange = [],
   renderModal,
 }) => {
   const [showModal, setShowModal] = useState(false);
