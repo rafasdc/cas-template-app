@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import LogoutWarningModal from "./LogoutWarningModal";
-
+import { WarningModalProps } from "./LogoutWarningModal";
 interface Props {
   modalDisplaySecondsBeforeLogout: number;
 
@@ -15,15 +15,17 @@ interface Props {
   // if any of these values change.
   // e.g. with Next.js, use [router] where router = useRouter()
   resetOnChange: any[];
+  renderModal?: (props: WarningModalProps) => JSX.Element;
 }
 
 const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
-  modalDisplaySecondsBeforeLogout,
+  modalDisplaySecondsBeforeLogout = 120,
   extendSessionPath,
   sessionRemainingTimePath,
   logoutPath,
   onSessionExpired,
   resetOnChange,
+  renderModal,
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -91,6 +93,7 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
           expiresOn={sessionExpiresOn}
           onExtendSession={extendSession}
           logoutPath={logoutPath}
+          renderModal={renderModal}
         />
       )}
     </>

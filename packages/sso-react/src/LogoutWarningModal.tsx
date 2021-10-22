@@ -10,12 +10,23 @@ interface Props {
   logoutPath: string;
 }
 
-const LogoutWarningModal: React.FunctionComponent<Props> = ({
-  inactivityDelaySeconds,
-  expiresOn,
-  onExtendSession,
-  logoutPath,
-}) => {
+export interface WarningModalProps extends Props {
+  remainingSeconds: number;
+}
+
+const LogoutWarningModal: React.FunctionComponent<
+  Props & {
+    renderModal?: (props: WarningModalProps) => JSX.Element;
+  }
+> = (props) => {
+  const {
+    inactivityDelaySeconds,
+    expiresOn,
+    onExtendSession,
+    logoutPath,
+    renderModal,
+  } = props;
+
   const [remainingSeconds, setRemainingSeconds] = useState(
     Math.floor((expiresOn - Date.now()) / 1000)
   );
@@ -30,6 +41,11 @@ const LogoutWarningModal: React.FunctionComponent<Props> = ({
     };
   }, []);
 
+  if (renderModal) {
+    return renderModal({ remainingSeconds, ...props });
+  }
+
+  // Default render
   return (
     <Modal show size="lg" id="logout-warning-modal">
       <Modal.Header className="h4">Inactivity Logout Warning</Modal.Header>

@@ -25,6 +25,26 @@ describe("The Logout Warning Modal", () => {
     dateMock.mockRestore();
   });
 
+  it("Should use the optional render method if provided", () => {
+    jest.useFakeTimers();
+    const dateMock = jest.spyOn(Date, "now").mockImplementation(() => 1000); // One second after January 1st, 1970
+
+    const componentUnderTest = mount(
+      <LogoutWarningModal
+        inactivityDelaySeconds={120}
+        onExtendSession={() => {}}
+        expiresOn={12000}
+        logoutPath="/logout"
+        renderModal={({ remainingSeconds }) => (
+          <div>There are {remainingSeconds} seconds left.</div>
+        )}
+      />
+    );
+    expect(componentUnderTest).toMatchSnapshot();
+
+    dateMock.mockRestore();
+  });
+
   it("should call the extendSession function", () => {
     const expireSpy = jest.fn();
     const componentUnderTest = shallow(

@@ -53,6 +53,39 @@ describe("The Session Timeout Handler", () => {
     expect(componentUnderTest.find("div.pg-modal-container")).toHaveLength(1);
   });
 
+  it("renders the modal with the render function provided", async () => {
+    const secondsLeftInSession = 15;
+    const displayDelayBeforeLogout = 30;
+
+    jest.useFakeTimers();
+    setupFetchMock(secondsLeftInSession);
+
+    let componentUnderTest;
+    await act(async () => {
+      componentUnderTest = mount(
+        <div>
+          <SessionTimeoutHandler
+            modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
+            extendSessionPath="extend"
+            logoutPath="logout"
+            sessionRemainingTimePath="remaining"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
+            renderModal={({ remainingSeconds, expiresOn }) => (
+              <div>
+                Modal will expire on {expiresOn}, in {remainingSeconds} seconds
+              </div>
+            )}
+          />
+        </div>
+      );
+    });
+
+    await componentUnderTest.update();
+
+    expect(componentUnderTest).toMatchSnapshot();
+  });
+
   it("Hides the modal if there is more time left in the session than the delay", async () => {
     const secondsLeftInSession = 45;
     const displayDelayBeforeLogout = 30;

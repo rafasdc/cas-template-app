@@ -71,3 +71,15 @@ exports[`The Session Timeout Handler Shows the modal if there is less time left 
   </div>
 </div>
 `;
+
+exports[`The Session Timeout Handler renders the modal with the render function provided 1`] = `
+<div>
+  <div>
+    Modal will expire on 
+    1634941480004
+    , in 
+    15
+     seconds
+  </div>
+</div>
+`;

@@ -58,6 +58,14 @@ exports[`The Logout Warning Modal Should match the snapshot 1`] = `
 </BaseComponent>
 `;
 
+exports[`The Logout Warning Modal Should use the optional render method if provided 1`] = `
+<div>
+  There are 
+  11
+   seconds left.
+</div>
+`;
+
 exports[`The Logout Warning Modal should countdown seconds 1`] = `
 <div
   className="sc-iCfMLu sc-furwcr kQXSYc gDlUxH pg-modal-container"
