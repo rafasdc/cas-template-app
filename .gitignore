@@ -3,3 +3,4 @@ node_modules
 test-app
 
 /packages/*/lib
+/packages/*/dist

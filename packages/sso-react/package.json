@@ -1,7 +1,9 @@
 {
   "name": "sso-react",
   "version": "1.0.0-alpha.0",
-  "main": "ssoReact.js",
+  "main": "dist/ssoReact.js",
+  "module": "lib/esm/ssoReact.js",
+  "types": "lib/esm/ssoReact.d.ts",
   "license": "Apache-2.0",
   "private": false,
   "author": "ggircs@gov.bc.ca",
@@ -30,7 +32,7 @@
     "typescript": "^4.4.4"
   },
   "files": [
-    "/lib"
+    "/dist"
   ],
   "dependencies": {
     "@button-inc/bcgov-theme": "^1.0.1"
