@@ -1,6 +1,7 @@
 {
   "name": "@bcgov-cas/sso-react",
-  "version": "1.0.0-alpha.2",
+  "description": "A suite of react components to handle session expiry warnings, in conjunction with @bcgov-cas/sso-express",
+  "version": "1.0.0-alpha.3",
   "main": "dist/ssoReact.js",
   "module": "dist/ssoReact.js",
   "types": "dist/ssoReact.d.ts",
