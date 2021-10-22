@@ -71,10 +71,8 @@ describe("The Session Timeout Handler", () => {
             sessionRemainingTimePath="remaining"
             onSessionExpired={() => {}}
             resetOnChange={[{}]}
-            renderModal={({ remainingSeconds, expiresOn }) => (
-              <div>
-                Modal will expire on {expiresOn}, in {remainingSeconds} seconds
-              </div>
+            renderModal={({ remainingSeconds }) => (
+              <div>Session will expire in {remainingSeconds} seconds</div>
             )}
           />
         </div>
