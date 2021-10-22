@@ -31,7 +31,7 @@ const LogoutWarningModal: React.FunctionComponent<Props> = ({
   }, []);
 
   return (
-    <Modal show size="lg">
+    <Modal show size="lg" id="logout-warning-modal">
       <Modal.Header className="h4">Inactivity Logout Warning</Modal.Header>
       <Modal.Content style={{ padding: "2em" }}>
         <Grid cols={12}>
@@ -50,7 +50,12 @@ const LogoutWarningModal: React.FunctionComponent<Props> = ({
             Logout
           </button>
         </form>
-        <Button onClick={onExtendSession}>Remain active</Button>
+        <Button
+          id="logout-warning-modal-remain-active"
+          onClick={onExtendSession}
+        >
+          Remain active
+        </Button>
       </Modal.Footer>
     </Modal>
   );

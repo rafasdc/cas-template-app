@@ -24,7 +24,7 @@ const setupFetchMock = (timeoutValue, response_override = {}) => {
 };
 
 describe("The Session Timeout Handler", () => {
-  it("Shows the modal if there is less time left in the session than the delay", async () => {
+  it.only("Shows the modal if there is less time left in the session than the delay", async () => {
     const secondsLeftInSession = 15;
     const displayDelayBeforeLogout = 30;
 
@@ -37,6 +37,11 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
+            extendSessionPath="extend"
+            logoutPath="logout"
+            sessionRemainingTimePath="remaining"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
           />
         </div>
       );
@@ -44,7 +49,7 @@ describe("The Session Timeout Handler", () => {
 
     await componentUnderTest.update();
 
-    expect(componentUnderTest.find(".modal").length).toBe(1);
+    expect(componentUnderTest.find(".pg-modal-container").length).toBe(1);
     expect(componentUnderTest).toMatchSnapshot();
   });
 
@@ -61,6 +66,11 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
+            extendSessionPath="extend"
+            logoutPath="logout"
+            sessionRemainingTimePath="remaining"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
           />
         </div>
       );
@@ -90,6 +100,11 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
+            extendSessionPath="extend"
+            logoutPath="logout"
+            sessionRemainingTimePath="remaining"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
           />
         </div>
       );
@@ -124,6 +139,11 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
+            extendSessionPath="extend"
+            logoutPath="logout"
+            sessionRemainingTimePath="remaining"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
           />
         </div>
       );
@@ -153,6 +173,11 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
+            extendSessionPath="extend"
+            logoutPath="logout"
+            sessionRemainingTimePath="remaining"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
           />
         </div>
       );

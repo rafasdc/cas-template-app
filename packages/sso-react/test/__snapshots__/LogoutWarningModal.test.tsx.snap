@@ -2,6 +2,7 @@
 
 exports[`The Logout Warning Modal Should match the snapshot 1`] = `
 <BaseComponent
+  id="logout-warning-modal"
   show={true}
   size="lg"
 >
@@ -46,6 +47,7 @@ exports[`The Logout Warning Modal Should match the snapshot 1`] = `
       </button>
     </form>
     <Button
+      id="logout-warning-modal-remain-active"
       onClick={[Function]}
     >
       Remain active
@@ -57,7 +59,7 @@ exports[`The Logout Warning Modal Should match the snapshot 1`] = `
 exports[`The Logout Warning Modal should countdown seconds 1`] = `
 <div
   className="sc-iCfMLu sc-furwcr kQXSYc gDlUxH pg-modal-container"
-  id="jq2e4yt9jpc027mdh1u8w6u"
+  id="logout-warning-modal"
   size="lg"
 >
   <div
@@ -113,7 +115,7 @@ exports[`The Logout Warning Modal should countdown seconds 1`] = `
       </form>
       <button
         className="sc-kfPuZi epUors pg-button"
-        id="skyks1swdmphyusitabun"
+        id="logout-warning-modal-remain-active"
         onClick={[Function]}
       >
         Remain active

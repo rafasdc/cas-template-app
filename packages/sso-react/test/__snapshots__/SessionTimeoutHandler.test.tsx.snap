@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`The Session Timeout Handler Shows the modal if there is less time left in the session than the delay 1`] = `
+<div>
+  <div
+    className="sc-iCfMLu sc-furwcr kQXSYc gDlUxH pg-modal-container"
+    id="logout-warning-modal"
+    size="lg"
+  >
+    <div
+      className="sc-pVTFL fdkSXM pg-modal-main"
+    >
+      <header
+        className="sc-jrQzAO eeqVZV pg-modal-header h4"
+      >
+        Inactivity Logout Warning
+      </header>
+      <div
+        className="sc-kDTinF cIwtan pg-modal-content"
+        style={
+          Object {
+            "padding": "2em",
+          }
+        }
+      >
+        <div
+          className="sc-fFeiMQ bgyiGU pg-grid-container"
+          cols={12}
+        >
+          <div
+            className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"
+          >
+            Your session is about to expire due to inactivity over
+             
+            0
+             minutes.
+          </div>
+          <div
+            className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"
+          >
+            You will be logged out in 
+            15
+             seconds.
+          </div>
+        </div>
+      </div>
+      <footer
+        className="sc-iqseJM cULDjt pg-modal-footer"
+      >
+        <form
+          action="logout"
+          method="post"
+        >
+          <button
+            className="btn btn-secondary"
+            type="submit"
+          >
+            Logout
+          </button>
+        </form>
+        <button
+          className="sc-kfPuZi epUors pg-button"
+          id="logout-warning-modal-remain-active"
+          onClick={[Function]}
+        >
+          Remain active
+        </button>
+      </footer>
+    </div>
+  </div>
+</div>
+`;
