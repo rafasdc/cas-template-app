@@ -1,0 +1,34 @@
+{
+  "name": "@bcgov-cas/sso-express",
+  "version": "1.0.0-alpha.5",
+  "description": "A developer-friendly express middleware to connect to sso/keycloak providers",
+  "main": "ssoExpress.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/bcgov/cas-template-app",
+    "directory": "packages/sso-express"
+  },
+  "author": "ggircs@gov.bc.ca",
+  "license": "Apache-2.0",
+  "private": false,
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [
+    "sso",
+    "keycloak"
+  ],
+  "peerDependencies": {
+    "express": "4.x"
+  },
+  "dependencies": {
+    "keycloak-connect": "^15.0.2"
+  },
+  "devDependencies": {
+    "jest": "^27.3.1",
+    "express": "4.x"
+  },
+  "files": [
+    "ssoExpress.js"
+  ]
+}
