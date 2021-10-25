@@ -86,7 +86,7 @@ The `renderModal` function will be passed the following props - from the `Logout
 
 ### Example
 
-A example of usage, using a NextJS to redirect the user to the login page when the session has expired.
+A example of usage, using a NextJS router to redirect the user to the login page when the session has expired, and a session refresher to refresh the session when the user interacts with the page.
 
 ```tsx
 import { useRouter } from "next/router";
@@ -110,6 +110,7 @@ function App() {
         }}
         resetOnChange={[router]}
       />
+      <SessionRefresher refreshUrl="/session-idle-remaining-time" />
       <p>... My page content ...</p>
     </div>
   );
