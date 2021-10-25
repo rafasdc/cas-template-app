@@ -9,7 +9,7 @@ This package is intended (but not limited to) to be used in conjunction with [@b
 
 A react component that automatically refreshes the session when certain events are fired. Includes throttling logic to avoid
 
-Properties:
+- Properties:
 
 | Name          | Type       | default                              | Description                           |
 | :------------ | :--------- | :----------------------------------- | :------------------------------------ |
@@ -17,7 +17,7 @@ Properties:
 | throttledTime | `number`   | 300000 (5 min)                       | Session refresh minimum interval      |
 | refreshEvents | `string[]` | `["keydown", "mousedown", "scroll"]` | Events that trigger a session refresh |
 
-Example: Refresh session on keydown, at most once every 10 minutes
+- Example: Refresh session on keydown, at most once every 10 minutes
 
 ```tsx
 function App() {
@@ -38,20 +38,20 @@ function App() {
 
 A react component that displays a session expiry modal before the session expires, and automatically re-syncs with the server when needed.
 
-Properties:
+- Properties:
 
-| Name                              | Type                      | default                        | Description                                                                         |
-| :-------------------------------- | :------------------------ | :----------------------------- | :---------------------------------------------------------------------------------- |
-| `modalDisplaySecondsBeforeLogout` | `number`                  | 120                            | How many seconds before session expires should the modal be displayed.              |
-| `extendSessionPath`               | `string`                  | `/extend-session`              | The server endpoint to extend the session.                                          |
-| `sessionRemainingTimePath`        | `string`                  | `/session-idle-remaining-time` | The server endpoint to query for session remaining time.                            |
-| `logoutPath`                      | `string`                  | `/logout`                      | The server endpoint to logout.                                                      |
-| `onSessionExpired`                | `function: () => void`    | `() => {}`                     | The function to call once the session has expired (e.g. a redirect to a login page) |
-| `resetOnChange`                   | `any[]`                   | `[]` (on component mount)      | Optional array of items to watch, to trigger refetch of the session remaining time. |
-| `renderModal`                     | `function (props) => JSX` | [#LogoutWarningModal]          | An override function for the default modal dialog box.                              |
+| Name                              | Type                      | default                                   | Description                                                                         |
+| :-------------------------------- | :------------------------ | :---------------------------------------- | :---------------------------------------------------------------------------------- |
+| `modalDisplaySecondsBeforeLogout` | `number`                  | 120                                       | How many seconds before session expires should the modal be displayed.              |
+| `extendSessionPath`               | `string`                  | `/extend-session`                         | The server endpoint to extend the session.                                          |
+| `sessionRemainingTimePath`        | `string`                  | `/session-idle-remaining-time`            | The server endpoint to query for session remaining time.                            |
+| `logoutPath`                      | `string`                  | `/logout`                                 | The server endpoint to logout.                                                      |
+| `onSessionExpired`                | `function: () => void`    | `() => {}`                                | The function to call once the session has expired (e.g. a redirect to a login page) |
+| `resetOnChange`                   | `any[]`                   | `[]` (on component mount)                 | Optional array of items to watch, to trigger refetch of the session remaining time. |
+| `renderModal`                     | `function (props) => JSX` | [LogoutWarningModal](#logoutwarningmodal) | An override function for the default modal dialog box.                              |
 
-Props object passed to the override dialog box (see [#LogoutWarningModal] for more details).
-The `remainingSeconds` property will be updated every second.
+- Props object passed to the override dialog box (see [LogoutWarningModal](#logoutwarningmodal) for more details).
+  The `remainingSeconds` property will be updated every second.
 
 ```typescript
 interface WarningModalProps {
@@ -114,7 +114,7 @@ function App() {
 
 To integrate with the [@bcgov-cas/sso-express](https://www.npmjs.com/package/@bcgov-cas/sso-express) package, the following implementations of login, logout and register buttons can be used:
 
-Login (assuming the default '/login' endpoint is used):
+- Login (assuming the default '/login' endpoint is used):
 
 ```html
 <form action="/login" method="post">
@@ -122,7 +122,7 @@ Login (assuming the default '/login' endpoint is used):
 </form>
 ```
 
-Logout:
+- Logout:
 
 ```html
 <form action="/logout" method="post">
@@ -130,7 +130,7 @@ Logout:
 </form>
 ```
 
-Register:
+- Register:
 
 ```html
 <a href="/register">Register</a>
