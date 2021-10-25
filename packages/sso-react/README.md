@@ -5,6 +5,35 @@ This package is intended (but not limited to) to be used in conjunction with [@b
 
 ### Components
 
+#### SessionRefresher
+
+A react component that automatically refreshes the session when certain events are fired. Includes throttling logic to avoid
+
+Properties:
+
+| Name          | Type       | default                              | Description                           |
+| :------------ | :--------- | :----------------------------------- | :------------------------------------ |
+| refreshUrl    | `string`   |                                      | Session refresh endpoint              |
+| throttledTime | `number`   | 300000 (5 min)                       | Session refresh minimum interval      |
+| refreshEvents | `string[]` | `["keydown", "mousedown", "scroll"]` | Events that trigger a session refresh |
+
+Example: Refresh session on keydown, at most once every 10 minutes
+
+```tsx
+function App() {
+  return (
+    <div>
+      <SessionRefresher
+        refreshUrl="/session-idle-remaining-time"
+        throttledTime={600000}
+        refreshEvents={["keydown"]}
+      />
+      <p>... My page content ...</p>
+    </div>
+  );
+}
+```
+
 #### SessionTimeoutHandler
 
 A react component that displays a session expiry modal before the session expires, and automatically re-syncs with the server when needed.
@@ -19,7 +48,7 @@ Properties:
 | `logoutPath`                      | `string`                  | `/logout`                      | The server endpoint to logout.                                                      |
 | `onSessionExpired`                | `function: () => void`    | `() => {}`                     | The function to call once the session has expired (e.g. a redirect to a login page) |
 | `resetOnChange`                   | `any[]`                   | `[]` (on component mount)      | Optional array of items to watch, to trigger refetch of the session remaining time. |
-| `renderModal`                     | `function (props) => JSX` | A modal dialog box             | An override function for the default modal dialog box.                              |
+| `renderModal`                     | `function (props) => JSX` | [#LogoutWarningModal]          | An override function for the default modal dialog box.                              |
 
 Props object passed to the override dialog box (see [#LogoutWarningModal] for more details).
 The `remainingSeconds` property will be updated every second.
