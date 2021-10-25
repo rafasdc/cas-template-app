@@ -34,6 +34,8 @@ function App() {
 }
 ```
 
+<br><br>
+
 #### SessionTimeoutHandler
 
 A react component that displays a session expiry modal before the session expires, and automatically re-syncs with the server when needed.
@@ -63,6 +65,8 @@ interface WarningModalProps {
 }
 ```
 
+<br><br>
+
 #### LogoutWarningModal
 
 A session expired warning modal that displays a countdown until the session expires.
@@ -77,6 +81,8 @@ The `renderModal` function will be passed the following props - from the `Logout
 | `onExtendSession`        | `() => void` | The function called when the "extend sesison" button is clicked                               |
 | `logoutPath`             | `string`     | The server endpoint to logout                                                                 |
 | `remainingSeconds`       | `number`     | The (counting down) number of seconds remaining in the session                                |
+
+<br><br>
 
 ### Example
 
@@ -109,6 +115,8 @@ function App() {
   );
 }
 ```
+
+<br><br>
 
 ### Additional Examples (doesn't require React)
 
