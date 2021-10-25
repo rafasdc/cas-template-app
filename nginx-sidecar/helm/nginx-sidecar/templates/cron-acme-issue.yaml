@@ -47,7 +47,7 @@ spec:
                 - -c
                 - |
                   set -euxo pipefail;
-                  if [ ! -f /tmp/.acme.sh/{{ .Values.hostName }}/{{ .Values.hostName }}.cer ]; then
+                  if [ ! -f /tmp/.acme.sh/{{ .Values.hostName }}/fullchain.cer ]; then
                     echo "Getting a new cert from Let's Encrypt for {{ .Values.hostName }}";
                     git clone --branch 2.8.6 https://github.com/acmesh-official/acme.sh.git /tmp/acme.sh;
                     cd /tmp/acme.sh;
