@@ -16,7 +16,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "prepack": "yarn install && yarn test && yarn build"
+    "prepack": "yarn test && yarn build"
   },
   "peerDependencies": {
     "react": "16 - 17",

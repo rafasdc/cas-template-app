@@ -1,4 +1,4 @@
-name: Test '@bcgov-cas/sso-react' package
+name: Test @bcgov-cas packages
 on: push
 jobs:
   build:
@@ -9,8 +9,10 @@ jobs:
         with:
           node-version: "14"
           cache: "yarn"
-          cache-dependency-path: packages/sso-react/yarn.lock
+          cache-dependency-path: yarn.lock
+      - name: Install lerna
+        run: yarn
       - name: Install package dependencies
-        run: yarn --cwd packages/sso-react
+        run: yarn lerna bootstrap
       - name: Run tests
-        run: yarn --cwd packages/sso-react test
+        run: yarn lerna run test --stream

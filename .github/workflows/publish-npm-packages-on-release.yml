@@ -1,9 +1,9 @@
-name: Release @bcgov-cas packages with lerna monorepo
+name: Publish @bcgov-cas packages with lerna monorepo
 on:
-  release:
-    types: [created]
   push:
-    branches: ["feat/sso-react"]
+    branches:
+      - main
+      - feat/sso-react
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -16,8 +16,10 @@ jobs:
           cache: "yarn"
           cache-dependency-path: yarn.lock
           scope: "bcgov-cas"
-      - name: Install package dependencies
+      - name: Install lerna
         run: yarn
+      - name: Install dependencies for all packages
+        run: yarn lerna bootstrap
       - name: Use Lerna to publish packages
         run: yarn lerna publish from-package --yes
         env:
