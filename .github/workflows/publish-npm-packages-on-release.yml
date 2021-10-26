@@ -1,7 +1,9 @@
-name: Release '@bcgov-cas/sso-express' on NPM
+name: Release @bcgov-cas packages with lerna monorepo
 on:
   release:
     types: [created]
+  push:
+    branches: ["feat/sso-react"]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -12,13 +14,11 @@ jobs:
           node-version: "14"
           registry-url: "https://registry.npmjs.org"
           cache: "yarn"
-          cache-dependency-path: packages/sso-express/yarn.lock
+          cache-dependency-path: yarn.lock
           scope: "bcgov-cas"
       - name: Install package dependencies
-        run: yarn --cwd packages/sso-express
-      - name: Run tests
-        run: yarn --cwd packages/sso-express test
-      - name: Publish to NPM
-        run: yarn publish --cwd packages/sso-express --access public
+        run: yarn
+      - name: Use Lerna to publish packages
+        run: yarn lerna publish from-package --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
