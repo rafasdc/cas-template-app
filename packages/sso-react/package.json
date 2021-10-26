@@ -16,7 +16,7 @@
   "scripts": {
     "build": "tsc",
     "test": "jest",
-    "prepare": "yarn install && yarn test && yarn build"
+    "prepack": "yarn install && yarn test && yarn build"
   },
   "peerDependencies": {
     "react": "16 - 17",
@@ -62,5 +62,5 @@
       ".*(ts|tsx|js|jsx)$": "ts-jest"
     }
   },
-  "gitHead": "5dbe13f3a2be1447051851b9aeedd007e39ad330"
+  "gitHead": "2eae856a51caef7c61664d15ee25bea0dfc844db"
 }

@@ -13,7 +13,7 @@
   "private": false,
   "scripts": {
     "test": "jest",
-    "prepare": "yarn install && yarn test"
+    "prepack": "yarn install && yarn test"
   },
   "keywords": [
     "sso",
@@ -33,5 +33,5 @@
     "ssoExpress.js",
     "helpers.js"
   ],
-  "gitHead": "4bde696e631fc52d8d920c535b795cd04ee5c6b4"
+  "gitHead": "2eae856a51caef7c61664d15ee25bea0dfc844db"
 }
