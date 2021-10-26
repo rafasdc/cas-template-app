@@ -1,6 +1,6 @@
 {
   "name": "@bcgov-cas/sso-express",
-  "version": "1.0.0-alpha.5",
+  "version": "1.0.0-alpha.6",
   "description": "A developer-friendly express middleware to connect to sso/keycloak providers",
   "main": "ssoExpress.js",
   "repository": {
@@ -12,7 +12,8 @@
   "license": "Apache-2.0",
   "private": false,
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "prepare": "jest"
   },
   "keywords": [
     "sso",
@@ -29,6 +30,7 @@
     "express": "4.x"
   },
   "files": [
-    "ssoExpress.js"
+    "ssoExpress.js",
+    "helpers.js"
   ]
 }
