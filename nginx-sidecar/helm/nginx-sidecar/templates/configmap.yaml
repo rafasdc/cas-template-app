@@ -10,7 +10,7 @@ data:
       listen {{ .Values.port }} ssl;
       listen [::]:{{ .Values.port }} ssl;
       ssl_certificate     /home/.acme.sh/{{ .Values.hostName }}/fullchain.cer;
-      ssl_certificate_key /home/.acme.sh/{{ .Values.hostName }}/fullchain.key;
+      ssl_certificate_key /home/.acme.sh/{{ .Values.hostName }}/{{ .Values.hostName }}.key;
 {{- else }}
       listen {{ .Values.port }};
       listen [::]:{{ .Values.port }};
