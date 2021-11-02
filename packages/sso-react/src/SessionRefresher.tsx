@@ -2,13 +2,13 @@ import React, { useEffect } from "react";
 import throttle from "lodash.throttle";
 
 interface Props {
-  refreshUrl: string;
+  refreshUrl?: string;
   throttledTime?: number;
   refreshEvents?: string[];
 }
 
 const SessionRefresher: React.FunctionComponent<Props> = ({
-  refreshUrl,
+  refreshUrl = "/extend-session",
   throttledTime = 1000 * 60 * 5, // 5 min default
   refreshEvents = ["keydown", "mousedown", "scroll"],
 }) => {

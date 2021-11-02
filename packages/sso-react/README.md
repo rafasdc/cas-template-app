@@ -13,7 +13,7 @@ A react component that automatically refreshes the session when certain events a
 
 | Name          | Type       | default                              | Description                           |
 | :------------ | :--------- | :----------------------------------- | :------------------------------------ |
-| refreshUrl    | `string`   |                                      | Session refresh endpoint              |
+| refreshUrl    | `string`   | `"/extend-session"`                  | Session refresh endpoint              |
 | throttledTime | `number`   | 300000 (5 min)                       | Session refresh minimum interval      |
 | refreshEvents | `string[]` | `["keydown", "mousedown", "scroll"]` | Events that trigger a session refresh |
 
@@ -24,7 +24,7 @@ function App() {
   return (
     <div>
       <SessionRefresher
-        refreshUrl="/session-idle-remaining-time"
+        refreshUrl="/extend-session"
         throttledTime={600000}
         refreshEvents={["keydown"]}
       />
