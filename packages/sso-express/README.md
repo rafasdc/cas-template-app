@@ -9,17 +9,18 @@ This package exposes:
 - An express middleware
 - The underlying keycloak object, should the developer need access to the underlying grants and tokens, or add protection to additional routes.
 
+> :warning: **When using the exposed middleware, any request to the express server - including to static endpoints - will extend the keycloak session.** The underlying implementation of the middleware is based on [keycloak-connect](https://www.npmjs.com/package/keycloak-connect), which at this time doesn't support retrieving the status of the session without extending it.
+
 ### Exposed endpoints
 
 The package configures a middleware with the following configurable endpoints:
 
-| Endpoint               | Default URL                    | can be disabled |
-| :--------------------- | :----------------------------- | :-------------- |
-| Login                  | `/login`                       | [ ]             |
-| Logout                 | `/logout`                      | [ ]             |
-| Register               | `/register`                    | [x]             |
-| Refresh Session        | `/extend-session`              | [x]             |
-| Session Remaining Time | `/session-idle-remaining-time` | [x]             |
+| Endpoint        | Default URL       | can be disabled |
+| :-------------- | :---------------- | :-------------- |
+| Login           | `/login`          | [ ]             |
+| Logout          | `/logout`         | [ ]             |
+| Register        | `/register`       | [x]             |
+| Refresh Session | `/extend-session` | [x]             |
 
 ### Example usage
 
@@ -96,7 +97,6 @@ Default routes object:
     login: '/login',
     logout: '/logout',
     register: '/register',
-    sessionIdleRemainingTime: '/session-idle-remaining-time',
-    extendSession: '/extend-session'
+    sessionIdleRemainingTime: '/session-idle-remaining-time'
   }
 ```
