@@ -15,12 +15,12 @@ This package exposes:
 
 The package configures a middleware with the following configurable endpoints:
 
-| Endpoint        | Default URL       | can be disabled |
-| :-------------- | :---------------- | :-------------- |
-| Login           | `/login`          | [ ]             |
-| Logout          | `/logout`         | [ ]             |
-| Register        | `/register`       | [x]             |
-| Refresh Session | `/extend-session` | [x]             |
+| Endpoint               | Default URL                    | can be disabled |
+| :--------------------- | :----------------------------- | :-------------- |
+| Login                  | `/login`                       | [ ]             |
+| Logout                 | `/logout`                      | [ ]             |
+| Register               | `/register`                    | [x]             |
+| Session Remaining Time | `/session-idle-remaining-time` | [x]             |
 
 ### Example usage
 
@@ -97,6 +97,7 @@ Default routes object:
     login: '/login',
     logout: '/logout',
     register: '/register',
-    sessionIdleRemainingTime: '/session-idle-remaining-time'
+    sessionIdleRemainingTime: '/session-idle-remaining-time',
+    extendSession: '/extend-session'
   }
 ```

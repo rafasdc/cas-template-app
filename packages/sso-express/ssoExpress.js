@@ -17,8 +17,7 @@ const defaultOptions = {
     login: '/login',
     logout: '/logout',
     register: '/register', // allow true/false to disable the register route. Disabled by default, set to true or a string to enable,
-    sessionIdleRemainingTime: '/session-idle-remaining-time',
-    extendSession: '/extend-session'
+    sessionIdleRemainingTime: '/session-idle-remaining-time'
   }
 }
 
@@ -72,7 +71,7 @@ function ssoExpress(opts) {
   );
 
   // Session Idle Remaining Time
-  // Returns, in seconds, the amount of time left in the keycloak session
+  // Returns, in seconds, the amount of time left in the keycloak session - and extends it if the access token has expired.
   if(options.routes.sessionIdleRemainingTime)
     middleware.get(options.routes.sessionIdleRemainingTime, async (req, res) => {
       if (shouldBypassAuthentication(options.bypassAuthentication, 'sessionIdleRemainingTime')) {
@@ -100,13 +99,6 @@ function ssoExpress(opts) {
     }
     next();
   });
-
-  // This ensures grant freshness with the previous directive - we just return a success response code.
-  if(options.routes.extendSession)
-    middleware.get(options.routes.extendSession, async (req, res) => {
-      return res.json(await getSessionRemainingTime(keycloak, req, res));
-    });
-
 
   // Login route (POST and GET)
   if (shouldBypassAuthentication(options.bypassAuthentication, 'login'))
