@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import LogoutWarningModal from "./LogoutWarningModal";
 import { WarningModalProps } from "./LogoutWarningModal";
+import throttleEventsEffect from "./throttleEventsEffect";
 interface Props {
   modalDisplaySecondsBeforeLogout?: number;
-
-  extendSessionPath?: string;
   sessionRemainingTimePath?: string;
   logoutPath?: string;
 
@@ -15,17 +14,27 @@ interface Props {
   // if any of these values change.
   // e.g. with Next.js, use [router] where router = useRouter()
   resetOnChange?: any[];
+
   renderModal?: (props: WarningModalProps) => JSX.Element;
+
+  // Configuration for automatically extending the session,
+  // based on certain user events to listen to.
+  // Don't set or set enabled: false to disable.
+  extendSessionOnEvents?: {
+    enabled: boolean;
+    throttleTime?: number;
+    events?: string[];
+  };
 }
 
 const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
   modalDisplaySecondsBeforeLogout = 120,
-  extendSessionPath = "/extend-session",
   sessionRemainingTimePath = "/session-idle-remaining-time",
   logoutPath = "/logout",
   onSessionExpired = () => {},
   resetOnChange = [],
   renderModal,
+  extendSessionOnEvents,
 }) => {
   const [showModal, setShowModal] = useState(false);
 
@@ -33,7 +42,7 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
   const [sessionExpiresOn, setSessionExpiresOn] = useState(Infinity);
 
   const extendSession = async () => {
-    const response = await fetch(extendSessionPath);
+    const response = await fetch(sessionRemainingTimePath);
     if (response.ok) {
       const timeout = Number(await response.json());
       if (timeout > modalDisplaySecondsBeforeLogout) {
@@ -43,47 +52,58 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
     }
   };
 
+  // default values will be used for throttleTime
+  // and events if they are undefined.
+  if (extendSessionOnEvents && extendSessionOnEvents.enabled)
+    useEffect(
+      throttleEventsEffect(
+        extendSession,
+        extendSessionOnEvents.throttleTime,
+        extendSessionOnEvents.events
+      ),
+      []
+    );
+
   useEffect(() => {
-    let timeoutId: any;
+    let modalDisplayTimeoutId: any;
+    let sessionTimeoutId: any;
 
     const checkSessionIdle = async () => {
       const response = await fetch(sessionRemainingTimePath);
       if (response.ok) {
-        const timeout = Number(await response.json());
+        const secondsRemainingInSession = Number(await response.json());
+        setSessionExpiresOn(Date.now() + secondsRemainingInSession * 1000);
 
-        setSessionExpiresOn(Date.now() + timeout * 1000);
+        if (secondsRemainingInSession > 0) {
+          if (secondsRemainingInSession > modalDisplaySecondsBeforeLogout) {
+            setShowModal(false);
+            modalDisplayTimeoutId = setTimeout(() => {
+              setShowModal(true);
+            }, (secondsRemainingInSession - modalDisplaySecondsBeforeLogout) * 1000);
+          } else {
+            setShowModal(true);
+          }
 
-        if (timeout > modalDisplaySecondsBeforeLogout) {
-          setShowModal(false);
-          timeoutId = setTimeout(() => {
-            checkSessionIdle();
-          }, (timeout - modalDisplaySecondsBeforeLogout) * 1000);
-        } else if (timeout > 0) {
-          // We display the modal and set a timeout to check again when the session is due to expire according to the server.
-          // If the user has not extended their session by then we will redirect them (by invoking logoutOnSessionIdled() below)
+          // If the user has not extended their session by then we will redirect them (by invoking onSessionExpired() below)
           // If they do extend their session (or have in a different tab), the `checkSessionIdle()` call will branch into the first condition above, hide the modal,
           // and set another timeout to check the session idle when the modal is due to be displayed.
-
-          setShowModal(true);
-          timeoutId = setTimeout(() => {
+          sessionTimeoutId = setTimeout(() => {
             checkSessionIdle();
-          }, timeout * 1000);
+          }, secondsRemainingInSession * 1000);
         } else {
           onSessionExpired();
         }
-      } else {
-        // if the response is not OK (i.e. 500)
-        onSessionExpired();
-      }
+      } else onSessionExpired();
     };
 
     checkSessionIdle();
 
     // Return cleanup function
     return () => {
-      clearTimeout(timeoutId);
+      clearTimeout(modalDisplayTimeoutId);
+      clearTimeout(sessionTimeoutId);
     };
-  }, resetOnChange);
+  }, [...resetOnChange]);
 
   return (
     <>

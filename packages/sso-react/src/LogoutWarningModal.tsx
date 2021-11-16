@@ -33,7 +33,9 @@ const LogoutWarningModal: React.FunctionComponent<
 
   useEffect(() => {
     const intervalId = setInterval(() => {
-      setRemainingSeconds(Math.floor((expiresOn - Date.now()) / 1000));
+      setRemainingSeconds(
+        Math.max(0, Math.floor(expiresOn - Date.now()) / 1000)
+      );
     }, 1000);
 
     return () => {

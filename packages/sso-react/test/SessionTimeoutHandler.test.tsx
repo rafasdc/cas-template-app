@@ -2,6 +2,7 @@ import SessionTimeoutHandler from "../src/SessionTimeoutHandler";
 import { mount } from "enzyme";
 import React from "react";
 import { act } from "react-dom/test-utils";
+import * as throttleEventsEffect from "../src/throttleEventsEffect";
 
 const existingFetch = global.fetch;
 
@@ -59,7 +60,6 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
-            extendSessionPath="extend"
             logoutPath="logout"
             sessionRemainingTimePath="remaining"
             onSessionExpired={() => {}}
@@ -88,7 +88,6 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
-            extendSessionPath="extend"
             logoutPath="logout"
             sessionRemainingTimePath="remaining"
             onSessionExpired={() => {}}
@@ -119,7 +118,6 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
-            extendSessionPath="extend"
             logoutPath="logout"
             sessionRemainingTimePath="remaining"
             onSessionExpired={() => {}}
@@ -149,7 +147,6 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
-            extendSessionPath="extend"
             logoutPath="logout"
             sessionRemainingTimePath="remaining"
             onSessionExpired={mockExpiredCallback}
@@ -178,7 +175,6 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
-            extendSessionPath="extend"
             logoutPath="logout"
             sessionRemainingTimePath="remaining"
             onSessionExpired={mockExpiredCallback}
@@ -194,7 +190,7 @@ describe("The Session Timeout Handler", () => {
     expect(mockExpiredCallback).toHaveBeenCalledOnce();
   });
 
-  it("Calls the extendSessionPath endpoint when the user clicks the extend button", async () => {
+  it("Calls the sessionRemainingTime endpoint when the user clicks the extend button", async () => {
     const secondsLeftInSession = 15;
     const displayDelayBeforeLogout = 30;
 
@@ -207,9 +203,8 @@ describe("The Session Timeout Handler", () => {
         <div>
           <SessionTimeoutHandler
             modalDisplaySecondsBeforeLogout={displayDelayBeforeLogout}
-            extendSessionPath="my-test-extend-session-URL"
             logoutPath="logout"
-            sessionRemainingTimePath="remaining"
+            sessionRemainingTimePath="sessionRemainingTime/test/api/path?thisisatest=true"
             onSessionExpired={() => {}}
             resetOnChange={[{}]}
           />
@@ -234,6 +229,97 @@ describe("The Session Timeout Handler", () => {
     await componentUnderTest.update();
 
     expect(componentUnderTest.find("div.pg-modal-container").length).toBe(0);
-    expect(fetchMock).toHaveBeenCalledWith("my-test-extend-session-URL");
+    expect(fetchMock).toHaveBeenCalledWith(
+      "sessionRemainingTime/test/api/path?thisisatest=true"
+    );
+  });
+
+  it("Uses the throttle events effect if the configuration has been provided", async () => {
+    setupFetchMock(1000);
+
+    const throttleEffectSpy = jest.spyOn(throttleEventsEffect, "default");
+
+    await act(async () => {
+      mount(
+        <div>
+          <SessionTimeoutHandler
+            modalDisplaySecondsBeforeLogout={30}
+            logoutPath="logout"
+            sessionRemainingTimePath="sessionRemainingTime/test/api/path?thisisatest=true"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
+            extendSessionOnEvents={{
+              enabled: true,
+              throttleTime: 1000,
+              events: ["click"],
+            }}
+          />
+        </div>
+      );
+    });
+
+    expect(throttleEffectSpy).toHaveBeenCalledWith(expect.any(Function), 1000, [
+      "click",
+    ]);
+  });
+
+  it("Doesn't use the throttle events effect if no configuration is provided, or if state is false.", async () => {
+    setupFetchMock(1000);
+
+    const throttleEffectSpy = jest.spyOn(throttleEventsEffect, "default");
+
+    await act(async () => {
+      mount(
+        <div>
+          <SessionTimeoutHandler
+            modalDisplaySecondsBeforeLogout={30}
+            logoutPath="logout"
+            sessionRemainingTimePath="sessionRemainingTime/test/api/path?thisisatest=true"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
+          />
+        </div>
+      );
+    });
+
+    expect(throttleEffectSpy).not.toHaveBeenCalled();
+
+    await act(async () => {
+      mount(
+        <div>
+          <SessionTimeoutHandler
+            modalDisplaySecondsBeforeLogout={30}
+            logoutPath="logout"
+            sessionRemainingTimePath="sessionRemainingTime/test/api/path?thisisatest=true"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
+            extendSessionOnEvents={{
+              enabled: false,
+              throttleTime: 1000,
+              events: ["click"],
+            }}
+          />
+        </div>
+      );
+    });
+
+    expect(throttleEffectSpy).not.toHaveBeenCalled();
+
+    await act(async () => {
+      mount(
+        <div>
+          <SessionTimeoutHandler
+            modalDisplaySecondsBeforeLogout={30}
+            logoutPath="logout"
+            sessionRemainingTimePath="sessionRemainingTime/test/api/path?thisisatest=true"
+            onSessionExpired={() => {}}
+            resetOnChange={[{}]}
+            extendSessionOnEvents={null}
+          />
+        </div>
+      );
+    });
+
+    expect(throttleEffectSpy).not.toHaveBeenCalled();
   });
 });
