@@ -7,27 +7,34 @@ This package is intended (but not limited to) to be used in conjunction with [@b
 
 #### SessionRefresher
 
-A react component that automatically refreshes the session when certain events are fired. Includes throttling logic to avoid
+A react effect that automatically executes a callback when certain events are fired. Includes throttling logic to avoid
+excessive calls to the callback.
+
+`throttledTime` and `refreshEvents` parameters are optional, and use a default value if not provided.
 
 - Properties:
 
-| Name          | Type       | default                              | Description                           |
-| :------------ | :--------- | :----------------------------------- | :------------------------------------ |
-| refreshUrl    | `string`   | `"/extend-session"`                  | Session refresh endpoint              |
-| throttledTime | `number`   | 300000 (5 min)                       | Session refresh minimum interval      |
-| refreshEvents | `string[]` | `["keydown", "mousedown", "scroll"]` | Events that trigger a session refresh |
+| Name          | Type       | default                              | Description                                 |
+| :------------ | :--------- | :----------------------------------- | :------------------------------------------ |
+| callback      | callable   |                                      | Callback to execute on the specified events |
+| throttledTime | `number`   | 300000 (5 min)                       | Default throttling interval, in ms          |
+| refreshEvents | `string[]` | `["keydown", "mousedown", "scroll"]` | Events that trigger a call                  |
 
 - Example: Refresh session on keydown, at most once every 10 minutes
 
 ```tsx
 function App() {
+  const myCallback = async () => {
+    await fetch("/refresh-session");
+  };
+
+  React.useEffect(
+    throttleEventsEffect(myCallback, 10 * 60 * 1000, ["keydown"]),
+    []
+  );
+
   return (
     <div>
-      <SessionRefresher
-        refreshUrl="/extend-session"
-        throttledTime={600000}
-        refreshEvents={["keydown"]}
-      />
       <p>... My page content ...</p>
     </div>
   );
@@ -42,15 +49,15 @@ A react component that displays a session expiry modal before the session expire
 
 - Properties:
 
-| Name                              | Type                      | default                                   | Description                                                                         |
-| :-------------------------------- | :------------------------ | :---------------------------------------- | :---------------------------------------------------------------------------------- |
-| `modalDisplaySecondsBeforeLogout` | `number`                  | 120                                       | How many seconds before session expires should the modal be displayed.              |
-| `extendSessionPath`               | `string`                  | `/extend-session`                         | The server endpoint to extend the session.                                          |
-| `sessionRemainingTimePath`        | `string`                  | `/session-idle-remaining-time`            | The server endpoint to query for session remaining time.                            |
-| `logoutPath`                      | `string`                  | `/logout`                                 | The server endpoint to logout.                                                      |
-| `onSessionExpired`                | `function: () => void`    | `() => {}`                                | The function to call once the session has expired (e.g. a redirect to a login page) |
-| `resetOnChange`                   | `any[]`                   | `[]` (on component mount)                 | Optional array of items to watch, to trigger refetch of the session remaining time. |
-| `renderModal`                     | `function (props) => JSX` | [LogoutWarningModal](#logoutwarningmodal) | An override function for the default modal dialog box.                              |
+| Name                              | Type                                                        | default                                                                              | Description                                                                         |
+| :-------------------------------- | :---------------------------------------------------------- | :----------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------- |
+| `modalDisplaySecondsBeforeLogout` | `number`                                                    | 120                                                                                  | How many seconds before session expires should the modal be displayed.              |
+| `sessionRemainingTimePath`        | `string`                                                    | `/session-idle-remaining-time`                                                       | The server endpoint to query for session remaining time.                            |
+| `logoutPath`                      | `string`                                                    | `/logout`                                                                            | The server endpoint to logout.                                                      |
+| `onSessionExpired`                | `function: () => void`                                      | `() => {}`                                                                           | The function to call once the session has expired (e.g. a redirect to a login page) |
+| `resetOnChange`                   | `any[]`                                                     | `[]` (on component mount)                                                            | Optional array of items to watch, to trigger refetch of the session remaining time. |
+| `renderModal`                     | `function (props) => JSX`                                   | [LogoutWarningModal](#logoutwarningmodal)                                            | An override function for the default modal dialog box.                              |
+| `extendSessionOnEvents`           | `{enabled: boolean, throttleTime:number, events: string[]}` | `{enabled: false, throttleTime: 300000, events: ["keydown", "mousedown", "scroll"]}` | Whether to extend the session on certain events, and what events to extend on.      |
 
 - Props object passed to the override dialog box (see [LogoutWarningModal](#logoutwarningmodal) for more details).
   The `remainingSeconds` property will be updated every second.
@@ -90,7 +97,7 @@ A example of usage, using a NextJS router to redirect the user to the login page
 
 ```tsx
 import { useRouter } from "next/router";
-import { SessionTimeoutHandler } from "@bcgov/sso-react";
+import { SessionTimeoutHandler, throttleEventsEffect } from "@bcgov/sso-react";
 
 function App() {
   const router = useRouter();
@@ -109,8 +116,12 @@ function App() {
           });
         }}
         resetOnChange={[router]}
+        extendSessionOnEvents={{
+          enabled: true,
+          throttleTime: 60000,
+          events: ["keydown", "scroll"],
+        }}
       />
-      <SessionRefresher refreshUrl="/session-idle-remaining-time" />
       <p>... My page content ...</p>
     </div>
   );
