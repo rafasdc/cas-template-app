@@ -2,6 +2,11 @@ import React, { useEffect, useState } from "react";
 import LogoutWarningModal from "./LogoutWarningModal";
 import { WarningModalProps } from "./LogoutWarningModal";
 import throttleEventsEffect from "./throttleEventsEffect";
+
+// Delay to avoid race condition with the server. On session expiry, we wait
+// an additional delay to make sure the session is expired.
+const SERVER_DELAY_SECONDS = 1;
+
 interface Props {
   modalDisplaySecondsBeforeLogout?: number;
   sessionRemainingTimePath?: string;
@@ -71,7 +76,8 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
     const checkSessionIdle = async () => {
       const response = await fetch(sessionRemainingTimePath);
       if (response.ok) {
-        const secondsRemainingInSession = Number(await response.json());
+        const secondsRemainingInSession =
+          Number(await response.json()) + SERVER_DELAY_SECONDS;
         setSessionExpiresOn(Date.now() + secondsRemainingInSession * 1000);
 
         if (secondsRemainingInSession > 0) {

@@ -39,7 +39,7 @@ exports[`The Session Timeout Handler Shows the modal if there is less time left 
             className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"
           >
             You will be logged out in 
-            15
+            16
              seconds.
           </div>
         </div>
@@ -111,7 +111,7 @@ exports[`The Session Timeout Handler renders the defaults 1`] = `
             className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"
           >
             You will be logged out in 
-            119
+            120
              seconds.
           </div>
         </div>
@@ -148,7 +148,7 @@ exports[`The Session Timeout Handler renders the modal with the render function 
 <div>
   <div>
     Session will expire in 
-    15
+    16
      seconds
   </div>
 </div>

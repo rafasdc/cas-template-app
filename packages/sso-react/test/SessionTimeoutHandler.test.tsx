@@ -135,7 +135,7 @@ describe("The Session Timeout Handler", () => {
   it("Calls the onSessionExpired function if the session is expired", async () => {
     const mockExpiredCallback = jest.fn();
 
-    const secondsLeftInSession = 0;
+    const secondsLeftInSession = -1;
     const displayDelayBeforeLogout = 30;
 
     jest.useFakeTimers();
