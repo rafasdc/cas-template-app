@@ -8,7 +8,7 @@ This package is intended (but not limited to) to be used in conjunction with [@b
 #### SessionRefresher
 
 A react effect that automatically executes a callback when certain events are fired. Includes throttling logic to avoid
-excessive calls to the callback.
+excessive callback invocations.
 
 `throttledTime` and `refreshEvents` parameters are optional, and use a default value if not provided.
 
@@ -46,6 +46,8 @@ function App() {
 #### SessionTimeoutHandler
 
 A react component that displays a session expiry modal before the session expires, and automatically re-syncs with the server when needed.
+
+_This component should only be rendered if the user is currently logged in, otherwise the modal will be displayed immediately_
 
 - Properties:
 
@@ -106,7 +108,6 @@ function App() {
     <div>
       <SessionTimeoutHandler
         modalDisplaySecondsBeforeLogout={120}
-        extendSessionPath="/extend-session"
         sessionRemainingTimePath="/session-idle-remaining-time"
         logoutPath="/logout"
         onSessionExpired={() => {
