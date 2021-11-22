@@ -6,5 +6,6 @@ test-app
 
 /packages/*/lib
 /packages/*/dist
+/packages/*/coverage
 
 **/*.env
