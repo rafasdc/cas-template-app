@@ -58,13 +58,12 @@ describe("The test middleware", () => {
         login: '/testloginroute',
         logout: '/testlogout',
         register: '/testregister',
-        sessionIdleRemainingTime: '/testremaining',
-        extendSession: '/testextend'
+        sessionIdleRemainingTime: '/testremaining'
       }
     });
     
     // 6 configured routes, and 2 anonymous middleware routes (keycloak + auto session extend)
-    expect(moduleUnderTest.ssoMiddleware.stack.length).toBe(8);
+    expect(moduleUnderTest.ssoMiddleware.stack.length).toBe(7);
 
     const configuredRouteObjects = moduleUnderTest.ssoMiddleware.stack.map(s => s.route).filter(r => r).map(r => {
       return {
@@ -76,7 +75,6 @@ describe("The test middleware", () => {
     expect(configuredRouteObjects).toStrictEqual([
       {path: '/testlogout', method: 'post'},
       {path: '/testremaining', method: 'get'},
-      {path: '/testextend', method: 'get'},
       {path: '/testloginroute', method: 'post'},
       {path: '/testloginroute', method: 'get'},
       {path: '/testregister', method: 'get'},

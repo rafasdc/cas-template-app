@@ -1,0 +1,12 @@
+{
+  "name": "cas-template-app",
+  "version": "0.0.1",
+  "description": "A monorepo for the CAS team, containing helpers and tools to build applications with the team's tech stack.",
+  "repository": "git@github.com:bcgov/cas-template-app.git",
+  "author": "ggircs@gov.bc.ca",
+  "license": "Apache-2.0",
+  "private": false,
+  "devDependencies": {
+    "lerna": "^4.0.0"
+  }
+}

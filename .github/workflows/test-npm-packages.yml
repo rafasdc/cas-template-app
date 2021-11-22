@@ -1,0 +1,21 @@
+name: Test @bcgov-cas packages
+on:
+  push:
+    branches-ignore:
+      - main
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "14"
+          cache: "yarn"
+          cache-dependency-path: yarn.lock
+      - name: Install lerna
+        run: yarn
+      - name: Install package dependencies
+        run: yarn lerna bootstrap
+      - name: Run tests
+        run: yarn lerna run test --stream

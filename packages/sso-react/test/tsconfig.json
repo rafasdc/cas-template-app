@@ -1,0 +1,9 @@
+// This file is for VSCode and the typescript compiler to resolve the jest types
+// during development. It is excluded from the build configuration.
+{
+  "compilerOptions": {
+    "esModuleInterop": true,
+    "jsx": "react",
+    "types": ["jest", "jest-extended"]
+  }
+}
