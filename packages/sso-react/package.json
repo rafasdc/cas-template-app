@@ -1,7 +1,7 @@
 {
   "name": "@bcgov-cas/sso-react",
   "description": "A suite of react components to handle session expiry warnings, in conjunction with @bcgov-cas/sso-express",
-  "version": "1.0.0",
+  "version": "1.0.0-alpha.14",
   "repository": {
     "type": "git",
     "url": "https://github.com/bcgov/cas-template-app",
