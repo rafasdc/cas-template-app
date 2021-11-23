@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - main
-      - fix/support-automation-npm-token
 jobs:
   build:
     runs-on: ubuntu-latest
