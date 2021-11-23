@@ -5,6 +5,7 @@ export { getSessionRemainingTime, isAuthenticated };
 import type { IdTokenClaims, TokenSetParameters } from "openid-client";
 import {
   authCallbackController,
+  loginController,
   logoutController,
   sessionIdleRemainingTimeController,
   tokenSetController,
@@ -32,7 +33,6 @@ const defaultOptions: Partial<SSOExpressOptions> = {
   routes: {
     login: "/login",
     logout: "/logout",
-    // register: "/register", // allow true/false to disable the register route. Disabled by default, set to true or a string to enable,
     sessionIdleRemainingTime: "/session-idle-remaining-time",
     authCallback: "/auth-callback",
   },
@@ -99,14 +99,14 @@ async function ssoExpress(opts: SSOExpressOptions) {
   middleware.use(tokenSetController(client, options));
 
   // Session Idle Remaining Time
-  // Returns, in seconds, the amount of time left in the keycloak session - and extends it if the access token has expired.
+  // Returns, in seconds, the amount of time left in the session
   if (sessionIdleRemainingTime)
     middleware.get(
       sessionIdleRemainingTime,
       sessionIdleRemainingTimeController(client, options)
     );
 
-  middleware.post(login, logoutController(client, options));
+  middleware.post(login, loginController(client, options));
   middleware.get(authCallback, authCallbackController(client, options));
 
   return middleware;
