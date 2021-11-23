@@ -173,6 +173,11 @@ const config = {
   transform: {
     ".*(ts|tsx|js|jsx)$": "ts-jest",
   },
+  globals: {
+    "ts-jest": {
+      tsconfig: "tests/tsconfig.json",
+    },
+  },
 
   // An array of regexp pattern strings that are matched against all source file paths, matched files will skip transformation
   // transformIgnorePatterns: [
