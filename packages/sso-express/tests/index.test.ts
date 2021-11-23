@@ -63,7 +63,7 @@ describe("The ssoExpress middleware", () => {
   });
 
   it("Configures the middleware with the right routes", async () => {
-    // 6 configured routes, and 1 anonymous middleware routes (parsing and refreshing the session tokens)
+    // 4 configured routes, and 1 anonymous middleware routes (parsing and refreshing the session tokens)
     expect(middleware.stack.length).toBe(5);
 
     const configuredRouteObjects = middleware.stack
