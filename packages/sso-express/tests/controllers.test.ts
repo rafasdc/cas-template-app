@@ -1,8 +1,11 @@
 import { BaseClient } from "openid-client";
 import { mocked } from "ts-jest/utils";
 import { SSOExpressOptions } from "../src";
-import { logoutController } from "../src/controllers";
-import { isAuthenticated } from "../src/helpers";
+import {
+  logoutController,
+  sessionIdleRemainingTimeController,
+} from "../src/controllers";
+import { isAuthenticated, getSessionRemainingTime } from "../src/helpers";
 jest.mock("../src/helpers");
 
 const oidcIssuer = "https://example.com/auth/realms/myRealm";
@@ -92,8 +95,33 @@ describe("the tokenSet controller", () => {
 });
 
 describe("the sessionIdleRemainingTimeController", () => {
-  it.todo("returns the remaining time");
-  it.todo("returns a mocked time if authentication is bypassed");
+  it("returns the remaining time", async () => {
+    const handler = sessionIdleRemainingTimeController(
+      client,
+      middlewareOptions
+    );
+    const req = {};
+    const res = {
+      json: jest.fn(),
+    };
+    mocked(getSessionRemainingTime).mockReturnValue(123);
+    await handler(req, res);
+    expect(res.json).toHaveBeenCalledWith(123);
+  });
+
+  it("returns a mocked time if authentication is bypassed", async () => {
+    const handler = sessionIdleRemainingTimeController(client, {
+      ...middlewareOptions,
+      bypassAuthentication: { sessionIdleRemainingTime: true },
+    });
+    const req = {};
+    const res = {
+      json: jest.fn(),
+    };
+    mocked(getSessionRemainingTime).mockReturnValue(123);
+    await handler(req, res);
+    expect(res.json).toHaveBeenCalledWith(3600);
+  });
 });
 
 describe("the loginController", () => {
