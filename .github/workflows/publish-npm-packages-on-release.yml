@@ -11,7 +11,7 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: "14"
-          registry-url: "https://registry.npmjs.org"
+          registry-url: "https://registry.npmjs.org/"
           cache: "yarn"
           cache-dependency-path: yarn.lock
           scope: "bcgov-cas"
@@ -20,6 +20,6 @@ jobs:
       - name: Install dependencies for all packages
         run: yarn lerna bootstrap
       - name: Use Lerna to publish packages
-        run: yarn lerna publish from-package --yes
+        run: yarn lerna publish from-package --no-verify-access --yes
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
