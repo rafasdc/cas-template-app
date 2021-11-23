@@ -1,7 +1,7 @@
 {
   "name": "@bcgov-cas/sso-express",
-  "version": "1.0.0",
-  "description": "A developer-friendly express middleware to connect to sso/keycloak providers",
+  "version": "2.0.0",
+  "description": "A developer-friendly express middleware to securely connect to OpenId providers",
   "main": "dist/index.js",
   "module": "dist/index.js",
   "types": "dist/index.d.ts",
