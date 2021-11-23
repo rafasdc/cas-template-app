@@ -1,3 +1,4 @@
+import type { Request, Response, NextFunction } from "express";
 import { BaseClient, generators, TokenSet } from "openid-client";
 import { getSessionRemainingTime, isAuthenticated } from "./helpers";
 import { SSOExpressOptions } from "./index";
@@ -11,7 +12,8 @@ const shouldBypassAuthentication = (bypassConfig, routeKey) => {
 };
 
 export const logoutController =
-  (client: BaseClient, options: SSOExpressOptions) => (req, res) => {
+  (client: BaseClient, options: SSOExpressOptions) =>
+  (req: Request, res: Response) => {
     // Clear the siteminder session token on logout if we can
     // This will be ignored by the user agent unless we're
     // currently deployed to a subdomain of gov.bc.ca
@@ -37,28 +39,30 @@ export const logoutController =
 
 export const tokenSetController =
   (client: BaseClient, _options: SSOExpressOptions) =>
-  async (req, _res, next) => {
+  async (req: Request, _res: Response, next: NextFunction) => {
     if (isAuthenticated(req)) {
       let tokenSet = new TokenSet(req.session.tokenSet);
       // Check if the access token is expired
-      if (tokenSet.expired()) {
-        // If so, use the refresh token to get a new access token
-        try {
+      try {
+        if (tokenSet.expired()) {
+          // If so, use the refresh token to get a new access token
           tokenSet = await client.refresh(tokenSet);
-        } catch (err) {
-          console.error("sso-express could not refresh the access token.");
-          console.error(err);
-          req.session = {};
+          // even if the token set is not expired, this will still add the TokenSet instance methods
         }
         req.session.tokenSet = tokenSet;
+        req.claims = tokenSet.claims();
+      } catch (err) {
+        console.error("sso-express could not refresh the access token.");
+        console.error(err);
+        delete req.session.tokenSet;
       }
-      req.claims = tokenSet.claims();
     }
     next();
   };
 
 export const sessionIdleRemainingTimeController =
-  (_client: BaseClient, options: SSOExpressOptions) => (req, res) => {
+  (_client: BaseClient, options: SSOExpressOptions) =>
+  (req: Request, res: Response) => {
     if (
       shouldBypassAuthentication(
         options.bypassAuthentication,
@@ -72,9 +76,10 @@ export const sessionIdleRemainingTimeController =
   };
 
 export const loginController =
-  (client: BaseClient, options: SSOExpressOptions) => (req, res) => {
+  (client: BaseClient, options: SSOExpressOptions) =>
+  (req: Request, res: Response) => {
     if (
-      req.session.tokenSet ||
+      isAuthenticated(req) ||
       shouldBypassAuthentication(options.bypassAuthentication, "login")
     ) {
       res.redirect(302, options.getLandingRoute(req));
@@ -90,7 +95,8 @@ export const loginController =
   };
 
 export const authCallbackController =
-  (client: BaseClient, options: SSOExpressOptions) => async (req, res) => {
+  (client: BaseClient, options: SSOExpressOptions) =>
+  async (req: Request, res: Response) => {
     const state = req.query.state as string;
     const cachedState = req.session.oidcState;
     delete req.session.oidcState;
