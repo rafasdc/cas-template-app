@@ -1,12 +1,14 @@
-import { BaseClient } from "openid-client";
+import { BaseClient, TokenSet } from "openid-client";
 import { mocked } from "ts-jest/utils";
 import { SSOExpressOptions } from "../src";
 import {
   logoutController,
   sessionIdleRemainingTimeController,
+  tokenSetController,
 } from "../src/controllers";
 import { isAuthenticated, getSessionRemainingTime } from "../src/helpers";
 jest.mock("../src/helpers");
+jest.mock("openid-client");
 
 const oidcIssuer = "https://example.com/auth/realms/myRealm";
 const middlewareOptions: SSOExpressOptions = {
@@ -23,7 +25,8 @@ const client = {
     post_logout_redirect_uris: ["https://example.com/"],
   },
   endSessionUrl: () => "https://oidc-endpoint/logout",
-} as BaseClient;
+  refresh: jest.fn(),
+} as unknown as BaseClient;
 
 describe("the postLogout controller", () => {
   it("clears the SMSESSION cookie", async () => {
@@ -89,7 +92,35 @@ describe("the postLogout controller", () => {
 });
 
 describe("the tokenSet controller", () => {
-  it.todo("tries to refresh the access token if it is expired");
+  it("tries to refresh the access token if it is expired", async () => {
+    mocked(isAuthenticated).mockReturnValue(true);
+    const req = {
+      session: { tokenSet: {} },
+    };
+    const res = {};
+    const next = jest.fn();
+
+    const expiredTokenSet = {
+      expired: () => true,
+      claims: jest.fn(),
+    } as TokenSet;
+
+    const newTokenSet = {
+      expired: () => false,
+      claims: jest.fn(),
+    } as TokenSet;
+
+    mocked(TokenSet).mockImplementation(() => expiredTokenSet);
+    mocked(client.refresh).mockResolvedValue(newTokenSet);
+
+    const handler = tokenSetController(client, middlewareOptions);
+    await handler(req, res, next);
+    expect(client.refresh).toHaveBeenCalledWith(expiredTokenSet);
+    expect(expiredTokenSet.claims).toHaveBeenCalledTimes(0);
+    expect(newTokenSet.claims).toHaveBeenCalled();
+    expect(req.session.tokenSet).toEqual(newTokenSet);
+  });
+
   it.todo("adds the claims to the request");
   it.todo("calls the next middleware in the stack");
 });

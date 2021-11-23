@@ -36,9 +36,9 @@ export const logoutController =
   };
 
 export const tokenSetController =
-  (client: BaseClient, options: SSOExpressOptions) =>
-  async (req, res, next) => {
-    if (req.session && req.session.tokenSet) {
+  (client: BaseClient, _options: SSOExpressOptions) =>
+  async (req, _res, next) => {
+    if (isAuthenticated(req)) {
       let tokenSet = new TokenSet(req.session.tokenSet);
       // Check if the access token is expired
       if (tokenSet.expired()) {
@@ -49,7 +49,6 @@ export const tokenSetController =
           console.error("sso-express could not refresh the access token.");
           console.error(err);
           req.session = {};
-          res.redirect(options.oidcConfig.baseUrl);
         }
         req.session.tokenSet = tokenSet;
       }
