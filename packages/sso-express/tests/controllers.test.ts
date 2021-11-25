@@ -290,12 +290,16 @@ describe("the authCallbackController", () => {
     const res = {
       redirect: jest.fn(),
     } as unknown as Response;
-    await handler(req, res);
+    const next = jest.fn();
+
+    await handler(req, res, next);
+
     expect(req.session.oidcState).toBe(undefined);
     expect(res.redirect).toHaveBeenCalledWith(
       middlewareOptions.oidcConfig.baseUrl
     );
     expect(client.callback).toHaveBeenCalledTimes(0);
+    expect(next).toHaveBeenCalledTimes(1);
   });
 
   it("fetches the tokenSet and redirects to the landing route", async () => {
@@ -309,6 +313,7 @@ describe("the authCallbackController", () => {
     const res = {
       redirect: jest.fn(),
     } as unknown as Response;
+    const next = jest.fn();
 
     const claims = {};
     const callbackParams = {};
@@ -319,7 +324,7 @@ describe("the authCallbackController", () => {
     mocked(client.callback).mockResolvedValue(tokenSet);
     mocked(middlewareOptions.getLandingRoute).mockReturnValue("/landing");
 
-    await handler(req, res);
+    await handler(req, res, next);
 
     expect(req.session.oidcState).toBe(undefined);
     expect(res.redirect).toHaveBeenCalledWith("/landing");
@@ -334,6 +339,7 @@ describe("the authCallbackController", () => {
     );
     expect(req.claims).toBe(claims);
     expect(req.session.tokenSet).toBe(tokenSet);
+    expect(next).toHaveBeenCalledTimes(1);
   });
 
   it("redirects to the base URL if it cannot fetch the tokenSet", async () => {
@@ -347,13 +353,14 @@ describe("the authCallbackController", () => {
     const res = {
       redirect: jest.fn(),
     } as unknown as Response;
+    const next = jest.fn();
 
     const callbackParams = {};
 
     mocked(client.callbackParams).mockReturnValue(callbackParams);
     mocked(client.callback).mockRejectedValue(new Error("some-error"));
 
-    await handler(req, res);
+    await handler(req, res, next);
 
     expect(req.session.oidcState).toBe(undefined);
     expect(res.redirect).toHaveBeenCalledWith(
@@ -369,5 +376,6 @@ describe("the authCallbackController", () => {
     );
     expect(req.claims).toBe(undefined);
     expect(req.session.tokenSet).toBe(undefined);
+    expect(next).toHaveBeenCalledTimes(1);
   });
 });
