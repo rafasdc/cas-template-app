@@ -1,6 +1,6 @@
 {
   "name": "@bcgov-cas/sso-express",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "A developer-friendly express middleware to securely connect to OpenId providers",
   "main": "dist/index.js",
   "module": "dist/index.js",

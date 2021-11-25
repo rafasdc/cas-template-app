@@ -96,13 +96,15 @@ export const loginController =
 
 export const authCallbackController =
   (client: BaseClient, options: SSOExpressOptions) =>
-  async (req: Request, res: Response) => {
+  async (req: Request, res: Response, next: NextFunction) => {
     const state = req.query.state as string;
     const cachedState = req.session.oidcState;
     delete req.session.oidcState;
     if (state !== cachedState) {
       console.log("Invalid OIDC state", state, cachedState);
-      return res.redirect(options.oidcConfig.baseUrl);
+      res.redirect(options.oidcConfig.baseUrl);
+      next();
+      return;
     }
     const callbackParams = client.callbackParams(req);
 
@@ -122,4 +124,6 @@ export const authCallbackController =
       console.error(err);
       res.redirect(options.oidcConfig.baseUrl);
     }
+
+    next();
   };
