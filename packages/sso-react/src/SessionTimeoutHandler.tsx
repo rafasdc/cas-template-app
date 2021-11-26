@@ -76,8 +76,7 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
     const checkSessionIdle = async () => {
       const response = await fetch(sessionRemainingTimePath);
       if (response.ok) {
-        const secondsRemainingInSession =
-          Number(await response.json()) + SERVER_DELAY_SECONDS;
+        const secondsRemainingInSession = Number(await response.json());
         setSessionExpiresOn(Date.now() + secondsRemainingInSession * 1000);
 
         if (secondsRemainingInSession > 0) {
@@ -97,7 +96,7 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
             checkSessionIdle();
           }, secondsRemainingInSession * 1000);
         } else {
-          onSessionExpired();
+          setTimeout(() => onSessionExpired(), SERVER_DELAY_SECONDS * 1000);
         }
       } else onSessionExpired();
     };
