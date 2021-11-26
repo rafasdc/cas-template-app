@@ -157,7 +157,6 @@ describe("The Session Timeout Handler", () => {
     });
 
     await componentUnderTest.update();
-    jest.runAllTimers();
 
     expect(mockExpiredCallback).toHaveBeenCalledOnce();
   });

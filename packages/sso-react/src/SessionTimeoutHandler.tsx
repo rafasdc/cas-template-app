@@ -5,7 +5,7 @@ import throttleEventsEffect from "./throttleEventsEffect";
 
 // Delay to avoid race condition with the server. On session expiry, we wait
 // an additional delay to make sure the session is expired.
-const SERVER_DELAY_SECONDS = 1;
+const SERVER_DELAY_SECONDS = 2;
 
 interface Props {
   modalDisplaySecondsBeforeLogout?: number;
@@ -94,9 +94,9 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
           // and set another timeout to check the session idle when the modal is due to be displayed.
           sessionTimeoutId = setTimeout(() => {
             checkSessionIdle();
-          }, secondsRemainingInSession * 1000);
+          }, (secondsRemainingInSession + SERVER_DELAY_SECONDS) * 1000);
         } else {
-          setTimeout(() => onSessionExpired(), SERVER_DELAY_SECONDS * 1000);
+          onSessionExpired();
         }
       } else onSessionExpired();
     };

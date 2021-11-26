@@ -8,6 +8,7 @@ interface Props {
   expiresOn: number;
   onExtendSession: () => void;
   logoutPath: string;
+  id?: string;
 }
 
 export interface WarningModalProps extends Props {
@@ -25,6 +26,7 @@ const LogoutWarningModal: React.FunctionComponent<
     onExtendSession,
     logoutPath,
     renderModal,
+    id = "logout-warning-modal",
   } = props;
 
   const [remainingSeconds, setRemainingSeconds] = useState(
@@ -32,13 +34,15 @@ const LogoutWarningModal: React.FunctionComponent<
   );
 
   useEffect(() => {
+    window.location.hash = id;
     const intervalId = setInterval(() => {
       setRemainingSeconds(
-        Math.max(0, Math.floor(expiresOn - Date.now()) / 1000)
+        Math.max(0, Math.floor((expiresOn - Date.now()) / 1000))
       );
     }, 1000);
 
     return () => {
+      window.location.hash = "";
       clearInterval(intervalId);
     };
   }, []);
@@ -49,7 +53,7 @@ const LogoutWarningModal: React.FunctionComponent<
 
   // Default render
   return (
-    <Modal show size="lg" id="logout-warning-modal">
+    <Modal size="lg" id={id} style={{ zIndex: 100 }}>
       <Modal.Header className="h4">Inactivity Logout Warning</Modal.Header>
       <Modal.Content style={{ padding: "2em" }}>
         <Grid cols={12}>
@@ -60,26 +64,27 @@ const LogoutWarningModal: React.FunctionComponent<
           <Grid.Row>
             You will be logged out in {remainingSeconds} seconds.
           </Grid.Row>
+          <Grid.Row style={{ marginTop: "1em" }} justify="end">
+            <form action={logoutPath} method="post" style={{ marginBottom: 0 }}>
+              <Button
+                type="submit"
+                variant="secondary"
+                id="logout-warning-modal-logout-button"
+              >
+                Logout
+              </Button>
+            </form>
+            <Button
+              id="logout-warning-modal-remain-active-button"
+              onClick={onExtendSession}
+              variant="primary"
+              style={{ marginLeft: "1em" }}
+            >
+              Remain&nbsp;active
+            </Button>
+          </Grid.Row>
         </Grid>
       </Modal.Content>
-      <Modal.Footer>
-        <form action={logoutPath} method="post">
-          <Button
-            type="submit"
-            variant="secondary"
-            id="logout-warning-modal-logout-button"
-          >
-            Logout
-          </Button>
-        </form>
-        <Button
-          id="logout-warning-modal-remain-active-button"
-          onClick={onExtendSession}
-          variant="primary"
-        >
-          Remain active
-        </Button>
-      </Modal.Footer>
     </Modal>
   );
 };
