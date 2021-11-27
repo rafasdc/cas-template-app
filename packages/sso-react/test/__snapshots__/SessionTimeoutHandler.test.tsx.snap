@@ -6,6 +6,11 @@ exports[`The Session Timeout Handler Shows the modal if there is less time left 
     className="sc-iCfMLu sc-furwcr kQXSYc gDlUxH pg-modal-container"
     id="logout-warning-modal"
     size="lg"
+    style={
+      Object {
+        "zIndex": 100,
+      }
+    }
   >
     <div
       className="sc-pVTFL fdkSXM pg-modal-main"
@@ -39,34 +44,49 @@ exports[`The Session Timeout Handler Shows the modal if there is less time left 
             className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"
           >
             You will be logged out in 
-            16
+            15
              seconds.
+          </div>
+          <div
+            className="sc-bkkeKt sc-ieecCq eHeiPc fEyLc pg-grid-row"
+            style={
+              Object {
+                "marginTop": "1em",
+              }
+            }
+          >
+            <form
+              action="logout"
+              method="post"
+              style={
+                Object {
+                  "marginBottom": 0,
+                }
+              }
+            >
+              <button
+                className="sc-kfPuZi jgizTO pg-button"
+                id="logout-warning-modal-logout-button"
+                type="submit"
+              >
+                Logout
+              </button>
+            </form>
+            <button
+              className="sc-kfPuZi epUors pg-button"
+              id="logout-warning-modal-remain-active-button"
+              onClick={[Function]}
+              style={
+                Object {
+                  "marginLeft": "1em",
+                }
+              }
+            >
+              Remain active
+            </button>
           </div>
         </div>
       </div>
-      <footer
-        className="sc-iqseJM cULDjt pg-modal-footer"
-      >
-        <form
-          action="logout"
-          method="post"
-        >
-          <button
-            className="sc-kfPuZi jgizTO pg-button"
-            id="logout-warning-modal-logout-button"
-            type="submit"
-          >
-            Logout
-          </button>
-        </form>
-        <button
-          className="sc-kfPuZi epUors pg-button"
-          id="logout-warning-modal-remain-active-button"
-          onClick={[Function]}
-        >
-          Remain active
-        </button>
-      </footer>
     </div>
   </div>
 </div>
@@ -78,6 +98,11 @@ exports[`The Session Timeout Handler renders the defaults 1`] = `
     className="sc-iCfMLu sc-furwcr kQXSYc gDlUxH pg-modal-container"
     id="logout-warning-modal"
     size="lg"
+    style={
+      Object {
+        "zIndex": 100,
+      }
+    }
   >
     <div
       className="sc-pVTFL fdkSXM pg-modal-main"
@@ -111,34 +136,49 @@ exports[`The Session Timeout Handler renders the defaults 1`] = `
             className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"
           >
             You will be logged out in 
-            120
+            119
              seconds.
+          </div>
+          <div
+            className="sc-bkkeKt sc-ieecCq eHeiPc fEyLc pg-grid-row"
+            style={
+              Object {
+                "marginTop": "1em",
+              }
+            }
+          >
+            <form
+              action="/logout"
+              method="post"
+              style={
+                Object {
+                  "marginBottom": 0,
+                }
+              }
+            >
+              <button
+                className="sc-kfPuZi jgizTO pg-button"
+                id="logout-warning-modal-logout-button"
+                type="submit"
+              >
+                Logout
+              </button>
+            </form>
+            <button
+              className="sc-kfPuZi epUors pg-button"
+              id="logout-warning-modal-remain-active-button"
+              onClick={[Function]}
+              style={
+                Object {
+                  "marginLeft": "1em",
+                }
+              }
+            >
+              Remain active
+            </button>
           </div>
         </div>
       </div>
-      <footer
-        className="sc-iqseJM cULDjt pg-modal-footer"
-      >
-        <form
-          action="/logout"
-          method="post"
-        >
-          <button
-            className="sc-kfPuZi jgizTO pg-button"
-            id="logout-warning-modal-logout-button"
-            type="submit"
-          >
-            Logout
-          </button>
-        </form>
-        <button
-          className="sc-kfPuZi epUors pg-button"
-          id="logout-warning-modal-remain-active-button"
-          onClick={[Function]}
-        >
-          Remain active
-        </button>
-      </footer>
     </div>
   </div>
 </div>
@@ -148,7 +188,7 @@ exports[`The Session Timeout Handler renders the modal with the render function 
 <div>
   <div>
     Session will expire in 
-    16
+    15
      seconds
   </div>
 </div>

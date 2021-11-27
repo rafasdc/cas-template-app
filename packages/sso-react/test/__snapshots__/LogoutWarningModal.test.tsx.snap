@@ -3,8 +3,12 @@
 exports[`The Logout Warning Modal Should match the snapshot 1`] = `
 <BaseComponent
   id="logout-warning-modal"
-  show={true}
   size="lg"
+  style={
+    Object {
+      "zIndex": 100,
+    }
+  }
 >
   <Component
     className="h4"
@@ -32,28 +36,45 @@ exports[`The Logout Warning Modal Should match the snapshot 1`] = `
         11
          seconds.
       </Component>
-    </BaseComponent>
-  </Component>
-  <Component>
-    <form
-      action="/logout"
-      method="post"
-    >
-      <Button
-        id="logout-warning-modal-logout-button"
-        type="submit"
-        variant="secondary"
+      <Component
+        justify="end"
+        style={
+          Object {
+            "marginTop": "1em",
+          }
+        }
       >
-        Logout
-      </Button>
-    </form>
-    <Button
-      id="logout-warning-modal-remain-active-button"
-      onClick={[Function]}
-      variant="primary"
-    >
-      Remain active
-    </Button>
+        <form
+          action="/logout"
+          method="post"
+          style={
+            Object {
+              "marginBottom": 0,
+            }
+          }
+        >
+          <Button
+            id="logout-warning-modal-logout-button"
+            type="submit"
+            variant="secondary"
+          >
+            Logout
+          </Button>
+        </form>
+        <Button
+          id="logout-warning-modal-remain-active-button"
+          onClick={[Function]}
+          style={
+            Object {
+              "marginLeft": "1em",
+            }
+          }
+          variant="primary"
+        >
+          Remain active
+        </Button>
+      </Component>
+    </BaseComponent>
   </Component>
 </BaseComponent>
 `;
@@ -71,6 +92,11 @@ exports[`The Logout Warning Modal should countdown seconds 1`] = `
   className="sc-iCfMLu sc-furwcr kQXSYc gDlUxH pg-modal-container"
   id="logout-warning-modal"
   size="lg"
+  style={
+    Object {
+      "zIndex": 100,
+    }
+  }
 >
   <div
     className="sc-pVTFL fdkSXM pg-modal-main"
@@ -107,31 +133,46 @@ exports[`The Logout Warning Modal should countdown seconds 1`] = `
           16
            seconds.
         </div>
+        <div
+          className="sc-bkkeKt sc-ieecCq eHeiPc fEyLc pg-grid-row"
+          style={
+            Object {
+              "marginTop": "1em",
+            }
+          }
+        >
+          <form
+            action="/logout"
+            method="post"
+            style={
+              Object {
+                "marginBottom": 0,
+              }
+            }
+          >
+            <button
+              className="sc-kfPuZi jgizTO pg-button"
+              id="logout-warning-modal-logout-button"
+              type="submit"
+            >
+              Logout
+            </button>
+          </form>
+          <button
+            className="sc-kfPuZi epUors pg-button"
+            id="logout-warning-modal-remain-active-button"
+            onClick={[Function]}
+            style={
+              Object {
+                "marginLeft": "1em",
+              }
+            }
+          >
+            Remain active
+          </button>
+        </div>
       </div>
     </div>
-    <footer
-      className="sc-iqseJM cULDjt pg-modal-footer"
-    >
-      <form
-        action="/logout"
-        method="post"
-      >
-        <button
-          className="sc-kfPuZi jgizTO pg-button"
-          id="logout-warning-modal-logout-button"
-          type="submit"
-        >
-          Logout
-        </button>
-      </form>
-      <button
-        className="sc-kfPuZi epUors pg-button"
-        id="logout-warning-modal-remain-active-button"
-        onClick={[Function]}
-      >
-        Remain active
-      </button>
-    </footer>
   </div>
 </div>
 `;
