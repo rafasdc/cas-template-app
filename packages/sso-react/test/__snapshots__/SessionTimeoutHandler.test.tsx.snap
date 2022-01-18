@@ -129,7 +129,7 @@ exports[`The Session Timeout Handler renders the defaults 1`] = `
           >
             Your session is about to expire due to inactivity over
              
-            2
+            30
              minutes.
           </div>
           <div
