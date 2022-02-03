@@ -134,6 +134,4 @@ export const authCallbackController =
       console.error(err);
       res.redirect(options.oidcConfig.baseUrl);
     }
-
-    next();
   };
