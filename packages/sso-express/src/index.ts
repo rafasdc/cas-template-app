@@ -46,7 +46,7 @@ export interface SSOExpressOptions {
      */
     oidcIssuer: string;
     clientId: string;
-    clientSecret: string;
+    clientSecret?: string;
     /**
      * The url of the application, accessible from the user's browser e.g. https://myapp.gov.bc.ca,
      * or http://localhost:3000 when doing local development
