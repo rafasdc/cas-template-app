@@ -89,7 +89,7 @@ async function ssoExpress(opts: SSOExpressOptions) {
   const client = new Client({
     client_id: clientId,
     client_secret: clientSecret,
-    redirect_uris: [`${baseUrl}/auth-callback`],
+    redirect_uris: [`${baseUrl}${authCallback}`],
     post_logout_redirect_uris: [baseUrl],
     token_endpoint_auth_method: clientSecret ? 'client_secret_basic' : 'none',
   });
