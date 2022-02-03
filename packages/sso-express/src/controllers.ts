@@ -88,8 +88,15 @@ export const loginController =
 
     const state = generators.random(32);
     req.session.oidcState = state;
+
+    const codeVerifier = generators.codeVerifier();
+    const codeChallenge = generators.codeChallenge(codeVerifier);
+    req.session.codeVerifier = codeVerifier;
+
     const authUrl = client.authorizationUrl({
       state,
+      code_challenge: codeChallenge,
+      code_challenge_method: "S256",
     });
     res.redirect(authUrl);
   };
@@ -99,7 +106,9 @@ export const authCallbackController =
   async (req: Request, res: Response, next: NextFunction) => {
     const state = req.query.state as string;
     const cachedState = req.session.oidcState;
+    const codeVerifier = req.session.codeVerifier;
     delete req.session.oidcState;
+    delete req.session.codeVerifier;
     if (state !== cachedState) {
       console.log("Invalid OIDC state", state, cachedState);
       res.redirect(options.oidcConfig.baseUrl);
@@ -114,6 +123,7 @@ export const authCallbackController =
         callbackParams,
         {
           state,
+          code_verifier: codeVerifier,
         }
       );
       req.session.tokenSet = tokenSet;

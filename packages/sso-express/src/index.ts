@@ -17,6 +17,7 @@ declare global {
       session?: {
         oidcState?: string;
         tokenSet?: TokenSetParameters;
+        codeVerifier?: string;
       };
       claims?: IdTokenClaims;
     }
