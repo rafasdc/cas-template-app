@@ -1,4 +1,4 @@
-import ssoExpress from "../src/index";
+import ssoExpress, { SSOExpressOptions } from "../src/index";
 import type { Router } from "express";
 import { Issuer } from "openid-client";
 import { mocked } from "ts-jest/utils";
@@ -16,7 +16,7 @@ const oidcIssuer = "https://example.com/auth/realms/myRealm";
 
 describe("The ssoExpress middleware", () => {
   let clientConstructor: jest.Mock;
-  let middleware: Router;
+  let middlewareOpts: SSOExpressOptions;
 
   beforeEach(async () => {
     clientConstructor = jest.fn();
@@ -28,8 +28,7 @@ describe("The ssoExpress middleware", () => {
         }
       },
     }));
-
-    middleware = await ssoExpress({
+    middlewareOpts = {
       oidcConfig: {
         baseUrl: "https://example.com",
         clientId: "myClient",
@@ -40,7 +39,7 @@ describe("The ssoExpress middleware", () => {
         logout: "/testlogout",
         sessionIdleRemainingTime: "/testremaining",
       },
-    });
+    };
   });
 
   it("throws an error if there is no oidc config provided", () => {
@@ -52,7 +51,8 @@ describe("The ssoExpress middleware", () => {
     ).rejects.toThrow("sso-express: oidcConfig key not provided in options");
   });
 
-  it("instantiates the openid client", async () => {
+  it("instantiates the openid client with clientSecret unset", async () => {
+    await ssoExpress(middlewareOpts);
     expect(mockedIssuer.discover).toHaveBeenCalledWith(oidcIssuer);
     expect(clientConstructor).toHaveBeenCalledWith({
       client_id: "myClient",
@@ -62,7 +62,26 @@ describe("The ssoExpress middleware", () => {
     });
   });
 
+  it("instantiates the openid client with clientSecret set", async () => {
+    await ssoExpress({
+      ...middlewareOpts,
+      oidcConfig: {
+        ...middlewareOpts.oidcConfig,
+        clientSecret: "some-random-secret",
+      },
+    });
+    expect(mockedIssuer.discover).toHaveBeenCalledWith(oidcIssuer);
+    expect(clientConstructor).toHaveBeenCalledWith({
+      client_id: "myClient",
+      client_secret: "some-random-secret",
+      post_logout_redirect_uris: ["https://example.com"],
+      redirect_uris: ["https://example.com/auth-callback"],
+      token_endpoint_auth_method: "client_secret_basic",
+    });
+  });
+
   it("Configures the middleware with the right routes", async () => {
+    const middleware: Router = await ssoExpress(middlewareOpts);
     // 4 configured routes, and 1 anonymous middleware routes (parsing and refreshing the session tokens)
     expect(middleware.stack.length).toBe(5);
 

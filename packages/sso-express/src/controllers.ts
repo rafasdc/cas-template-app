@@ -89,6 +89,9 @@ export const loginController =
     const state = generators.random(32);
     req.session.oidcState = state;
 
+    // Code challenge and code verifier for PKCE support. If the clientSecret is set
+    // in the oidcConfig, then code challenge options will be included in the auth
+    // request session.
     const codeVerifier = generators.codeVerifier();
     const codeChallenge = generators.codeChallenge(codeVerifier);
     req.session.codeVerifier = codeVerifier;
@@ -110,7 +113,7 @@ export const authCallbackController =
     delete req.session.oidcState;
     delete req.session.codeVerifier;
     if (state !== cachedState) {
-      console.log("Invalid OIDC state", state, cachedState);
+      console.error("Invalid OIDC state", state, cachedState);
       res.redirect(options.oidcConfig.baseUrl);
       next();
       return;
@@ -134,4 +137,5 @@ export const authCallbackController =
       console.error(err);
       res.redirect(options.oidcConfig.baseUrl);
     }
+    next();
   };
