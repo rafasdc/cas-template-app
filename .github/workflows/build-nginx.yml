@@ -2,8 +2,9 @@ name: Build Nginx Image
 
 on:
   push:
-    branches-ignore:
-      - main
+    branches: [develop]
+  pull_request:
+    branches: [develop]
 
 jobs:
   cas-nginx-sidecar-build:

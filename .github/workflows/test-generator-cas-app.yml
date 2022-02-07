@@ -2,8 +2,9 @@ name: Test Generator CAS App
 
 on:
   push:
-    branches-ignore:
-      - main
+    branches: [develop]
+  pull_request:
+    branches: [develop]
 
 jobs:
   test-generator-cas-app:
