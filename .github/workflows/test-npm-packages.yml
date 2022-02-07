@@ -1,8 +1,10 @@
 name: Test @bcgov-cas packages
 on:
   push:
-    branches-ignore:
-      - main
+    branches: [develop]
+  pull_request:
+    branches: [develop]
+
 jobs:
   build:
     runs-on: ubuntu-latest
