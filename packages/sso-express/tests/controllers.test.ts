@@ -10,6 +10,8 @@ import {
   tokenSetController,
 } from "../src/controllers";
 import { isAuthenticated, getSessionRemainingTime } from "../src/helpers";
+import { createHash } from "crypto";
+import base64url from "openid-client/lib/helpers/base64url";
 jest.mock("../src/helpers");
 jest.mock("openid-client");
 
@@ -162,6 +164,7 @@ describe("the tokenSet controller", () => {
   });
 
   it("removes the token set from the session if the token refresh fails", async () => {
+    const consoleErrorMock = jest.spyOn(console, "error").mockImplementation();
     mocked(isAuthenticated).mockReturnValue(true);
     const req = {
       session: { tokenSet: {} },
@@ -184,6 +187,12 @@ describe("the tokenSet controller", () => {
     expect(req.session.tokenSet).toBeUndefined();
     expect(req.claims).toBeUndefined();
     expect(next).toHaveBeenCalled();
+    expect(consoleErrorMock).toHaveBeenCalledTimes(2);
+    expect(consoleErrorMock.mock.calls).toEqual([
+      ["sso-express could not refresh the access token."],
+      [new Error("refresh failed")],
+    ]);
+    consoleErrorMock.mockRestore();
   });
 });
 
@@ -261,8 +270,14 @@ describe("the loginController", () => {
   });
 
   it("redirects the user to the provider's auth URL", async () => {
+    const mockCodeVerifier = "some-random-state";
+    const mockCodeChallenge = base64url.encode(
+      createHash("sha256").update(mockCodeVerifier).digest()
+    );
     mocked(isAuthenticated).mockReturnValue(false);
-    mocked(generators.random).mockReturnValue("some-random-state");
+    mocked(generators.random).mockReturnValue(mockCodeVerifier);
+    mocked(generators.codeVerifier).mockReturnValue(mockCodeVerifier);
+    mocked(generators.codeChallenge).mockReturnValue(mockCodeChallenge);
     mocked(client.authorizationUrl).mockReturnValue("https://auth.url");
     const handler = loginController(client, middlewareOptions);
     const req = { session: {} } as Request;
@@ -272,7 +287,9 @@ describe("the loginController", () => {
     await handler(req, res);
 
     expect(client.authorizationUrl).toHaveBeenCalledWith({
-      state: "some-random-state",
+      state: mockCodeVerifier,
+      code_challenge: mockCodeChallenge,
+      code_challenge_method: "S256",
     });
     expect(res.redirect).toHaveBeenCalledWith("https://auth.url");
   });
@@ -280,6 +297,7 @@ describe("the loginController", () => {
 
 describe("the authCallbackController", () => {
   it("checks if the OpenID state of the request matches the session's", async () => {
+    const consoleErrorMock = jest.spyOn(console, "error").mockImplementation();
     const handler = authCallbackController(client, middlewareOptions);
     const req = {
       session: { oidcState: "some-state" },
@@ -299,7 +317,13 @@ describe("the authCallbackController", () => {
       middlewareOptions.oidcConfig.baseUrl
     );
     expect(client.callback).toHaveBeenCalledTimes(0);
+    expect(consoleErrorMock).toHaveBeenLastCalledWith(
+      "Invalid OIDC state",
+      "some-other-state",
+      "some-state"
+    );
     expect(next).toHaveBeenCalledTimes(1);
+    consoleErrorMock.mockRestore();
   });
 
   it("fetches the tokenSet and redirects to the landing route", async () => {
@@ -343,6 +367,7 @@ describe("the authCallbackController", () => {
   });
 
   it("redirects to the base URL if it cannot fetch the tokenSet", async () => {
+    const consoleErrorMock = jest.spyOn(console, "error").mockImplementation();
     const handler = authCallbackController(client, middlewareOptions);
     const req = {
       session: { oidcState: "some-state" },
@@ -376,6 +401,36 @@ describe("the authCallbackController", () => {
     );
     expect(req.claims).toBe(undefined);
     expect(req.session.tokenSet).toBe(undefined);
+    expect(consoleErrorMock.mock.calls).toEqual([
+      ["sso-express could not get the access token."],
+      [new Error("some-error")],
+    ]);
     expect(next).toHaveBeenCalledTimes(1);
+    consoleErrorMock.mockRestore();
+  });
+
+  it("does not add a randomly-generated code_challenge to the session when odicConfig.clientSecret is unset", async () => {
+    mocked(isAuthenticated).mockReturnValue(false);
+    const mockCodeVerifier = "some-random-state";
+    const mockCodeChallenge = base64url.encode(
+      createHash("sha256").update(mockCodeVerifier).digest()
+    );
+    mocked(generators.codeVerifier).mockReturnValue(mockCodeVerifier);
+    mocked(generators.codeChallenge).mockReturnValue(mockCodeChallenge);
+    const handler = loginController(client, middlewareOptions);
+    const req = { session: {} } as Request;
+    const res = {
+      redirect: jest.fn(),
+    } as unknown as Response;
+    await handler(req, res);
+    expect(generators.codeVerifier).toHaveBeenCalledWith(32);
+    expect(generators.codeChallenge).toHaveBeenCalledWith(mockCodeVerifier);
+    expect(client.authorizationUrl).toHaveBeenCalledWith({
+      state: mockCodeVerifier,
+      code_challenge: mockCodeChallenge,
+      code_challenge_method: "S256",
+    });
+    expect(req.session.codeVerifier).toBe(mockCodeVerifier);
+    expect(req.session.oidcState).toBe(mockCodeVerifier);
   });
 });

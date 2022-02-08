@@ -17,6 +17,7 @@ declare global {
       session?: {
         oidcState?: string;
         tokenSet?: TokenSetParameters;
+        codeVerifier?: string;
       };
       claims?: IdTokenClaims;
     }
@@ -45,6 +46,7 @@ export interface SSOExpressOptions {
      */
     oidcIssuer: string;
     clientId: string;
+    clientSecret?: string;
     /**
      * The url of the application, accessible from the user's browser e.g. https://myapp.gov.bc.ca,
      * or http://localhost:3000 when doing local development
@@ -78,7 +80,7 @@ async function ssoExpress(opts: SSOExpressOptions) {
     },
   };
 
-  const { clientId, baseUrl, oidcIssuer } = options.oidcConfig;
+  const { clientId, clientSecret, baseUrl, oidcIssuer } = options.oidcConfig;
   const { authCallback, login, logout, sessionIdleRemainingTime } =
     options.routes;
 
@@ -86,9 +88,10 @@ async function ssoExpress(opts: SSOExpressOptions) {
   const { Client } = issuer;
   const client = new Client({
     client_id: clientId,
-    redirect_uris: [`${baseUrl}/auth-callback`],
+    client_secret: clientSecret,
+    redirect_uris: [`${baseUrl}${authCallback}`],
     post_logout_redirect_uris: [baseUrl],
-    token_endpoint_auth_method: "none", // only support public clients
+    token_endpoint_auth_method: clientSecret ? 'client_secret_basic' : 'none',
   });
 
   // Creating a router middleware on which we'll add all the specific routes and additional middlewares.

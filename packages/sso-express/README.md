@@ -27,7 +27,7 @@ The package configures a middleware with the following configurable endpoints:
 ### Example usage
 
 ```javascript
-const ssoUtils = require("@bcgov-cas/sso-express");
+const ssoUtils = require("@bcgov-cas/sso-express").default;
 
 const ssoMiddleware = await ssoUtils({
   applicationDomain: ".gov.bc.ca",
@@ -42,6 +42,7 @@ const ssoMiddleware = await ssoUtils({
   oidcConfig: {
     oidcIssuer: `https://oidc.gov.bc.ca/auth/realm/myrealm`,
     clientId: "myappresource",
+    clientSecret: 'verysecuresecret', // optional
     baseUrl: "http://localhost:3000",
   },
 });
