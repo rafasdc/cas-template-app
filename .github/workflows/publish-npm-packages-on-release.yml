@@ -1,9 +1,8 @@
 name: Publish @bcgov-cas packages with lerna monorepo
 on:
   push:
-    branches: [develop]
-  pull_request:
-    branches: [develop]
+    branches:
+      - main
 
 jobs:
   build:
