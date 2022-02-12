@@ -65,6 +65,13 @@ export interface SSOExpressOptions {
     sessionIdleRemainingTime?: string;
     authCallback?: string;
   };
+  /**
+   * Callback function called after the user is authenticated,
+   * but before the user is redirected to the landing page.
+   *
+   * @param req The request object, containing req.claims and req.session.tokenSet
+   */
+  onAuthCallback?: (req: Request) => Promise<void> | void;
 }
 
 async function ssoExpress(opts: SSOExpressOptions) {
@@ -91,7 +98,7 @@ async function ssoExpress(opts: SSOExpressOptions) {
     client_secret: clientSecret,
     redirect_uris: [`${baseUrl}${authCallback}`],
     post_logout_redirect_uris: [baseUrl],
-    token_endpoint_auth_method: clientSecret ? 'client_secret_basic' : 'none',
+    token_endpoint_auth_method: clientSecret ? "client_secret_basic" : "none",
   });
 
   // Creating a router middleware on which we'll add all the specific routes and additional middlewares.

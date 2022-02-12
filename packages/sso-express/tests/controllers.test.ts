@@ -24,6 +24,7 @@ const middlewareOptions: SSOExpressOptions = {
     oidcIssuer,
   },
   getLandingRoute: jest.fn(),
+  onAuthCallback: jest.fn(),
 };
 
 const client = {
@@ -308,9 +309,8 @@ describe("the authCallbackController", () => {
     const res = {
       redirect: jest.fn(),
     } as unknown as Response;
-    const next = jest.fn();
 
-    await handler(req, res, next);
+    await handler(req, res);
 
     expect(req.session.oidcState).toBe(undefined);
     expect(res.redirect).toHaveBeenCalledWith(
@@ -322,7 +322,6 @@ describe("the authCallbackController", () => {
       "some-other-state",
       "some-state"
     );
-    expect(next).toHaveBeenCalledTimes(1);
     consoleErrorMock.mockRestore();
   });
 
@@ -337,7 +336,6 @@ describe("the authCallbackController", () => {
     const res = {
       redirect: jest.fn(),
     } as unknown as Response;
-    const next = jest.fn();
 
     const claims = {};
     const callbackParams = {};
@@ -348,7 +346,7 @@ describe("the authCallbackController", () => {
     mocked(client.callback).mockResolvedValue(tokenSet);
     mocked(middlewareOptions.getLandingRoute).mockReturnValue("/landing");
 
-    await handler(req, res, next);
+    await handler(req, res);
 
     expect(req.session.oidcState).toBe(undefined);
     expect(res.redirect).toHaveBeenCalledWith("/landing");
@@ -363,7 +361,9 @@ describe("the authCallbackController", () => {
     );
     expect(req.claims).toBe(claims);
     expect(req.session.tokenSet).toBe(tokenSet);
-    expect(next).toHaveBeenCalledTimes(1);
+    expect(middlewareOptions.onAuthCallback).toHaveBeenCalledWith(
+      expect.objectContaining({ claims, session: { tokenSet } })
+    );
   });
 
   it("redirects to the base URL if it cannot fetch the tokenSet", async () => {
@@ -378,14 +378,13 @@ describe("the authCallbackController", () => {
     const res = {
       redirect: jest.fn(),
     } as unknown as Response;
-    const next = jest.fn();
 
     const callbackParams = {};
 
     mocked(client.callbackParams).mockReturnValue(callbackParams);
     mocked(client.callback).mockRejectedValue(new Error("some-error"));
 
-    await handler(req, res, next);
+    await handler(req, res);
 
     expect(req.session.oidcState).toBe(undefined);
     expect(res.redirect).toHaveBeenCalledWith(
@@ -405,7 +404,7 @@ describe("the authCallbackController", () => {
       ["sso-express could not get the access token."],
       [new Error("some-error")],
     ]);
-    expect(next).toHaveBeenCalledTimes(1);
+    expect(middlewareOptions.onAuthCallback).toHaveBeenCalledTimes(0);
     consoleErrorMock.mockRestore();
   });
 
