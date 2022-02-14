@@ -42,7 +42,7 @@ const ssoMiddleware = await ssoUtils({
   oidcConfig: {
     oidcIssuer: `https://oidc.gov.bc.ca/auth/realm/myrealm`,
     clientId: "myappresource",
-    clientSecret: 'verysecuresecret', // optional
+    clientSecret: "verysecuresecret", // optional
     baseUrl: "http://localhost:3000",
   },
 });
@@ -87,6 +87,7 @@ In addition, all these configuration keys are accepted:
 | `getLandingRoute`      | Function `(req) => string` used to redirect the user after login.                                                       | `() => '/'`   |
 | `bypassAuthentication` | Set to `true`, `false` or `{ login: t/f , sessionIdleRemainingTime: t/f }` to configure                                 | `false`       |
 | `routes`               | Overrides the default routes below. Set to `false` or `''` to disable (unavailable for login, logout, and authCallback) | see below     |
+| `onAuthCallback`       | Callback function called after the user is authenticated, but before the user is redirected to the landing page.        | `undefined `  |
 
 <br />
 Default routes object:

@@ -106,7 +106,7 @@ export const loginController =
 
 export const authCallbackController =
   (client: BaseClient, options: SSOExpressOptions) =>
-  async (req: Request, res: Response, next: NextFunction) => {
+  async (req: Request, res: Response) => {
     const state = req.query.state as string;
     const cachedState = req.session.oidcState;
     const codeVerifier = req.session.codeVerifier;
@@ -115,7 +115,6 @@ export const authCallbackController =
     if (state !== cachedState) {
       console.error("Invalid OIDC state", state, cachedState);
       res.redirect(options.oidcConfig.baseUrl);
-      next();
       return;
     }
     const callbackParams = client.callbackParams(req);
@@ -131,11 +130,15 @@ export const authCallbackController =
       );
       req.session.tokenSet = tokenSet;
       req.claims = tokenSet.claims();
+
+      if (typeof options.onAuthCallback === "function") {
+        await options.onAuthCallback(req);
+      }
+
       res.redirect(options.getLandingRoute(req));
     } catch (err) {
       console.error("sso-express could not get the access token.");
       console.error(err);
       res.redirect(options.oidcConfig.baseUrl);
     }
-    next();
   };
