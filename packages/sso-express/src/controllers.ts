@@ -1,5 +1,6 @@
 import type { Request, Response, NextFunction } from "express";
 import { BaseClient, generators, TokenSet } from "openid-client";
+import { URL } from "url";
 import { getSessionRemainingTime, isAuthenticated } from "./helpers";
 import { SSOExpressOptions } from "./index";
 
@@ -100,6 +101,10 @@ export const loginController =
       state,
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
+      redirect_uri: options.getRedirectUri(
+        new URL(client.metadata.redirect_uris[0]),
+        req
+      ).href,
     });
     res.redirect(authUrl);
   };
@@ -121,7 +126,8 @@ export const authCallbackController =
 
     try {
       const tokenSet = await client.callback(
-        client.metadata.redirect_uris[0],
+        options.getRedirectUri(new URL(client.metadata.redirect_uris[0]), req)
+          .href,
         callbackParams,
         {
           state,

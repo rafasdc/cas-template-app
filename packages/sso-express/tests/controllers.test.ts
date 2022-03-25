@@ -12,6 +12,7 @@ import {
 import { isAuthenticated, getSessionRemainingTime } from "../src/helpers";
 import { createHash } from "crypto";
 import base64url from "openid-client/lib/helpers/base64url";
+import { URL } from "url";
 jest.mock("../src/helpers");
 jest.mock("openid-client");
 
@@ -24,6 +25,7 @@ const middlewareOptions: SSOExpressOptions = {
     oidcIssuer,
   },
   getLandingRoute: jest.fn(),
+  getRedirectUri: jest.fn(),
   onAuthCallback: jest.fn(),
 };
 
@@ -260,6 +262,9 @@ describe("the loginController", () => {
   it("adds a randomly-generated OpenID state to the session", async () => {
     mocked(isAuthenticated).mockReturnValue(false);
     mocked(generators.random).mockReturnValue("some-random-state");
+    mocked(middlewareOptions.getRedirectUri).mockImplementationOnce(
+      (defaultRedirectUri) => defaultRedirectUri
+    );
     const handler = loginController(client, middlewareOptions);
     const req = { session: {} } as Request;
     const res = {
@@ -280,6 +285,11 @@ describe("the loginController", () => {
     mocked(generators.codeVerifier).mockReturnValue(mockCodeVerifier);
     mocked(generators.codeChallenge).mockReturnValue(mockCodeChallenge);
     mocked(client.authorizationUrl).mockReturnValue("https://auth.url");
+
+    const url = new URL("http://example.com/callback");
+    url.searchParams.append("test", "/path/abc");
+    mocked(middlewareOptions.getRedirectUri).mockReturnValueOnce(url);
+
     const handler = loginController(client, middlewareOptions);
     const req = { session: {} } as Request;
     const res = {
@@ -291,7 +301,18 @@ describe("the loginController", () => {
       state: mockCodeVerifier,
       code_challenge: mockCodeChallenge,
       code_challenge_method: "S256",
+      redirect_uri: "http://example.com/callback?test=%2Fpath%2Fabc",
     });
+    expect(middlewareOptions.getRedirectUri).toHaveBeenCalledWith(
+      // We verify that the getRedirectUri function has been called with the default redirect URI
+      new URL("https://example.com/auth-callback"),
+      {
+        session: {
+          codeVerifier: "some-random-state",
+          oidcState: "some-random-state",
+        },
+      }
+    );
     expect(res.redirect).toHaveBeenCalledWith("https://auth.url");
   });
 });
@@ -345,6 +366,9 @@ describe("the authCallbackController", () => {
     mocked(client.callbackParams).mockReturnValue(callbackParams);
     mocked(client.callback).mockResolvedValue(tokenSet);
     mocked(middlewareOptions.getLandingRoute).mockReturnValue("/landing");
+    mocked(middlewareOptions.getRedirectUri).mockReturnValueOnce(
+      new URL("http://example.com/redirected-uri")
+    );
 
     await handler(req, res);
 
@@ -353,7 +377,7 @@ describe("the authCallbackController", () => {
     expect(client.callbackParams).toHaveBeenCalledWith(req);
     expect(tokenSet.claims).toHaveBeenCalled();
     expect(client.callback).toHaveBeenCalledWith(
-      client.metadata.redirect_uris[0],
+      "http://example.com/redirected-uri",
       callbackParams,
       {
         state: "some-state",
@@ -383,6 +407,9 @@ describe("the authCallbackController", () => {
 
     mocked(client.callbackParams).mockReturnValue(callbackParams);
     mocked(client.callback).mockRejectedValue(new Error("some-error"));
+    mocked(middlewareOptions.getRedirectUri).mockImplementationOnce(
+      (defaultRedirectUri) => defaultRedirectUri
+    );
 
     await handler(req, res);
 
@@ -416,6 +443,9 @@ describe("the authCallbackController", () => {
     );
     mocked(generators.codeVerifier).mockReturnValue(mockCodeVerifier);
     mocked(generators.codeChallenge).mockReturnValue(mockCodeChallenge);
+    mocked(middlewareOptions.getRedirectUri).mockImplementationOnce(
+      (defaultRedirectUri) => defaultRedirectUri
+    );
     const handler = loginController(client, middlewareOptions);
     const req = { session: {} } as Request;
     const res = {
@@ -428,6 +458,7 @@ describe("the authCallbackController", () => {
       state: mockCodeVerifier,
       code_challenge: mockCodeChallenge,
       code_challenge_method: "S256",
+      redirect_uri: "https://example.com/auth-callback",
     });
     expect(req.session.codeVerifier).toBe(mockCodeVerifier);
     expect(req.session.oidcState).toBe(mockCodeVerifier);
