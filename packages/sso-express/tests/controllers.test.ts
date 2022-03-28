@@ -294,6 +294,26 @@ describe("the loginController", () => {
     });
     expect(res.redirect).toHaveBeenCalledWith("https://auth.url");
   });
+
+  it("adds provided url params to the auth URL", async () => {
+    mocked(isAuthenticated).mockReturnValue(false);
+    mocked(client.authorizationUrl).mockReturnValue("https://auth.url/");
+    const middlewareOptionsWithURLParams = {
+      ...middlewareOptions,
+      authorizationUrlParams: ["url_param_1=value1", "url_param_2=value2"]
+    }
+
+    const handler = loginController(client, middlewareOptionsWithURLParams);
+    const req = { session: {} } as Request;
+    const res = {
+      redirect: jest.fn(),
+    } as unknown as Response;
+    await handler(req, res);
+
+    expect(res.redirect).toHaveBeenCalledWith("https://auth.url/&url_param_1=value1&url_param_2=value2");
+  });
+
+
 });
 
 describe("the authCallbackController", () => {
