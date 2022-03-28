@@ -35,7 +35,7 @@ install_pgtap: start_pg
 install_pgtap:
 	@git clone https://github.com/theory/pgtap.git && \
 		cd pgtap && \
-		git checkout v1.1.0;
+		git checkout v1.2.0;
 	@$(MAKE) -C pgtap
 	@$(MAKE) -C pgtap install
 	@$(MAKE) -C pgtap installcheck
@@ -158,4 +158,3 @@ db_unit_tests: | start_pg drop_test_db create_test_db deploy_test_db_migrations
 db_unit_tests:
 	@$(PG_PROVE) --failures -d $(DB_NAME)_test schema/test/unit/**/*_test.sql
 	@$(PG_PROVE) --failures -d $(DB_NAME)_test mocks_schema/test/**/*_test.sql
-

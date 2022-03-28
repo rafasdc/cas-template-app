@@ -7,9 +7,9 @@ describe("generator-cas-app:app", () => {
   beforeAll(
     () =>
       helpers.run(path.join(__dirname, "../generators/app")).withPrompts({
-        nodejs: "14.17.6",
+        nodejs: "16.14.2",
         yarn: "1.22.5",
-        postgres: "12.6",
+        postgres: "14.2",
         python: "3.9.2",
         projectName: "abcd",
         committerEmail: "foo@bar.com",
