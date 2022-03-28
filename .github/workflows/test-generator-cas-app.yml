@@ -23,4 +23,6 @@ jobs:
       - run: yarn install
         working-directory: ./generator-cas-app
       - run: yarn test
+        env:
+          PGUSER: postgres
         working-directory: ./generator-cas-app
