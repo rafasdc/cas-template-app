@@ -12,6 +12,7 @@ import {
 import { isAuthenticated, getSessionRemainingTime } from "../src/helpers";
 import { createHash } from "crypto";
 import base64url from "openid-client/lib/helpers/base64url";
+import { URL } from "url";
 jest.mock("../src/helpers");
 jest.mock("openid-client");
 
@@ -24,6 +25,7 @@ const middlewareOptions: SSOExpressOptions = {
     oidcIssuer,
   },
   getLandingRoute: jest.fn(),
+  getRedirectUri: jest.fn(),
   onAuthCallback: jest.fn(),
 };
 
@@ -260,6 +262,9 @@ describe("the loginController", () => {
   it("adds a randomly-generated OpenID state to the session", async () => {
     mocked(isAuthenticated).mockReturnValue(false);
     mocked(generators.random).mockReturnValue("some-random-state");
+    mocked(middlewareOptions.getRedirectUri).mockImplementationOnce(
+      (defaultRedirectUri) => defaultRedirectUri
+    );
     const handler = loginController(client, middlewareOptions);
     const req = { session: {} } as Request;
     const res = {
@@ -270,7 +275,7 @@ describe("the loginController", () => {
     expect(req.session.oidcState).toBe("some-random-state");
   });
 
-  it("redirects the user to the provider's auth URL", async () => {
+  it("redirects the user to the provider's auth URL, and saves the redirectUri in the session", async () => {
     const mockCodeVerifier = "some-random-state";
     const mockCodeChallenge = base64url.encode(
       createHash("sha256").update(mockCodeVerifier).digest()
@@ -280,6 +285,11 @@ describe("the loginController", () => {
     mocked(generators.codeVerifier).mockReturnValue(mockCodeVerifier);
     mocked(generators.codeChallenge).mockReturnValue(mockCodeChallenge);
     mocked(client.authorizationUrl).mockReturnValue("https://auth.url");
+
+    const url = new URL("http://example.com/callback");
+    url.searchParams.append("test", "/path/abc");
+    mocked(middlewareOptions.getRedirectUri).mockReturnValueOnce(url);
+
     const handler = loginController(client, middlewareOptions);
     const req = { session: {} } as Request;
     const res = {
@@ -291,8 +301,49 @@ describe("the loginController", () => {
       state: mockCodeVerifier,
       code_challenge: mockCodeChallenge,
       code_challenge_method: "S256",
+      redirect_uri: "http://example.com/callback?test=%2Fpath%2Fabc",
     });
+    expect(middlewareOptions.getRedirectUri).toHaveBeenCalledWith(
+      // We verify that the getRedirectUri function has been called with the default redirect URI
+      new URL("https://example.com/auth-callback"),
+      {
+        session: {
+          codeVerifier: "some-random-state",
+          oidcState: "some-random-state",
+          redirectUri: "http://example.com/callback?test=%2Fpath%2Fabc",
+        },
+      }
+    );
     expect(res.redirect).toHaveBeenCalledWith("https://auth.url");
+  });
+
+  it("does not add a randomly-generated code_challenge to the session when odicConfig.clientSecret is unset", async () => {
+    mocked(isAuthenticated).mockReturnValue(false);
+    const mockCodeVerifier = "some-random-state";
+    const mockCodeChallenge = base64url.encode(
+      createHash("sha256").update(mockCodeVerifier).digest()
+    );
+    mocked(generators.codeVerifier).mockReturnValue(mockCodeVerifier);
+    mocked(generators.codeChallenge).mockReturnValue(mockCodeChallenge);
+    mocked(middlewareOptions.getRedirectUri).mockImplementationOnce(
+      (defaultRedirectUri) => defaultRedirectUri
+    );
+    const handler = loginController(client, middlewareOptions);
+    const req = { session: {} } as Request;
+    const res = {
+      redirect: jest.fn(),
+    } as unknown as Response;
+    await handler(req, res);
+    expect(generators.codeVerifier).toHaveBeenCalledWith(32);
+    expect(generators.codeChallenge).toHaveBeenCalledWith(mockCodeVerifier);
+    expect(client.authorizationUrl).toHaveBeenCalledWith({
+      state: mockCodeVerifier,
+      code_challenge: mockCodeChallenge,
+      code_challenge_method: "S256",
+      redirect_uri: "https://example.com/auth-callback",
+    });
+    expect(req.session.codeVerifier).toBe(mockCodeVerifier);
+    expect(req.session.oidcState).toBe(mockCodeVerifier);
   });
 });
 
@@ -325,10 +376,13 @@ describe("the authCallbackController", () => {
     consoleErrorMock.mockRestore();
   });
 
-  it("fetches the tokenSet and redirects to the landing route", async () => {
+  it("fetches the tokenSet, calls the callback with the redirectUri from the session, and redirects to the landing route", async () => {
     const handler = authCallbackController(client, middlewareOptions);
     const req = {
-      session: { oidcState: "some-state" },
+      session: {
+        oidcState: "some-state",
+        redirectUri: "http://example.com/redirected-uri",
+      },
       query: {
         state: "some-state",
       },
@@ -353,7 +407,7 @@ describe("the authCallbackController", () => {
     expect(client.callbackParams).toHaveBeenCalledWith(req);
     expect(tokenSet.claims).toHaveBeenCalled();
     expect(client.callback).toHaveBeenCalledWith(
-      client.metadata.redirect_uris[0],
+      "http://example.com/redirected-uri",
       callbackParams,
       {
         state: "some-state",
@@ -362,7 +416,10 @@ describe("the authCallbackController", () => {
     expect(req.claims).toBe(claims);
     expect(req.session.tokenSet).toBe(tokenSet);
     expect(middlewareOptions.onAuthCallback).toHaveBeenCalledWith(
-      expect.objectContaining({ claims, session: { tokenSet } })
+      expect.objectContaining({
+        claims,
+        session: expect.objectContaining({ tokenSet }),
+      })
     );
   });
 
@@ -370,7 +427,7 @@ describe("the authCallbackController", () => {
     const consoleErrorMock = jest.spyOn(console, "error").mockImplementation();
     const handler = authCallbackController(client, middlewareOptions);
     const req = {
-      session: { oidcState: "some-state" },
+      session: { oidcState: "some-state", redirectUri: "testUri" },
       query: {
         state: "some-state",
       },
@@ -383,6 +440,9 @@ describe("the authCallbackController", () => {
 
     mocked(client.callbackParams).mockReturnValue(callbackParams);
     mocked(client.callback).mockRejectedValue(new Error("some-error"));
+    mocked(middlewareOptions.getRedirectUri).mockImplementationOnce(
+      (defaultRedirectUri) => defaultRedirectUri
+    );
 
     await handler(req, res);
 
@@ -391,13 +451,9 @@ describe("the authCallbackController", () => {
       middlewareOptions.oidcConfig.baseUrl
     );
     expect(client.callbackParams).toHaveBeenCalledWith(req);
-    expect(client.callback).toHaveBeenCalledWith(
-      client.metadata.redirect_uris[0],
-      callbackParams,
-      {
-        state: "some-state",
-      }
-    );
+    expect(client.callback).toHaveBeenCalledWith("testUri", callbackParams, {
+      state: "some-state",
+    });
     expect(req.claims).toBe(undefined);
     expect(req.session.tokenSet).toBe(undefined);
     expect(consoleErrorMock.mock.calls).toEqual([
@@ -406,30 +462,5 @@ describe("the authCallbackController", () => {
     ]);
     expect(middlewareOptions.onAuthCallback).toHaveBeenCalledTimes(0);
     consoleErrorMock.mockRestore();
-  });
-
-  it("does not add a randomly-generated code_challenge to the session when odicConfig.clientSecret is unset", async () => {
-    mocked(isAuthenticated).mockReturnValue(false);
-    const mockCodeVerifier = "some-random-state";
-    const mockCodeChallenge = base64url.encode(
-      createHash("sha256").update(mockCodeVerifier).digest()
-    );
-    mocked(generators.codeVerifier).mockReturnValue(mockCodeVerifier);
-    mocked(generators.codeChallenge).mockReturnValue(mockCodeChallenge);
-    const handler = loginController(client, middlewareOptions);
-    const req = { session: {} } as Request;
-    const res = {
-      redirect: jest.fn(),
-    } as unknown as Response;
-    await handler(req, res);
-    expect(generators.codeVerifier).toHaveBeenCalledWith(32);
-    expect(generators.codeChallenge).toHaveBeenCalledWith(mockCodeVerifier);
-    expect(client.authorizationUrl).toHaveBeenCalledWith({
-      state: mockCodeVerifier,
-      code_challenge: mockCodeChallenge,
-      code_challenge_method: "S256",
-    });
-    expect(req.session.codeVerifier).toBe(mockCodeVerifier);
-    expect(req.session.oidcState).toBe(mockCodeVerifier);
   });
 });
