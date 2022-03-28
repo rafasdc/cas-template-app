@@ -19,6 +19,7 @@ declare global {
         oidcState?: string;
         tokenSet?: TokenSetParameters;
         codeVerifier?: string;
+        [key: string]: any;
       };
       claims?: IdTokenClaims;
     }

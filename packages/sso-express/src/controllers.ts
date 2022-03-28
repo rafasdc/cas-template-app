@@ -97,14 +97,18 @@ export const loginController =
     const codeChallenge = generators.codeChallenge(codeVerifier);
     req.session.codeVerifier = codeVerifier;
 
+    const redirectUri = options.getRedirectUri(
+      new URL(client.metadata.redirect_uris[0]),
+      req
+    ).href;
+
+    req.session.redirectUri = redirectUri;
+
     const authUrl = client.authorizationUrl({
       state,
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
-      redirect_uri: options.getRedirectUri(
-        new URL(client.metadata.redirect_uris[0]),
-        req
-      ).href,
+      redirect_uri: redirectUri,
     });
     res.redirect(authUrl);
   };
@@ -126,8 +130,7 @@ export const authCallbackController =
 
     try {
       const tokenSet = await client.callback(
-        options.getRedirectUri(new URL(client.metadata.redirect_uris[0]), req)
-          .href,
+        req.session.redirectUri,
         callbackParams,
         {
           state,
