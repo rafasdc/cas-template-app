@@ -96,11 +96,15 @@ export const loginController =
     const codeChallenge = generators.codeChallenge(codeVerifier);
     req.session.codeVerifier = codeVerifier;
 
-    const authUrl = client.authorizationUrl({
+    let authUrl = client.authorizationUrl({
       state,
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
     });
+
+    if (options.authorizationUrlParams) {
+      options.authorizationUrlParams.forEach(param => authUrl += `&${param}`)
+    }
     res.redirect(authUrl);
   };
 
