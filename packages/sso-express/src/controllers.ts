@@ -100,11 +100,9 @@ export const loginController =
       state,
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
+      ...(options.authorizationUrlParams && { ...options.authorizationUrlParams })
     });
 
-    if (options.authorizationUrlParams) {
-      options.authorizationUrlParams.forEach(param => authUrl += `&${param}`)
-    }
     res.redirect(authUrl);
   };
 

@@ -297,12 +297,10 @@ describe("the loginController", () => {
 
   it("adds provided url params to the auth URL", async () => {
     mocked(isAuthenticated).mockReturnValue(false);
-    mocked(client.authorizationUrl).mockReturnValue("https://auth.url/");
     const middlewareOptionsWithURLParams = {
       ...middlewareOptions,
-      authorizationUrlParams: ["url_param_1=value1", "url_param_2=value2"]
+      authorizationUrlParams: { param1: "value1", param2: "value2" }
     }
-
     const handler = loginController(client, middlewareOptionsWithURLParams);
     const req = { session: {} } as Request;
     const res = {
@@ -310,9 +308,15 @@ describe("the loginController", () => {
     } as unknown as Response;
     await handler(req, res);
 
-    expect(res.redirect).toHaveBeenCalledWith("https://auth.url/&url_param_1=value1&url_param_2=value2");
+    expect(client.authorizationUrl).toHaveBeenCalledWith({
+      state: expect.anything(),
+      code_challenge: expect.anything(),
+      code_challenge_method: expect.anything(),
+      param1: 'value1',
+      param2: 'value2',
+    });
+    expect(res.redirect).toHaveBeenCalledWith("https://auth.url");
   });
-
 
 });
 

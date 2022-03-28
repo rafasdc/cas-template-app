@@ -65,7 +65,7 @@ export interface SSOExpressOptions {
     sessionIdleRemainingTime?: string;
     authCallback?: string;
   };
-  authorizationUrlParams?: string[];
+  authorizationUrlParams?: {[key: string]: string};
   /**
    * Callback function called after the user is authenticated,
    * but before the user is redirected to the landing page.
