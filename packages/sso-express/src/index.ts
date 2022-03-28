@@ -37,6 +37,7 @@ const defaultOptions: Partial<SSOExpressOptions> = {
     sessionIdleRemainingTime: "/session-idle-remaining-time",
     authCallback: "/auth-callback",
   },
+  authorizationUrlParams: {}
 };
 
 export interface SSOExpressOptions {
