@@ -35,6 +35,12 @@ const ssoMiddleware = await ssoUtils({
     // Depending on your sso configuration
     return getLanding(req.claims);
   },
+  getRedirectUri: (defaultRedirectUri, req) => {
+    // can be used to add additional query params to the default redirect uri:
+    const redirectUri = new URL(defaultRedirectUri);
+    redirectUri.searchParams.set("redirect", "/some/path");
+    return redirectUri;
+  },
   bypassAuthentication: {
     login: process.env.BYPASS_AUTH_ON_LOCAL,
     sessionIdleRemainingTime: process.env.BYPASS_AUTH_ON_LOCAL,
@@ -86,6 +92,7 @@ In addition, all these configuration keys are accepted:
 | :---------------------  | :---------------------------------------------------------------------------------------------------------------------- | :------------ |
 | `applicationDomain`     | Restricts clearing the session cookie to this domain                                                                    | .gov.bc.ca    |
 | `getLandingRoute`       | Function `(req) => string` used to redirect the user after login.                                                       | `() => '/'`   |
+| `getRedirectUri`        | Function `(defaultRedirectUri: URL, req) => URL` can be used to modify the redirect uri with the request's context.     | `defaultRedirectUri`|
 | `bypassAuthentication`  | Set to `true`, `false` or `{ login: t/f , sessionIdleRemainingTime: t/f }` to configure                                 | `false`       |
 | `routes`                | Overrides the default routes below. Set to `false` or `''` to disable (unavailable for login, logout, and authCallback) | see below     |
 | `onAuthCallback`        | Callback function called after the user is authenticated, but before the user is redirected to the landing page.        | `undefined `  |

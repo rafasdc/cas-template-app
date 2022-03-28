@@ -10,6 +10,7 @@ import {
   sessionIdleRemainingTimeController,
   tokenSetController,
 } from "./controllers";
+import { URL } from "url";
 
 declare global {
   namespace Express {
@@ -18,6 +19,7 @@ declare global {
         oidcState?: string;
         tokenSet?: TokenSetParameters;
         codeVerifier?: string;
+        [key: string]: any;
       };
       claims?: IdTokenClaims;
     }
@@ -27,6 +29,7 @@ declare global {
 const defaultOptions: Partial<SSOExpressOptions> = {
   applicationDomain: ".gov.bc.ca",
   getLandingRoute: (_req) => "/",
+  getRedirectUri: (defaultRedirectUri) => defaultRedirectUri,
   bypassAuthentication: {
     login: false,
     sessionIdleRemainingTime: false,
@@ -56,6 +59,17 @@ export interface SSOExpressOptions {
   };
   applicationDomain?: string;
   getLandingRoute?: (req: Request) => string;
+
+  /**
+   * Function used to build the redirect uri for the oidc provider.
+   * The default implementation uses the {baseUrl}/{route.authCallback} from these options.
+   *
+   * @param defaultRedirectUri The default redirect uri
+   * @param req The request object passed to the middleware, useful for passing and retrieving additional url params
+   *
+   * @returns The redirect uri to use
+   */
+  getRedirectUri?: (defaultRedirectUri: URL, req: Request) => URL;
   bypassAuthentication?: {
     login?: boolean;
     sessionIdleRemainingTime?: boolean;
@@ -97,7 +111,7 @@ async function ssoExpress(opts: SSOExpressOptions) {
   const { Client } = issuer;
   const client = new Client({
     client_id: clientId,
-    client_secret: clientSecret,
+    client_secret: clientSecret, // pragma: allowlist secret
     redirect_uris: [`${baseUrl}${authCallback}`],
     post_logout_redirect_uris: [baseUrl],
     token_endpoint_auth_method: clientSecret ? "client_secret_basic" : "none",
