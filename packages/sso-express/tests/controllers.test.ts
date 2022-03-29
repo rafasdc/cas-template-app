@@ -319,6 +319,9 @@ describe("the loginController", () => {
 
   it("adds provided url params to the auth URL", async () => {
     mocked(isAuthenticated).mockReturnValue(false);
+    const url = new URL("http://example.com/callback");
+    url.searchParams.append("test", "/path/abc");
+    mocked(middlewareOptions.getRedirectUri).mockReturnValueOnce(url);
     const middlewareOptionsWithURLParams = {
       ...middlewareOptions,
       authorizationUrlParams: { param1: "value1", param2: "value2" }
@@ -333,6 +336,7 @@ describe("the loginController", () => {
       state: expect.anything(),
       code_challenge: expect.anything(),
       code_challenge_method: expect.anything(),
+      redirect_uri: expect.anything(),
       param1: 'value1',
       param2: 'value2',
     });
