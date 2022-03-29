@@ -109,7 +109,7 @@ export const loginController =
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
       redirect_uri: redirectUri,
-      ...(options.authorizationUrlParams && { ...options.authorizationUrlParams }),
+      ...options.authorizationUrlParams,
     });
 
     res.redirect(authUrl);
