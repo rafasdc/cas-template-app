@@ -317,6 +317,32 @@ describe("the loginController", () => {
     expect(res.redirect).toHaveBeenCalledWith("https://auth.url");
   });
 
+  it("adds provided url params to the auth URL", async () => {
+    mocked(isAuthenticated).mockReturnValue(false);
+    const url = new URL("http://example.com/callback");
+    url.searchParams.append("test", "/path/abc");
+    mocked(middlewareOptions.getRedirectUri).mockReturnValueOnce(url);
+    const middlewareOptionsWithURLParams = {
+      ...middlewareOptions,
+      authorizationUrlParams: { param1: "value1", param2: "value2" }
+    }
+    const handler = loginController(client, middlewareOptionsWithURLParams);
+    const req = { session: {} } as Request;
+    const res = {
+      redirect: jest.fn(),
+    } as unknown as Response;
+    await handler(req, res);
+    expect(client.authorizationUrl).toHaveBeenCalledWith({
+      state: expect.anything(),
+      code_challenge: expect.anything(),
+      code_challenge_method: expect.anything(),
+      redirect_uri: expect.anything(),
+      param1: 'value1',
+      param2: 'value2',
+    });
+    expect(res.redirect).toHaveBeenCalledWith("https://auth.url");
+  });
+
   it("does not add a randomly-generated code_challenge to the session when odicConfig.clientSecret is unset", async () => {
     mocked(isAuthenticated).mockReturnValue(false);
     const mockCodeVerifier = "some-random-state";
