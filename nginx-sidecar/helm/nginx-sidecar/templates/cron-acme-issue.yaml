@@ -52,7 +52,7 @@ spec:
                     git clone --branch 2.8.6 https://github.com/acmesh-official/acme.sh.git /tmp/acme.sh;
                     cd /tmp/acme.sh;
                     ./acme.sh install --force --server {{ $caServer }} -m {{ .Values.caAccountEmail }} ;
-                    ./acme.sh --issue -d {{ .Values.hostName }} -w /tmp --server {{ $caServer }} --days {{.Values.renewalDays}};
+                    ./acme.sh --issue -d {{ .Values.hostName }} -w /tmp --server {{ $caServer }} -m {{ .Values.caAccountEmail }} --days {{.Values.renewalDays}};
                   fi;
               volumeMounts:
                 - mountPath: /tmp/.acme.sh
