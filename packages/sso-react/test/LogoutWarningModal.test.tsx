@@ -14,7 +14,6 @@ describe("The Logout Warning Modal", () => {
 
     const componentUnderTest = shallow(
       <LogoutWarningModal
-        inactivityDelaySeconds={120}
         onExtendSession={() => {}}
         expiresOn={12000}
         logoutPath="/logout"
@@ -31,7 +30,6 @@ describe("The Logout Warning Modal", () => {
 
     const componentUnderTest = mount(
       <LogoutWarningModal
-        inactivityDelaySeconds={120}
         onExtendSession={() => {}}
         expiresOn={12000}
         logoutPath="/logout"
@@ -49,7 +47,6 @@ describe("The Logout Warning Modal", () => {
     const expireSpy = jest.fn();
     const componentUnderTest = shallow(
       <LogoutWarningModal
-        inactivityDelaySeconds={1234}
         onExtendSession={expireSpy}
         expiresOn={12345}
         logoutPath="/logout"
@@ -70,7 +67,6 @@ describe("The Logout Warning Modal", () => {
     await act(async () => {
       componentUnderTest = mount(
         <LogoutWarningModal
-          inactivityDelaySeconds={120}
           onExtendSession={() => {}}
           expiresOn={17000} // 17 seconds after Jan. 1st, 1970
           logoutPath="/logout"

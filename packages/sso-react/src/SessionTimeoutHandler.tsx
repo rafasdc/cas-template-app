@@ -33,7 +33,7 @@ interface Props {
 }
 
 const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
-  modalDisplaySecondsBeforeLogout = 1800,
+  modalDisplaySecondsBeforeLogout = 120,
   sessionRemainingTimePath = "/session-idle-remaining-time",
   logoutPath = "/logout",
   onSessionExpired = () => {},
@@ -114,7 +114,6 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
     <>
       {showModal && (
         <LogoutWarningModal
-          inactivityDelaySeconds={modalDisplaySecondsBeforeLogout}
           expiresOn={sessionExpiresOn}
           onExtendSession={extendSession}
           logoutPath={logoutPath}

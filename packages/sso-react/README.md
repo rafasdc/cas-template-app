@@ -83,13 +83,12 @@ Rendering can be overridden by setting the `renderModal` property.
 
 The `renderModal` function will be passed the following props - from the `LogoutWarningModal` component itself.:
 
-| Name                     | Type         | Description                                                                                   |
-| :----------------------- | :----------- | :-------------------------------------------------------------------------------------------- |
-| `inactivityDelaySeconds` | `number`     | The (fixed) number of seconds left in the session, under which the modal should be displayed. |
-| `expiresOn`              | `number`     | The UNIX epoch at which the session expires                                                   |
-| `onExtendSession`        | `() => void` | The function called when the "extend sesison" button is clicked                               |
-| `logoutPath`             | `string`     | The server endpoint to logout                                                                 |
-| `remainingSeconds`       | `number`     | The (counting down) number of seconds remaining in the session                                |
+| Name               | Type         | Description                                                     |
+| :----------------- | :----------- | :-------------------------------------------------------------- |
+| `expiresOn`        | `number`     | The UNIX epoch at which the session expires                     |
+| `onExtendSession`  | `() => void` | The function called when the "extend session" button is clicked |
+| `logoutPath`       | `string`     | The server endpoint to logout                                   |
+| `remainingSeconds` | `number`     | The (counting down) number of seconds remaining in the session  |
 
 <br><br>
 
