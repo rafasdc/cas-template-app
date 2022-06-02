@@ -26,10 +26,7 @@ exports[`The Logout Warning Modal Should match the snapshot 1`] = `
       cols={12}
     >
       <Component>
-        Your session is about to expire due to inactivity over
-         
-        2
-         minutes.
+        Your session is about to expire due to inactivity.
       </Component>
       <Component>
         You will be logged out in 
@@ -121,10 +118,7 @@ exports[`The Logout Warning Modal should countdown seconds 1`] = `
         <div
           className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"
         >
-          Your session is about to expire due to inactivity over
-           
-          2
-           minutes.
+          Your session is about to expire due to inactivity.
         </div>
         <div
           className="sc-bkkeKt sc-ieecCq hOEAKj fEyLc pg-grid-row"

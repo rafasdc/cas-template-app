@@ -4,7 +4,6 @@ import Grid from "@button-inc/bcgov-theme/Grid";
 import Button from "@button-inc/bcgov-theme/Button";
 
 interface Props {
-  inactivityDelaySeconds: number;
   expiresOn: number;
   onExtendSession: () => void;
   logoutPath: string;
@@ -21,7 +20,6 @@ const LogoutWarningModal: React.FunctionComponent<
   }
 > = (props) => {
   const {
-    inactivityDelaySeconds,
     expiresOn,
     onExtendSession,
     logoutPath,
@@ -58,8 +56,7 @@ const LogoutWarningModal: React.FunctionComponent<
       <Modal.Content style={{ padding: "2em" }}>
         <Grid cols={12}>
           <Grid.Row>
-            Your session is about to expire due to inactivity over{" "}
-            {Math.floor(inactivityDelaySeconds / 60)} minutes.
+            Your session is about to expire due to inactivity.
           </Grid.Row>
           <Grid.Row>
             You will be logged out in {remainingSeconds} seconds.
