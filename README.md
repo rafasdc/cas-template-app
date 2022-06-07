@@ -2,6 +2,9 @@
 
 A skeleton app that uses the Climate Action Secretariat tech stack
 
+![Lifecycle:Experimental](https://img.shields.io/badge/Lifecycle-Experimental-339999)
+
+
 ```bash
 cd generator-cas-app && yarn && cd ..
 yarn global add yo
