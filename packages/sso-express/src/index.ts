@@ -40,7 +40,7 @@ const defaultOptions: Partial<SSOExpressOptions> = {
     sessionIdleRemainingTime: "/session-idle-remaining-time",
     authCallback: "/auth-callback",
   },
-  authorizationUrlParams: {}
+  authorizationUrlParams: {},
 };
 
 export interface SSOExpressOptions {
@@ -80,7 +80,10 @@ export interface SSOExpressOptions {
     sessionIdleRemainingTime?: string;
     authCallback?: string;
   };
-  authorizationUrlParams?: {[key: string]: string};
+  authorizationUrlParams?:
+    | Record<string, string>
+    | ((req: Request) => Record<string, string>);
+
   /**
    * Callback function called after the user is authenticated,
    * but before the user is redirected to the landing page.
