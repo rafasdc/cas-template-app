@@ -324,22 +324,57 @@ describe("the loginController", () => {
     mocked(middlewareOptions.getRedirectUri).mockReturnValueOnce(url);
     const middlewareOptionsWithURLParams = {
       ...middlewareOptions,
-      authorizationUrlParams: { param1: "value1", param2: "value2" }
-    }
+      authorizationUrlParams: { param1: "value1", param2: "value2" },
+    };
     const handler = loginController(client, middlewareOptionsWithURLParams);
     const req = { session: {} } as Request;
     const res = {
       redirect: jest.fn(),
     } as unknown as Response;
-    await handler(req, res);
+    handler(req, res);
     expect(client.authorizationUrl).toHaveBeenCalledWith({
       state: expect.anything(),
       code_challenge: expect.anything(),
       code_challenge_method: expect.anything(),
       redirect_uri: expect.anything(),
-      param1: 'value1',
-      param2: 'value2',
+      param1: "value1",
+      param2: "value2",
     });
+    expect(res.redirect).toHaveBeenCalledWith("https://auth.url");
+  });
+
+  it("calls the authorizationURLParams function if provided", async () => {
+    mocked(isAuthenticated).mockReturnValue(false);
+    const url = new URL("http://example.com/callback");
+    url.searchParams.append("test", "/path/abc");
+
+    const authorizationUrlParams = jest.fn(() => {
+      return {
+        param1: "value1",
+        param2: "value2",
+      };
+    });
+
+    mocked(middlewareOptions.getRedirectUri).mockReturnValueOnce(url);
+    const middlewareOptionsWithURLParams = {
+      ...middlewareOptions,
+      authorizationUrlParams,
+    };
+    const handler = loginController(client, middlewareOptionsWithURLParams);
+    const req = { session: {} } as Request;
+    const res = {
+      redirect: jest.fn(),
+    } as unknown as Response;
+    handler(req, res);
+    expect(client.authorizationUrl).toHaveBeenCalledWith({
+      state: expect.anything(),
+      code_challenge: expect.anything(),
+      code_challenge_method: expect.anything(),
+      redirect_uri: expect.anything(),
+      param1: "value1",
+      param2: "value2",
+    });
+    expect(authorizationUrlParams).toHaveBeenCalledWith(req);
     expect(res.redirect).toHaveBeenCalledWith("https://auth.url");
   });
 

@@ -104,12 +104,17 @@ export const loginController =
 
     req.session.redirectUri = redirectUri;
 
+    const urlParams =
+      typeof options.authorizationUrlParams === "function"
+        ? options.authorizationUrlParams(req)
+        : options.authorizationUrlParams;
+
     const authUrl = client.authorizationUrl({
       state,
       code_challenge: codeChallenge,
       code_challenge_method: "S256",
       redirect_uri: redirectUri,
-      ...options.authorizationUrlParams,
+      ...urlParams,
     });
 
     res.redirect(authUrl);
