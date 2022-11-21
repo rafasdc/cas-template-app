@@ -5,7 +5,7 @@
 {{- $caServer = (index $secret.data .Values.caServerKey) | b64dec }}
 {{- end -}}
 
-apiVersion: batch/v1beta1
+apiVersion: batch/v1
 kind: CronJob
 metadata:
   name: {{ .Values.objectNamePrefix }}-acme-renewal
