@@ -5,6 +5,9 @@ metadata:
   labels: {{ include "nginx-sidecar.labels" . | nindent 4 }}
 data:
   default.conf: |
+{{- if .Values.clientMaxBodySize }}
+    client_max_body_size  {{ .Values.clientMaxBodySize }};
+{{- end }}
     server {
 {{- if .Values.sslTermination }}
       listen {{ .Values.port }} ssl;

@@ -26,3 +26,6 @@ hostName: "example-climate-action-secretariat.gov.bc.ca"
 internalPort: ~
 # Exposed to the outside
 port: ~
+
+# If provided, sets the maximum size of file uploads. Otherwise defaults to 1M.
+clientMaxBodySize: ~
