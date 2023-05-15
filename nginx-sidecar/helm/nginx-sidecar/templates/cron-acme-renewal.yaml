@@ -13,7 +13,7 @@ metadata:
 {{ include "nginx-sidecar.labels" . | indent 4 }}
 spec:
   suspend: true # This cron job is intended to be triggered manually
-  schedule: "* * * * *"
+  schedule: "0 * * * *"
   successfulJobsHistoryLimit: 1
   jobTemplate:
     spec:
