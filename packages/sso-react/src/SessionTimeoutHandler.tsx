@@ -42,18 +42,20 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
   extendSessionOnEvents,
 }) => {
   const [showModal, setShowModal] = useState(false);
+  const [sessionExtendedToggle, setSessionExtendedToggle] = useState(false);
 
   // UNIX epoch (ms)
   const [sessionExpiresOn, setSessionExpiresOn] = useState(Infinity);
 
   const extendSession = async () => {
-    const response = await fetch(sessionRemainingTimePath);
+    const response = await fetch('/extend-session');
     if (response.ok) {
       const timeout = Number(await response.json());
       if (timeout > modalDisplaySecondsBeforeLogout) {
         setShowModal(false);
       }
       setSessionExpiresOn(timeout * 1000 + Date.now());
+      setSessionExtendedToggle(sessionExtendedToggle => !sessionExtendedToggle);
     }
   };
 
@@ -108,7 +110,7 @@ const SessionTimeoutHandler: React.FunctionComponent<Props> = ({
       clearTimeout(modalDisplayTimeoutId);
       clearTimeout(sessionTimeoutId);
     };
-  }, [...resetOnChange]);
+  }, [...resetOnChange, sessionExtendedToggle]);
 
   return (
     <>
